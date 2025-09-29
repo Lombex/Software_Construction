@@ -1,0 +1,43 @@
+POST http://localhost:8000/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "fenna.adriaanse",
+  "password": "fenna"
+}
+###
+DELETE http://localhost:8000/parking-lots/1 HTTP/1.1
+Content-Type: application/json
+Authorization: 7fcd5b65-fcdc-41ff-9735-a75ab7c316b3
+
+
+
+###
+#Unauthorized: Invalid or missing session token
+# "1": {
+#         "id": "1",
+#         "name": "Bedrijventerrein Almere Parkeergarage",
+#         "location": "Industrial Zone",
+#         "address": "Schanssingel 337, 2421 BS Almere",
+#         "capacity": 335,
+#         "reserved": 77,
+#         "tariff": 1.9,
+#         "daytariff": 11,
+#         "created_at": "2020-03-25",
+#         "coordinates": {
+#             "lat": 52.3133,
+#             "lng": 5.2234
+#         }
+#     }
+
+###
+
+DELETE http://localhost:8000/parking-lots/1 HTTP/1.1
+Content-Type: application/json
+Authorization : a24289fa-6fed-4e7e-ab00-ed669fe580ef
+
+### 
+DELETE  http://localhost:8000/parking-lots/3/ HTTP/1.1
+Content-Type: application/json
+Authorization: a24289fa-6fed-4e7e-ab00-ed669fe580ef
+

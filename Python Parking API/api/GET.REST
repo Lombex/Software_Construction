@@ -1,0 +1,52 @@
+###
+GET http://localhost:8000/payments
+Content-Type: application/json
+Authorization: fe9f088a-991a-476d-a3f4-1096cb3e366e
+
+###
+GET http://localhost:8000/payments/12345
+Content-Type: application/json
+Authorization : 08f364c2-5145-4451-a499-2a4b5e77d641
+##
+
+GET http://localhost:8000/profile
+Content-Type: application/json
+Authorization: 89bafaf3-09d3-4b41-9542-0fc80a423cf2
+
+###
+GET http://localhost:8000/logout
+Content-Type: application/json
+Authorization: 5064cff3-5634-4e14-bf6e-7bf3eb4602a2
+###
+GET http://localhost:8000/billing
+Content-Type: application/json
+Authorization : 08f364c2-5145-4451-a499-2a4b5e77d641
+
+###
+
+GET http://localhost:8000/payments HTTP/1.1
+Content-Type: application/json
+Authorization: c614c183-0aaf-47ad-9c37-584a0bfc82d0
+
+###
+
+GET http://localhost:8000/parking-lots HTTP/1.1
+Content-Type: application/json
+Authorization : 7fcd5b65-fcdc-41ff-9735-a75ab7c316b3
+
+###
+
+GET http://localhost:8000/parking-lots/1 HTTP/1.1
+Content-Type: application/json
+Authorization : 7fcd5b65-fcdc-41ff-9735-a75ab7c316b3
+###
+
+GET http://localhost:8000/parking-lots/4/session/14 HTTP/1.1
+Content-Type: application/json
+Authorization : 7fcd5b65-fcdc-41ff-9735-a75ab7c316b3
+
+
+###
+GET http://localhost:8000/vehicles HTTP/1.1
+Content-Type: application/json
+Authorization : 89bafaf3-09d3-4b41-9542-0fc80a423cf2
