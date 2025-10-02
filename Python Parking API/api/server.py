@@ -11,7 +11,7 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         if self.path == "/register":
             data  = json.loads(self.rfile.read(int(self.headers.get("Content-Length", -1))))
-            id = data.get("id")
+            id = data.get("id") 
             username = data.get("username")
             password = data.get("password")
             name = data.get("name")
@@ -29,7 +29,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                     self.end_headers()
                     self.wfile.write(b"Username already taken")
                     return
-            users.append({ ## fixed de issue hier waarbij het add gebruikte inplaats van append en dus geen user kon toevoegen
+            users.append({  # <-- Verander naar append
                 # "id": str(len(users) + 1), # simple incrementing ID
                 "id": id,
                 'username': username,
@@ -46,7 +46,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             save_user_data(users)
             self.send_response(201)
             self.send_header("Content-type", "application/json")
-            # self.get_session(token)
+            self.get_session(token)
             self.wfile.write(b"User created")
 
 
@@ -176,8 +176,18 @@ class RequestHandler(BaseHTTPRequestHandler):
                 self.wfile.write(b"Unauthorized: Invalid or missing session token")
                 return
             session_user = get_session(token)
-            data  = json.loads(self.rfile.read(int(self.headers.get("Content-Length", -1))))
+            data = json.loads(self.rfile.read(int(self.headers.get("Content-Length", -1))))
             reservations = load_reservation_data()
+            
+            # Converteer lijst naar dictionary zonder data te verliezen
+            if isinstance(reservations, list):
+                new_reservations = {}
+                for i, reservation in enumerate(reservations):
+                    # Gebruik bestaande ID of maak een nieuwe
+                    res_id = reservation.get("id", str(i + 1))
+                    new_reservations[res_id] = reservation
+                reservations = new_reservations
+            
             parking_lots = load_parking_lot_data()
             rid = str(len(reservations) + 1)
             for field in ["licenseplate", "startdate", "enddate", "parkinglot"]:
@@ -225,7 +235,15 @@ class RequestHandler(BaseHTTPRequestHandler):
             data  = json.loads(self.rfile.read(int(self.headers.get("Content-Length", -1))))
             vehicles = load_json("data/vehicles.json")
             if isinstance(vehicles, list):
-                vehicles = {}
+                # Converteer lijst naar dictionary gebaseerd op gebruikers
+                new_vehicles = {}
+                for vehicle in vehicles:
+                    user = vehicle.get("user_id", "unknown")
+                    if user not in new_vehicles:
+                        new_vehicles[user] = {}
+                    license_key = vehicle.get("license_plate", "").replace("-", "")
+                    new_vehicles[user][license_key] = vehicle
+                vehicles = new_vehicles
             uvehicles = vehicles.get(session_user["username"], {})
             for field in ["name", "license_plate"]:
                 if not field in data:
@@ -268,6 +286,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             session_user = get_session(token)
             data  = json.loads(self.rfile.read(int(self.headers.get("Content-Length", -1))))
             vehicles = load_json("data/vehicles.json")
+            if isinstance(vehicles, list):  # <-- Voeg deze check toe
+                vehicles = {}
             uvehicles = vehicles.get(session_user["username"], {})
             for field in ["parkinglot"]:
                 if not field in data:
@@ -459,6 +479,8 @@ class RequestHandler(BaseHTTPRequestHandler):
             session_user = get_session(token)
             data  = json.loads(self.rfile.read(int(self.headers.get("Content-Length", -1))))
             vehicles = load_json("data/vehicles.json")
+            if isinstance(vehicles, list):  # <-- Voeg deze check toe
+                vehicles = {}
             uvehicles = vehicles.get(session_user["username"], {})
             for field in ["name"]:
                 if not field in data:
@@ -733,39 +755,67 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps(parking_lots).encode('utf-8'))
 
 
-        elif self.path.startswith("/reservations/"):
-            reservations = load_reservation_data()
-            rid = self.path.replace("/reservations/", "")
-            if rid:
-                if rid in reservations:
-                    token = self.headers.get('Authorization')
-                    if not token or not get_session(token):
-                        self.send_response(401)
-                        self.send_header("Content-type", "application/json")
-                        self.end_headers()
-                        self.wfile.write(b"Unauthorized: Invalid or missing session token")
-                        return
-                    session_user = get_session(token)
-                    if not "ADMIN" == session_user.get('role') and not session_user["username"] == reservations[rid].get("user"):
-                        self.send_response(403)
-                        self.send_header("Content-type", "application/json")
-                        self.end_headers()
-                        self.wfile.write(b"Access denied")
-                        return
-                    save_reservation_data(reservations)
-                    self.send_response(200)
-                    self.send_header("Content-type", "application/json")
-                    self.end_headers()
-                    self.wfile.write(json.dumps(reservations[rid]).encode("utf-8"))
-                    return
-                else:
-                    self.send_response(404)
-                    self.send_header("Content-type", "application/json")
-                    self.end_headers()
-                    self.wfile.write(b"Reservation not found")
-                    return
-                
+        # elif self.path.startswith("/reservations/"):
+        #     reservations = load_reservation_data()
+        #     rid = self.path.replace("/reservations/", "")
+        #     if rid:
+        #         if rid in reservations:
+        #             token = self.headers.get('Authorization')
+        #             if not token or not get_session(token):
+        #                 self.send_response(401)
+        #                 self.send_header("Content-type", "application/json")
+        #                 self.end_headers()
+        #                 self.wfile.write(b"Unauthorized: Invalid or missing session token")
+        #                 return
+        #             session_user = get_session(token)
+        #             if not "ADMIN" == session_user.get('role') and not session_user["username"] == reservations[rid].get("user"):
+        #                 self.send_response(403)
+        #                 self.send_header("Content-type", "application/json")
+        #                 self.end_headers()
+        #                 self.wfile.write(b"Access denied")
+        #                 return
+        #             save_reservation_data(reservations)
+        #             self.send_response(200)
+        #             self.send_header("Content-type", "application/json")
+        #             self.end_headers()
+        #             self.wfile.write(json.dumps(reservations[rid]).encode("utf-8"))
+        #             return
+        #         else:
+        #             self.send_response(404)
+        #             self.send_header("Content-type", "application/json")
+        #             self.end_headers()
+        #             self.wfile.write(b"Reservation not found")
+        #             return
         
+        elif self.path == "/reservations":
+            token = self.headers.get('Authorization')
+            if not token or not get_session(token):
+                self.send_response(401)
+                self.send_header("Content-type", "application/json")
+                self.end_headers()
+                self.wfile.write(b"Unauthorized: Invalid or missing session token")
+                return
+            
+            session_user = get_session(token)
+            reservations = load_reservation_data()
+            
+            # Check if reservations is a list and convert if needed
+            if isinstance(reservations, list):
+                reservations = {}
+            
+            if "ADMIN" == session_user.get('role'):
+                # Admin ziet alle reserveringen
+                result = list(reservations.values())
+            else:
+                # Normale gebruiker ziet alleen eigen reserveringen
+                result = [res for res in reservations.values() if res.get("user") == session_user["username"]]
+            
+            self.send_response(200)
+            self.send_header("Content-type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps(result).encode("utf-8"))
+            return
+### ///////////////////////////////////////
         elif self.path == "/payments":
             token = self.headers.get('Authorization')
             if not token or not get_session(token):
