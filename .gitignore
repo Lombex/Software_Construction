@@ -2,3 +2,8 @@
 Python Parking API/api/data
 *.DS_Store
 
+CSharp Parking API/.vs/CSharp Parking API/DesignTimeBuild
+Python Parking API/api/__pycache__
+CSharp Parking API/.vs
+CSharp Parking API/obj
+CSharp Parking API/bin
