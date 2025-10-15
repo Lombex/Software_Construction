@@ -1,13 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CSharpAPI.Models
 {
-    public class Model_Payments
+    public class M_Payments
     {
         public string? transactions {  get; set; }
         public float amount { get; set; }

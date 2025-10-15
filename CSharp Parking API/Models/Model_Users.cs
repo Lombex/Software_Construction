@@ -1,6 +1,6 @@
 ﻿namespace CSharpAPI.Models
 {
-    public class Model_Users
+    public class M_Users
     {
         public enum UserRole
         {

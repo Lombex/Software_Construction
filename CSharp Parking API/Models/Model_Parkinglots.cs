@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace CSharp_Parking_API.Models
+namespace CSharpAPI.Models
 {
-    public class Model_Parking_lots
+    public class M_Parkinglots
     {
         public Guid id { get; set; }
         public string? name { get; set; }
@@ -18,7 +14,7 @@ namespace CSharp_Parking_API.Models
         public DateTime created_at { get; set; }
         public Coordinates? coordinates { get; set; }
     }
-
+    [Owned]
     public class Coordinates
     {
         public float lat { get; set; }
