@@ -6,10 +6,10 @@ namespace CSharpAPI.Controllers
 {
     [Route("api/users")]
     [ApiController]
-    public class Controller_Users : ControllerBase
+    public class C_Users : ControllerBase
     {
         private readonly IUsersService _userService;
-        public Controller_Users(IUsersService userService)
+        public C_Users(IUsersService userService)
         {
             _userService = userService;
         }
