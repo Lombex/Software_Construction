@@ -7,3 +7,18 @@ Python Parking API/api/__pycache__
 CSharp Parking API/.vs
 CSharp Parking API/obj
 CSharp Parking API/bin
+
+# Ignore SQLite database files
+CSharp Parking API/Database/*.db
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Ignore environment-specific appsettings (keep appsettings.json committed)
+CSharp Parking API/appsettings.Development.json
+
+# Ignore test build outputs
+CSharp Parking API.Tests/bin
+CSharp Parking API.Tests/obj

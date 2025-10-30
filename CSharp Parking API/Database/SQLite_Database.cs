@@ -22,6 +22,7 @@ namespace CSharpAPI.Database
         {
             modelBuilder.Entity<M_Payments>().OwnsOne(t => t.t_data);
             modelBuilder.Entity<M_Parkinglots>().OwnsOne(c => c.coordinates);
+            modelBuilder.Entity<M_Payments>().HasKey(p => p.hash);
 
             base.OnModelCreating(modelBuilder);
         }

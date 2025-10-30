@@ -1,11 +1,13 @@
 ﻿using CSharpAPI.Models;
 using CSharpAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CSharpAPI.Controllers
 {
     [Route("api/users")]
     [ApiController]
+    [Authorize]
     public class C_Users : ControllerBase
     {
         private readonly IUsersService _userService;
@@ -15,6 +17,7 @@ namespace CSharpAPI.Controllers
         }
 
         [HttpGet("all")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllUsers([FromQuery] int page)
         {
             var users = await _userService.GetAllUsers();
@@ -58,6 +61,7 @@ namespace CSharpAPI.Controllers
         }
 
         [HttpPost("create")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateUser([FromBody] M_Users m_users)
         {
             if (m_users == null) return BadRequest("User data is null.");
@@ -66,6 +70,7 @@ namespace CSharpAPI.Controllers
         }
 
         [HttpPut("update/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateUser(Guid id, [FromBody] M_Users m_users)
         {
             if (m_users == null) return BadRequest("Invalid user data.");
@@ -78,6 +83,7 @@ namespace CSharpAPI.Controllers
         }
 
         [HttpDelete("delete/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             var existingUser = await _userService.getByID(id);
