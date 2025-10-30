@@ -4,8 +4,15 @@ namespace CSharpAPI.Models
 {
     public class M_Payments
     {
-        public string? transactions {  get; set; }
+        // voeg een id toe als primaire sleutel
+        public Guid id { get; set; }
+
+        // andere velden
+        public Guid reservation_id { get; set; }
         public float amount { get; set; }
+        public DateTime paid_at { get; set; }
+
+        public string? transactions {  get; set; }
         public string? initiator { get; set; }
         public DateTime created_at { get; set; }
         public DateTime completed { get; set; }

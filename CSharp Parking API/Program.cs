@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +14,14 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.PropertyNamingPolicy = null;
 });
 
-builder.Services.AddDbContext<SQLite_Database>(options => 
-   options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+var contentRoot = builder.Environment.ContentRootPath;
+var dbFolder = Path.Combine(contentRoot, "Database");
+Directory.CreateDirectory(dbFolder);
+var dbPath = Path.Combine(dbFolder, "parking.db");
+Console.WriteLine($"SQLite DB path: {dbPath}");
+
+builder.Services.AddDbContext<SQLite_Database>(options =>
+    options.UseSqlite($"Data Source={dbPath}"));
 
 builder.Services.AddScoped<IUsersService, S_Users>();
 // Add other services here
