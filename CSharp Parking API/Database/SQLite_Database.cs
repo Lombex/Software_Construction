@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using CSharpAPI.Models;
+using System.IO;
 
 namespace CSharpAPI.Database
 {
@@ -15,13 +16,21 @@ namespace CSharpAPI.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured) optionsBuilder.UseSqlite("Data Source=./Database/Data.db");
+            if (!optionsBuilder.IsConfigured)
+            {
+                var dbFolder = Path.Combine(Directory.GetCurrentDirectory(), "Database");
+                Directory.CreateDirectory(dbFolder);
+                var dbPath = Path.Combine(dbFolder, "parking.db");
+                optionsBuilder.UseSqlite($"Data Source={dbPath}");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<M_Payments>().HasKey(p => p.id);
             modelBuilder.Entity<M_Payments>().OwnsOne(t => t.t_data);
             modelBuilder.Entity<M_Parkinglots>().OwnsOne(c => c.coordinates);
+            modelBuilder.Entity<M_Payments>().HasKey(p => p.hash);
 
             base.OnModelCreating(modelBuilder);
         }
