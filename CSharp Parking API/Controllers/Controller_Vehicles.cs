@@ -50,7 +50,7 @@ namespace CSharpAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVehicleByID(Guid Id)
         {
-            var vehicle = await _vehicleService.getByID(Id);
+            var vehicle = await _vehicleService.GetByID(Id);
             if (vehicle == null) return NotFound($"User with id {Id} not found."); 
             return Ok(vehicle);
         }
@@ -75,7 +75,7 @@ namespace CSharpAPI.Controllers
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteVehicle(Guid id)
         {
-            var existingVehicle = await _vehicleService.getByID(id);
+            var existingVehicle = await _vehicleService.GetByID(id);
             if (existingVehicle == null) return NotFound($"User with id {id} not found.");
             await _vehicleService.DeleteVehicle(id);
             return NoContent();
