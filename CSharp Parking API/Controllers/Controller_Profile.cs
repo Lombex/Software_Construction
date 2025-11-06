@@ -15,12 +15,21 @@ namespace CSharpAPI.Controllers
         {
             _profileService = profileService;
         }
+        
         [HttpGet()]
         public async Task<IActionResult> GetProfile([FromQuery] Guid id)
         {
             var user = await _profileService.GetById(id);
             return Ok(user);
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProfileById(Guid id)
+        {
+            var user = await _profileService.GetById(id);
+            return Ok(user);
+        }
+
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateProfile(Guid id)
         {
