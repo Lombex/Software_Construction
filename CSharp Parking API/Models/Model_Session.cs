@@ -1,4 +1,7 @@
-﻿namespace CSharpAPI.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CSharpAPI.Models
 {
     public class M_Session
     {
@@ -7,9 +10,14 @@
             Paid,
             Unpaid
         }
-
+        [Key]
         public Guid id { get; set; }
+        [ForeignKey(nameof(parking_lot_id))]
+        public M_Parkinglots parking_lot { get; set; }
         public Guid parking_lot_id { get; set; }
+        public Guid vehicle_id { get; set; }
+        [ForeignKey(nameof(vehicle_id))]
+        public M_Vehicles? vehicle_license_plate { get; set; }
         public string? license_plate { get; set; }
         public DateTime started { get; set; }
         public DateTime stopped { get; set; }

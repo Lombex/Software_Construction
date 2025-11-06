@@ -1,4 +1,6 @@
-﻿namespace CSharpAPI.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CSharpAPI.Models
 {
     public class M_Users
     {
@@ -7,7 +9,7 @@
             Admin,
             User
         }
-
+        [Key]
         public Guid id { get; set; }
         public string? username { get; set; }
         public string? password { get; set; }
