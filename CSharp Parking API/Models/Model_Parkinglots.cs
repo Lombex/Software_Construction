@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace CSharpAPI.Models
 {
     public class M_Parkinglots
     {
+        [Key]
         public Guid id { get; set; }
         public string? name { get; set; }
         public string? location { get; set; }

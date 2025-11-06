@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CSharpAPI.Models
 {
@@ -9,16 +10,20 @@ namespace CSharpAPI.Models
 
         // andere velden
         public Guid reservation_id { get; set; }
-        public float amount { get; set; }
+        
         public DateTime paid_at { get; set; }
 
-        public string? transactions {  get; set; }
+        public string? transactions { get; set; }
+        public float amount { get; set; }
         public string? initiator { get; set; }
         public DateTime created_at { get; set; }
         public DateTime completed { get; set; }
         public Guid hash { get; set; }
         public T_Data? t_data { get; set; }
+
+        [ForeignKey("session_id")]
         public Guid session_id { get; set; }
+        [ForeignKey("parking_lot_id")]
         public Guid parking_lot_id { get; set; }
     }
 
