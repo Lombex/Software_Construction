@@ -24,13 +24,14 @@ namespace CSharpAPI.Models
     }
 
     [Owned]
-      public class M_Tariff
+    public class M_Tariff
     {
         public Guid id { get; set; }
         public Guid parkinglotId { get; set; }
         public List<Tariff> tariffs { get; set; }
     }
 
+    [Owned]
     public class M_ParkinglotRates
     {
         public Guid id { get; set; }
