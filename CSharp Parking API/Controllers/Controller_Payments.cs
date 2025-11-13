@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CSharpAPI.Controllers
 {
-    [Route("api/users")]
+    [Route("api/payments")]
     [ApiController]
     public class C_Payments : ControllerBase
     {
@@ -62,6 +62,20 @@ namespace CSharpAPI.Controllers
         {
             await PaymentsService.CreatePayment(newPayment);
             return Ok("Payment created successfully.");
+        }
+
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdatePayment(Guid id, [FromBody] M_Payments updatedPayment)
+        {
+            await PaymentsService.UpdatePayment(id, updatedPayment);
+            return Ok("Payment updated successfully.");
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeletePayment(Guid id)
+        {
+            await PaymentsService.DeletePayment(id);
+            return Ok("Payment deleted successfully.");
         }
     }
 }
