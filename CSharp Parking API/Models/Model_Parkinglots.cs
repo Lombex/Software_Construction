@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
 
 namespace CSharpAPI.Models
 {
@@ -23,4 +22,22 @@ namespace CSharpAPI.Models
         public float lng { get; set; }
 
     }
+
+    [Owned]
+      public class M_Tariff
+    {
+        public Guid id { get; set; }
+        public Guid parkinglotId { get; set; }
+        public List<Tariff> tariffs { get; set; }
+    }
+
+    public class M_ParkinglotRates
+    {
+        public Guid id { get; set; }
+        public Guid parkinglotId { get; set; }
+        public List<M_Tariff> tariffs { get; set; }
+    }
+
+
 }
+
