@@ -38,6 +38,8 @@ namespace CSharpAPI.Services
         {
             var _payment = await getByID(id);
             _payment.id = updatedPayment.id;
+            _payment.reservation_id = updatedPayment.reservation_id;
+            _payment.paid_at = updatedPayment.paid_at;
             _payment.transactions = updatedPayment.transactions;
             _payment.initiator = updatedPayment.initiator;
             _payment.amount = updatedPayment.amount;

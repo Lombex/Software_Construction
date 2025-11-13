@@ -26,6 +26,8 @@ namespace CSharpAPI.Controllers
             var elements = payments.Skip((page * 10)).Take(10).Select(x => new
             {
                 id = x.id,
+                reservation_id = x.reservation_id,
+                paid_at = x.paid_at,
                 session_id = x.session_id,
                 transactions = x.transactions,
                 initiator = x.initiator,
