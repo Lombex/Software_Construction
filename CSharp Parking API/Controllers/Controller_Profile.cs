@@ -8,6 +8,7 @@ namespace CSharpAPI.Controllers
 {
     [Route("api/profile")]
     [ApiController]
+    [Authorize] // All profile endpoints require authentication
     public class C_Profile : ControllerBase
     {
         private readonly IProfileService _profileService;

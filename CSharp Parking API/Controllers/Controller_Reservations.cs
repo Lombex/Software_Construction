@@ -1,5 +1,6 @@
 using CSharpAPI.Models;
 using CSharpAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static CSharpAPI.Models.M_Reservations;
 
@@ -7,6 +8,7 @@ namespace CSharpAPI.Controllers
 {
     [Route("api/reservations")]
     [ApiController]
+    [Authorize] // All reservation endpoints require authentication
     public class C_Reservations : ControllerBase
     {
         private readonly IReservationsService _reservationService;
@@ -16,6 +18,7 @@ namespace CSharpAPI.Controllers
         }
 
         [HttpGet("all")]
+        [Authorize(Policy = "AdminOrAbove")] // Only admins can view all reservations
         public async Task<IActionResult> GetAllReservations([FromQuery] int page)
         {
             var reservations = await _reservationService.GetAllReservations();

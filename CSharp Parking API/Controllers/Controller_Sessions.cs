@@ -1,5 +1,6 @@
 using CSharpAPI.Models;
 using CSharpAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static CSharpAPI.Models.M_Reservations;
 
@@ -7,6 +8,7 @@ namespace CSharpAPI.Controllers
 {
     [Route("api/sessions")]
     [ApiController]
+    [Authorize] // All session endpoints require authentication
     public class C_Sessions : ControllerBase
     {
         private readonly ISessionsService _sessionsService;

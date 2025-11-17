@@ -78,7 +78,12 @@ if (!string.IsNullOrWhiteSpace(key))
         options.DefaultPolicy = new AuthorizationPolicyBuilder()
             .RequireAuthenticatedUser()
             .Build();
-        options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+        // SuperAdmin can do everything
+        options.AddPolicy("SuperAdminOnly", policy => policy.RequireRole("SuperAdmin"));
+        // ParkingLotAdmin or SuperAdmin
+        options.AddPolicy("AdminOrAbove", policy => policy.RequireRole("ParkingLotAdmin", "SuperAdmin"));
+        // All authenticated users
+        options.AddPolicy("AuthenticatedUser", policy => policy.RequireAuthenticatedUser());
     });
 }
 
@@ -146,35 +151,59 @@ using (var scope = app.Services.CreateScope())
         {
             await dbContext.Database.MigrateAsync();
         }
-        // Seed minimal data for development/test
+        // Seed minimal data for development/test with all three roles
         if (!dbContext.Users.Any())
         {
+            var parkingLotId = Guid.NewGuid(); // Sample parking lot for admin
+            
+            // SuperAdmin - full system access
             dbContext.Users.Add(new CSharpAPI.Models.M_Users
             {
                 id = Guid.NewGuid(),
-                username = "admin",
-                password = "adminpass",
-                name = "Admin",
-                email = "admin@example.com",
+                username = "superadmin",
+                password = "superpass",
+                name = "Super Administrator",
+                email = "super@example.com",
                 phone = "",
-                role = CSharpAPI.Models.M_Users.UserRole.Admin,
+                role = CSharpAPI.Models.M_Users.UserRole.SuperAdmin,
+                parking_lot_id = null, // SuperAdmin not tied to specific lot
+                created_at = DateTime.UtcNow,
+                birth_year = new DateTime(1985, 1, 1),
+                active = true
+            });
+            
+            // ParkingLotAdmin - manages specific parking lot
+            dbContext.Users.Add(new CSharpAPI.Models.M_Users
+            {
+                id = Guid.NewGuid(),
+                username = "lotadmin",
+                password = "lotpass",
+                name = "Lot Administrator",
+                email = "lotadmin@example.com",
+                phone = "",
+                role = CSharpAPI.Models.M_Users.UserRole.ParkingLotAdmin,
+                parking_lot_id = parkingLotId, // Tied to specific parking lot
                 created_at = DateTime.UtcNow,
                 birth_year = new DateTime(1990, 1, 1),
                 active = true
             });
+            
+            // Regular ParkingUser
             dbContext.Users.Add(new CSharpAPI.Models.M_Users
             {
                 id = Guid.NewGuid(),
                 username = "user",
                 password = "userpass",
-                name = "User",
+                name = "Regular User",
                 email = "user@example.com",
                 phone = "",
-                role = CSharpAPI.Models.M_Users.UserRole.User,
+                role = CSharpAPI.Models.M_Users.UserRole.ParkingUser,
+                parking_lot_id = null, // Regular users not tied to lots
                 created_at = DateTime.UtcNow,
                 birth_year = new DateTime(1995, 1, 1),
                 active = true
             });
+            
             await dbContext.SaveChangesAsync();
         }
     }
@@ -185,3 +214,6 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+// Expose Program for WebApplicationFactory in tests
+public partial class Program { }

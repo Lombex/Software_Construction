@@ -17,7 +17,7 @@ namespace CSharpAPI.Controllers
         }
 
         [HttpGet("all")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "SuperAdminOnly")] // Only SuperAdmin can view all users
         public async Task<IActionResult> GetAllUsers([FromQuery] int page)
         {
             var users = await _userService.GetAllUsers();
@@ -61,7 +61,7 @@ namespace CSharpAPI.Controllers
         }
 
         [HttpPost("create")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "SuperAdminOnly")] // Only SuperAdmin can create users
         public async Task<IActionResult> CreateUser([FromBody] M_Users m_users)
         {
             if (m_users == null) return BadRequest("User data is null.");
@@ -70,7 +70,7 @@ namespace CSharpAPI.Controllers
         }
 
         [HttpPut("update/{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "SuperAdminOnly")] // Only SuperAdmin can update users
         public async Task<IActionResult> UpdateUser(Guid id, [FromBody] M_Users m_users)
         {
             if (m_users == null) return BadRequest("Invalid user data.");
@@ -83,7 +83,7 @@ namespace CSharpAPI.Controllers
         }
 
         [HttpDelete("delete/{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "SuperAdminOnly")] // Only SuperAdmin can delete users
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             var existingUser = await _userService.getByID(id);

@@ -20,7 +20,7 @@ namespace CSharp_Parking_API.Tests
         public async Task Login_Should_Return_Token_For_Valid_Credentials()
         {
             var client = _factory.CreateClient();
-            var response = await client.PostAsJsonAsync("/api/auth/login", new { Username = "admin", Password = "adminpass" });
+            var response = await client.PostAsJsonAsync("/api/auth/login", new { Username = "superadmin", Password = "superpass" });
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var payload = await response.Content.ReadFromJsonAsync<TokenResponse>();
             payload!.token.Should().NotBeNullOrEmpty();
@@ -47,10 +47,10 @@ namespace CSharp_Parking_API.Tests
         }
 
         [Fact]
-        public async Task Get_Admin_Only_With_Admin_Token_Should_Return_200()
+        public async Task Get_Admin_Only_With_SuperAdmin_Token_Should_Return_200()
         {
             var client = _factory.CreateClient();
-            var login = await client.PostAsJsonAsync("/api/auth/login", new { Username = "admin", Password = "adminpass" });
+            var login = await client.PostAsJsonAsync("/api/auth/login", new { Username = "superadmin", Password = "superpass" });
             var token = (await login.Content.ReadFromJsonAsync<TokenResponse>())!.token;
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 

@@ -1,11 +1,13 @@
 using CSharpAPI.Models;
 using CSharpAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CSharpAPI.Controllers
 {
     [Route("api/vehicles")]
     [ApiController]
+    [Authorize] // All vehicle endpoints require authentication
     public class C_Vehicles : ControllerBase
     {
         private readonly IVehiclesService _vehicleService;
@@ -15,6 +17,7 @@ namespace CSharpAPI.Controllers
         }
 
         [HttpGet("all")]
+        [Authorize(Policy = "AdminOrAbove")] // Only admins can view all vehicles
         public async Task<IActionResult> GetAllVehicles([FromQuery] int page)
         {
             var vehicles = await _vehicleService.GetAllVehicles();

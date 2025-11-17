@@ -46,33 +46,54 @@ namespace CSharp_Parking_API.Tests
                 db.Database.OpenConnection();
                 db.Database.EnsureCreated();
 
-                // Seed users: one admin and one regular user
+                // Seed users: SuperAdmin, ParkingLotAdmin, and Regular User
+                var parkingLotId = Guid.NewGuid();
+                
                 db.Users.Add(new M_Users
                 {
                     id = Guid.NewGuid(),
-                    username = "admin",
-                    password = "adminpass",
-                    name = "Admin",
-                    email = "admin@example.com",
+                    username = "superadmin",
+                    password = "superpass",
+                    name = "Super Administrator",
+                    email = "super@example.com",
                     phone = "",
-                    role = M_Users.UserRole.Admin,
+                    role = M_Users.UserRole.SuperAdmin,
+                    parking_lot_id = null,
+                    created_at = DateTime.UtcNow,
+                    birth_year = new DateTime(1985, 1, 1),
+                    active = true
+                });
+                
+                db.Users.Add(new M_Users
+                {
+                    id = Guid.NewGuid(),
+                    username = "lotadmin",
+                    password = "lotpass",
+                    name = "Lot Administrator",
+                    email = "lotadmin@example.com",
+                    phone = "",
+                    role = M_Users.UserRole.ParkingLotAdmin,
+                    parking_lot_id = parkingLotId,
                     created_at = DateTime.UtcNow,
                     birth_year = new DateTime(1990, 1, 1),
                     active = true
                 });
+                
                 db.Users.Add(new M_Users
                 {
                     id = Guid.NewGuid(),
                     username = "user",
                     password = "userpass",
-                    name = "User",
+                    name = "Regular User",
                     email = "user@example.com",
                     phone = "",
-                    role = M_Users.UserRole.User,
+                    role = M_Users.UserRole.ParkingUser,
+                    parking_lot_id = null,
                     created_at = DateTime.UtcNow,
                     birth_year = new DateTime(1995, 1, 1),
                     active = true
                 });
+                
                 db.SaveChanges();
             });
         }

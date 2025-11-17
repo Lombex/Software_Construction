@@ -1,11 +1,13 @@
 using CSharpAPI.Models;
 using CSharpAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CSharpAPI.Controllers
 {
     [Route("api/payments")]
     [ApiController]
+    [Authorize] // All payment endpoints require authentication
     public class C_Payments : ControllerBase
     {
         private readonly IPaymentsService PaymentsService;
@@ -15,6 +17,7 @@ namespace CSharpAPI.Controllers
         }
 
         [HttpGet("all")]
+        [Authorize(Policy = "AdminOrAbove")] // ParkingLotAdmin or SuperAdmin can view all payments
         public async Task<IActionResult> GetAllPayments([FromQuery] int page)
         {
             var payments = await PaymentsService.GetAllPayments();
@@ -58,6 +61,7 @@ namespace CSharpAPI.Controllers
         }
         
         [HttpPost("create")]
+        // Any authenticated user can create payment (for their own reservations)
         public async Task<IActionResult> CreatePayment([FromBody] M_Payments newPayment)
         {
             await PaymentsService.CreatePayment(newPayment);
@@ -65,6 +69,7 @@ namespace CSharpAPI.Controllers
         }
 
         [HttpPut("update/{id}")]
+        [Authorize(Policy = "AdminOrAbove")] // Only admins can update payments
         public async Task<IActionResult> UpdatePayment(Guid id, [FromBody] M_Payments updatedPayment)
         {
             await PaymentsService.UpdatePayment(id, updatedPayment);
@@ -72,6 +77,7 @@ namespace CSharpAPI.Controllers
         }
 
         [HttpDelete("delete/{id}")]
+        [Authorize(Policy = "SuperAdminOnly")] // Only SuperAdmin can delete payments
         public async Task<IActionResult> DeletePayment(Guid id)
         {
             await PaymentsService.DeletePayment(id);
