@@ -22,6 +22,8 @@ namespace CSharpAPI.Controllers
         {
             var vehicles = await _vehicleService.GetAllVehicles();
 
+            if (page < 0) return BadRequest("Page number must be non-negative.");
+
             int totalItem = vehicles.Count;
             int totalPages = (int)Math.Ceiling(totalItem / (double)10);
             if (page > totalPages) return BadRequest("Page number exceeds total pages.");
@@ -62,7 +64,25 @@ namespace CSharpAPI.Controllers
         public async Task<IActionResult> CreateVehicle([FromBody] M_Vehicles m_vehicles)
         {
             if (m_vehicles == null) return BadRequest("Vehicle data is null.");
-            
+
+            // Additional validation can be added here (e.g., check for duplicate license plates)
+
+            if (string.IsNullOrWhiteSpace(m_vehicles.license_plate) || 
+                string.IsNullOrWhiteSpace(m_vehicles.make) || string.IsNullOrWhiteSpace(m_vehicles.model))
+            {
+                return BadRequest("License plate, make, and model cannot be empty or whitespace.");
+            }
+
+            if (m_vehicles.year > DateTime.Now)
+            {
+                return BadRequest("Year cannot be in the future.");
+            }
+
+            if (m_vehicles.license_plate.Length > 10)
+            {
+                return BadRequest("License plate cannot exceed 10 characters.");
+            }
+
             await _vehicleService.CreateVehicle(m_vehicles);
             return CreatedAtAction(nameof(GetVehicleByID), new { id = m_vehicles.id }, m_vehicles);
         }
@@ -71,6 +91,10 @@ namespace CSharpAPI.Controllers
         public async Task<IActionResult> UpdateVehicle(Guid id, [FromBody] M_Vehicles m_vehicles)
         {
             if (m_vehicles == null) return BadRequest("Invalid user data.");
+
+            var existingVehicle = await _vehicleService.GetByID(id);
+            if (existingVehicle == null) return NotFound($"User with id {id} not found.");
+
             await _vehicleService.UpdateVehicle(id, m_vehicles);
             return NoContent();
         }

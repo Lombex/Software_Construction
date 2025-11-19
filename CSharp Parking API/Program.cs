@@ -29,6 +29,7 @@ string DatabasePath = Path.Combine(MainFolder, "Database", "Parking.db");
 builder.Services.AddDbContext<SQLite_Database>(options => options.UseSqlite($"Data Source={DatabasePath}"));
 
 builder.Services.AddScoped<IUsersService, S_Users>();
+builder.Services.AddScoped<IVehiclesService, S_Vehicles>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 // Add other services here
 
@@ -115,7 +116,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+if (!app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CSharpAPI v1"));

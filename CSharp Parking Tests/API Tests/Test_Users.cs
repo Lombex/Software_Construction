@@ -63,7 +63,7 @@ namespace CSharpAPI.Tests.APITests
                 role = M_Users.UserRole.ParkingUser,
                 parking_lot_id = Guid.NewGuid(),
                 created_at = DateTime.UtcNow,
-                birth_year = new DateTime(2030, 12, 31),
+                birth_year = new DateTime(DateTime.Now.Year + 1, 1, 1),
                 active = true
             };
 
@@ -155,7 +155,7 @@ namespace CSharpAPI.Tests.APITests
         }
 
         [Fact]
-        public async Task Test_Update_GoodID_WrongData()
+        public async Task Test_Update_WrongData()
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);

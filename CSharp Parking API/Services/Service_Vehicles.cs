@@ -25,12 +25,10 @@ namespace CSharpAPI.Services
         public async Task<M_Vehicles> GetByID(Guid id)
         {
             var vehicle = await DbContext.Vehicles.FirstOrDefaultAsync(x => x.id == id);
-            if (vehicle == null) throw new Exception("Vehicle has not been found!");
-            return vehicle;
+            return vehicle!;
         }
         public async Task CreateVehicle(M_Vehicles model)
         {
-            if (model == null) throw new ArgumentNullException(nameof(model));
             await DbContext.Vehicles.AddAsync(model);
             await DbContext.SaveChangesAsync();
         }

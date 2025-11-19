@@ -8,7 +8,7 @@ namespace CSharpAPI.Models
         [Key]
         public Guid id { get; set; }
         [ForeignKey(nameof(user_id))]
-        public M_Users M_Users { get; set; }
+        public M_Users? M_Users { get; set; }
         public Guid user_id { get; set; }
         public string? license_plate { get; set; }
         public string? make { get; set; }
