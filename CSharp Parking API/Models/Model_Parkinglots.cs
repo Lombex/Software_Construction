@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace CSharpAPI.Models
 {
@@ -28,7 +29,7 @@ namespace CSharpAPI.Models
     {
         public Guid id { get; set; }
         public Guid parkinglotId { get; set; }
-        public List<Tariff> tariffs { get; set; }
+        // public List<Tariff> tariffs { get; set; } What is this for?
     }
 
     [Owned]

@@ -2,6 +2,7 @@
 using CSharpAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using CSharpAPI.Controllers.Utils;
 
 namespace CSharpAPI.Controllers
 {
@@ -21,6 +22,8 @@ namespace CSharpAPI.Controllers
         public async Task<IActionResult> GetAllUsers([FromQuery] int page)
         {
             var users = await _userService.GetAllUsers();
+
+            if (page < 0) return BadRequest("Page number must be non-negative.");
 
             int totalItem = users.Count;
             int totalPages = (int)Math.Ceiling(totalItem / (double)10);
@@ -65,6 +68,18 @@ namespace CSharpAPI.Controllers
         public async Task<IActionResult> CreateUser([FromBody] M_Users m_users)
         {
             if (m_users == null) return BadRequest("User data is null.");
+
+            if (string.IsNullOrEmpty(m_users.username) || string.IsNullOrEmpty(m_users.password) ||
+                string.IsNullOrEmpty(m_users.name) || string.IsNullOrEmpty(m_users.email) || string.IsNullOrEmpty(m_users.phone))
+            {
+                return BadRequest("One or more required fields are missing.");
+            }
+
+            if (!C_Utils.IsValidEmail(m_users.email)) return BadRequest("Invalid email format.");
+
+            if (m_users.birth_year > DateTime.Now) return BadRequest("Birth year cannot be in the future.");
+            if (!Enum.IsDefined(typeof(M_Users.UserRole), m_users.role)) return BadRequest("Invalid user role.");
+
             await _userService.CreateUser(m_users);
             return CreatedAtAction(nameof(GetUserByID), new { id = m_users.id }, m_users);
         }

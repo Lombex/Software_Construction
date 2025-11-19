@@ -20,5 +20,6 @@ CSharp Parking API/Database/*.db
 CSharp Parking API/appsettings.Development.json
 
 # Ignore test build outputs
-CSharp Parking API.Tests/bin
-CSharp Parking API.Tests/obj
+CSharp Parking Tests/obj
+CSharp Parking Tests/bin
+CSharp Parking Tests/.vs

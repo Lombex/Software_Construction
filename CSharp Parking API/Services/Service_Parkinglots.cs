@@ -12,9 +12,9 @@ namespace CSharpAPI.Services
         Task UpdateParkinglot(Guid id, M_Parkinglots updatedParkinglot); //
         Task DeleteParkinglot(Guid id); //
 
-        Task<List<M_Parkinglots>> SearchNearbyParkinglots((double lat, double lng) centerCoordinates, int radiusM, string? query);
-        Task<List<M_Tariff>>GetRatesParkinglot(Guid parkingLotId);
-        Task<List<M_Tariff>>UpdateRatesParkinglot(Guid parkingLotId, List<M_Tariff> rates);
+        // Task<List<M_Parkinglots>> SearchNearbyParkinglots((double lat, double lng) centerCoordinates, int radiusM, string? query);
+        // Task<List<M_Tariff>>GetRatesParkinglot(Guid parkingLotId);
+        // Task<List<M_Tariff>>UpdateRatesParkinglot(Guid parkingLotId, List<M_Tariff> rates);
     }
 
     public class S_Parkinglots : IParkinglotsService
@@ -78,7 +78,7 @@ namespace CSharpAPI.Services
             return lots;
         }
 
-        public async Task<List<M_Tariff>> GetRatesParkinglot(Guid parkinglotId)
+        /*public async Task<List<M_Tariff>> GetRatesParkinglot(Guid parkinglotId)
         {
            var rates = await DbContext.ParkinglotRates
                 .FirstOrDefaultAsync(r => r.parkinglotId == parkinglotId);
@@ -111,7 +111,7 @@ namespace CSharpAPI.Services
 
             await DbContext.SaveChangesAsync();
             return existingRates.tariffs;
-        }
+        }*/
         /*
         {
             return await _context.Parkinglots.ToListAsync();

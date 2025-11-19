@@ -1,17 +1,15 @@
-using System;
+using CSharpAPI.Tests.Utillities;
+using FluentAssertions;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Xunit;
 
-namespace CSharp_Parking_API.Tests
+namespace CSharpAPI.Tests.APITests
 {
-    public class PaymentIntegrationTests : IClassFixture<TestingWebAppFactory>
+    public class Test_Payments : IClassFixture<CSharpAPITests>
     {
-        private readonly TestingWebAppFactory _factory;
-        public PaymentIntegrationTests(TestingWebAppFactory factory)
+        private readonly CSharpAPITests _factory;
+        public Test_Payments(CSharpAPITests factory)
         {
             _factory = factory;
         }
@@ -30,11 +28,9 @@ namespace CSharp_Parking_API.Tests
         public async Task GetAllPayments_WithUserToken_Returns403()
         {
             var client = _factory.CreateClient();
-            
+
             // Login as regular user
-            var login = await client.PostAsJsonAsync("/api/auth/login", new { Username = "user", Password = "userpass" });
-            var token = (await login.Content.ReadFromJsonAsync<TokenResponse>())!.token;
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
 
             // Try to access all payments (admin only endpoint)
             var response = await client.GetAsync("/api/payments/all?page=0");
@@ -46,11 +42,9 @@ namespace CSharp_Parking_API.Tests
         public async Task GetAllPayments_WithLotAdminToken_Returns200()
         {
             var client = _factory.CreateClient();
-            
+
             // Login as lot admin
-            var login = await client.PostAsJsonAsync("/api/auth/login", new { Username = "lotadmin", Password = "lotpass" });
-            var token = (await login.Content.ReadFromJsonAsync<TokenResponse>())!.token;
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "lotadmin", "lotpass");
 
             // Access all payments
             var response = await client.GetAsync("/api/payments/all?page=0");
@@ -62,11 +56,9 @@ namespace CSharp_Parking_API.Tests
         public async Task GetAllPayments_WithSuperAdminToken_Returns200()
         {
             var client = _factory.CreateClient();
-            
+
             // Login as super admin
-            var login = await client.PostAsJsonAsync("/api/auth/login", new { Username = "superadmin", Password = "superpass" });
-            var token = (await login.Content.ReadFromJsonAsync<TokenResponse>())!.token;
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
             // Access all payments
             var response = await client.GetAsync("/api/payments/all?page=0");
@@ -78,11 +70,9 @@ namespace CSharp_Parking_API.Tests
         public async Task CreatePayment_WithUserToken_Returns200()
         {
             var client = _factory.CreateClient();
-            
+
             // Login as regular user
-            var login = await client.PostAsJsonAsync("/api/auth/login", new { Username = "user", Password = "userpass" });
-            var token = (await login.Content.ReadFromJsonAsync<TokenResponse>())!.token;
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
 
             // Create payment
             var payment = new
@@ -109,11 +99,9 @@ namespace CSharp_Parking_API.Tests
         public async Task UpdatePayment_WithUserToken_Returns403()
         {
             var client = _factory.CreateClient();
-            
+
             // Login as regular user
-            var login = await client.PostAsJsonAsync("/api/auth/login", new { Username = "user", Password = "userpass" });
-            var token = (await login.Content.ReadFromJsonAsync<TokenResponse>())!.token;
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
 
             // Try to update payment
             var paymentId = Guid.NewGuid();
@@ -127,11 +115,9 @@ namespace CSharp_Parking_API.Tests
         public async Task UpdatePayment_WithLotAdminToken_Returns200()
         {
             var client = _factory.CreateClient();
-            
+
             // Login as lot admin
-            var login = await client.PostAsJsonAsync("/api/auth/login", new { Username = "lotadmin", Password = "lotpass" });
-            var token = (await login.Content.ReadFromJsonAsync<TokenResponse>())!.token;
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "lotadmin", "lotpass");
 
             // First create a payment
             var paymentId = Guid.NewGuid();
@@ -161,11 +147,9 @@ namespace CSharp_Parking_API.Tests
         public async Task DeletePayment_WithUserToken_Returns403()
         {
             var client = _factory.CreateClient();
-            
+
             // Login as regular user
-            var login = await client.PostAsJsonAsync("/api/auth/login", new { Username = "user", Password = "userpass" });
-            var token = (await login.Content.ReadFromJsonAsync<TokenResponse>())!.token;
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
 
             // Try to delete payment
             var paymentId = Guid.NewGuid();
@@ -178,11 +162,9 @@ namespace CSharp_Parking_API.Tests
         public async Task DeletePayment_WithLotAdminToken_Returns403()
         {
             var client = _factory.CreateClient();
-            
+
             // Login as lot admin
-            var login = await client.PostAsJsonAsync("/api/auth/login", new { Username = "lotadmin", Password = "lotpass" });
-            var token = (await login.Content.ReadFromJsonAsync<TokenResponse>())!.token;
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "lotadmin", "lotpass");
 
             // Try to delete payment
             var paymentId = Guid.NewGuid();
@@ -195,11 +177,9 @@ namespace CSharp_Parking_API.Tests
         public async Task DeletePayment_WithSuperAdminToken_Returns200()
         {
             var client = _factory.CreateClient();
-            
+
             // Login as super admin
-            var login = await client.PostAsJsonAsync("/api/auth/login", new { Username = "superadmin", Password = "superpass" });
-            var token = (await login.Content.ReadFromJsonAsync<TokenResponse>())!.token;
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
             // Create a payment first
             var paymentId = Guid.NewGuid();
@@ -222,12 +202,6 @@ namespace CSharp_Parking_API.Tests
             // Delete payment
             var response = await client.DeleteAsync($"/api/payments/delete/{paymentId}");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }
-
-        private class TokenResponse
-        {
-            public string token { get; set; } = string.Empty;
-            public DateTime expiresAt { get; set; }
         }
     }
 }

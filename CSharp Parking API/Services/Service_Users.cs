@@ -24,12 +24,10 @@ namespace CSharpAPI.Services
         public async Task<M_Users> getByID(Guid id)
         {
             var user = await DbContext.Users.FirstOrDefaultAsync(x => x.id == id);
-            if (user == null) throw new Exception("User has not been found!");
-            return user;
+            return user!;
         }
         public async Task CreateUser(M_Users model)
         {
-            if (model == null) throw new ArgumentNullException(nameof(model));
             await DbContext.Users.AddAsync(model);
             await DbContext.SaveChangesAsync();
         }

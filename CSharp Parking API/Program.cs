@@ -22,14 +22,11 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.PropertyNamingPolicy = null;
 });
 
-var contentRoot = builder.Environment.ContentRootPath;
-var dbFolder = Path.Combine(contentRoot, "Database");
-Directory.CreateDirectory(dbFolder);
-var dbPath = Path.Combine(dbFolder, "parking.db");
-Console.WriteLine($"SQLite DB path: {dbPath}");
+string RootFolder = Directory.GetCurrentDirectory();
+string MainFolder = Path.GetFullPath(Path.Combine(RootFolder, "..", "..", ".."));
+string DatabasePath = Path.Combine(MainFolder, "Database", "Parking.db");
 
-builder.Services.AddDbContext<SQLite_Database>(options =>
-    options.UseSqlite($"Data Source={dbPath}"));
+builder.Services.AddDbContext<SQLite_Database>(options => options.UseSqlite($"Data Source={DatabasePath}"));
 
 builder.Services.AddScoped<IUsersService, S_Users>();
 builder.Services.AddScoped<ITokenService, TokenService>();
@@ -134,82 +131,79 @@ app.MapControllers();
 
 app.Urls.Add("http://localhost:5001");
 
-using (var scope = app.Services.CreateScope())
+if (!app.Environment.IsEnvironment("Testing"))
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<SQLite_Database>();
-    // authentication
-    // logger 
-    try
+    using (var scope = app.Services.CreateScope())
     {
-        var isSqliteInMemory = dbContext.Database.ProviderName?.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) == true
-            && (dbContext.Database.GetConnectionString()?.Contains(":memory:") == true);
-        if (isSqliteInMemory)
+        var dbContext = scope.ServiceProvider.GetRequiredService<SQLite_Database>();
+        // authentication
+        // logger 
+        try
         {
-            await dbContext.Database.EnsureCreatedAsync();
+            var isSqliteInMemory = dbContext.Database.ProviderName?.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) == true && (dbContext.Database.GetConnectionString()?.Contains(":memory:") == true);
+            if (isSqliteInMemory) await dbContext.Database.EnsureCreatedAsync();
+            else await dbContext.Database.MigrateAsync();
+            
+            // Seed minimal data for development/test with all three roles
+            if (!dbContext.Users.Any())
+            {
+                var parkingLotId = Guid.NewGuid(); // Sample parking lot for admin
+
+                // SuperAdmin - full system access
+                dbContext.Users.Add(new CSharpAPI.Models.M_Users
+                {
+                    id = Guid.NewGuid(),
+                    username = "superadmin",
+                    password = "superpass",
+                    name = "Super Administrator",
+                    email = "super@example.com",
+                    phone = "",
+                    role = CSharpAPI.Models.M_Users.UserRole.SuperAdmin,
+                    parking_lot_id = null, // SuperAdmin not tied to specific lot
+                    created_at = DateTime.UtcNow,
+                    birth_year = new DateTime(1985, 1, 1),
+                    active = true
+                });
+
+                // ParkingLotAdmin - manages specific parking lot
+                dbContext.Users.Add(new CSharpAPI.Models.M_Users
+                {
+                    id = Guid.NewGuid(),
+                    username = "lotadmin",
+                    password = "lotpass",
+                    name = "Lot Administrator",
+                    email = "lotadmin@example.com",
+                    phone = "",
+                    role = CSharpAPI.Models.M_Users.UserRole.ParkingLotAdmin,
+                    parking_lot_id = parkingLotId, // Tied to specific parking lot
+                    created_at = DateTime.UtcNow,
+                    birth_year = new DateTime(1990, 1, 1),
+                    active = true
+                });
+
+                // Regular ParkingUser
+                dbContext.Users.Add(new CSharpAPI.Models.M_Users
+                {
+                    id = Guid.NewGuid(),
+                    username = "user",
+                    password = "userpass",
+                    name = "Regular User",
+                    email = "user@example.com",
+                    phone = "",
+                    role = CSharpAPI.Models.M_Users.UserRole.ParkingUser,
+                    parking_lot_id = null, // Regular users not tied to lots
+                    created_at = DateTime.UtcNow,
+                    birth_year = new DateTime(1995, 1, 1),
+                    active = true
+                });
+
+                await dbContext.SaveChangesAsync();
+            }
         }
-        else
+        catch (Exception ex)
         {
-            await dbContext.Database.MigrateAsync();
+            Console.WriteLine($"An error occurred while migrating the database: {ex.Message}");
         }
-        // Seed minimal data for development/test with all three roles
-        if (!dbContext.Users.Any())
-        {
-            var parkingLotId = Guid.NewGuid(); // Sample parking lot for admin
-            
-            // SuperAdmin - full system access
-            dbContext.Users.Add(new CSharpAPI.Models.M_Users
-            {
-                id = Guid.NewGuid(),
-                username = "superadmin",
-                password = "superpass",
-                name = "Super Administrator",
-                email = "super@example.com",
-                phone = "",
-                role = CSharpAPI.Models.M_Users.UserRole.SuperAdmin,
-                parking_lot_id = null, // SuperAdmin not tied to specific lot
-                created_at = DateTime.UtcNow,
-                birth_year = new DateTime(1985, 1, 1),
-                active = true
-            });
-            
-            // ParkingLotAdmin - manages specific parking lot
-            dbContext.Users.Add(new CSharpAPI.Models.M_Users
-            {
-                id = Guid.NewGuid(),
-                username = "lotadmin",
-                password = "lotpass",
-                name = "Lot Administrator",
-                email = "lotadmin@example.com",
-                phone = "",
-                role = CSharpAPI.Models.M_Users.UserRole.ParkingLotAdmin,
-                parking_lot_id = parkingLotId, // Tied to specific parking lot
-                created_at = DateTime.UtcNow,
-                birth_year = new DateTime(1990, 1, 1),
-                active = true
-            });
-            
-            // Regular ParkingUser
-            dbContext.Users.Add(new CSharpAPI.Models.M_Users
-            {
-                id = Guid.NewGuid(),
-                username = "user",
-                password = "userpass",
-                name = "Regular User",
-                email = "user@example.com",
-                phone = "",
-                role = CSharpAPI.Models.M_Users.UserRole.ParkingUser,
-                parking_lot_id = null, // Regular users not tied to lots
-                created_at = DateTime.UtcNow,
-                birth_year = new DateTime(1995, 1, 1),
-                active = true
-            });
-            
-            await dbContext.SaveChangesAsync();
-        }
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"An error occurred while migrating the database: {ex.Message}");
     }
 }
 

@@ -18,10 +18,10 @@ namespace CSharpAPI.Database
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var dbFolder = Path.Combine(Directory.GetCurrentDirectory(), "Database");
-                Directory.CreateDirectory(dbFolder);
-                var dbPath = Path.Combine(dbFolder, "parking.db");
-                optionsBuilder.UseSqlite($"Data Source={dbPath}");
+                string RootFolder = Directory.GetCurrentDirectory();
+                string MainFolder = Path.GetFullPath(Path.Combine(RootFolder, "..", "..", ".."));
+                string DatabasePath = Path.Combine(MainFolder, "Database", "Parking.db");
+                optionsBuilder.UseSqlite($"Data Source={DatabasePath}");
             }
         }
 

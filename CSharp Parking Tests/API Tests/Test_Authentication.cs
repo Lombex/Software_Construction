@@ -1,17 +1,15 @@
-using System;
+using CSharpAPI.Tests.Utillities;
+using FluentAssertions;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Xunit;
 
-namespace CSharp_Parking_API.Tests
+namespace CSharpAPI.Tests.APITests
 {
-    public class AuthIntegrationTests : IClassFixture<TestingWebAppFactory>
+    public class Test_Authentication : IClassFixture<CSharpAPITests>
     {
-        private readonly TestingWebAppFactory _factory;
-        public AuthIntegrationTests(TestingWebAppFactory factory)
+        private readonly CSharpAPITests _factory;
+        public Test_Authentication(CSharpAPITests factory)
         {
             _factory = factory;
         }
@@ -38,9 +36,7 @@ namespace CSharp_Parking_API.Tests
         public async Task Get_Admin_Only_With_User_Token_Should_Return_403()
         {
             var client = _factory.CreateClient();
-            var login = await client.PostAsJsonAsync("/api/auth/login", new { Username = "user", Password = "userpass" });
-            var token = (await login.Content.ReadFromJsonAsync<TokenResponse>())!.token;
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
 
             var response = await client.GetAsync("/api/users/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
@@ -50,18 +46,10 @@ namespace CSharp_Parking_API.Tests
         public async Task Get_Admin_Only_With_SuperAdmin_Token_Should_Return_200()
         {
             var client = _factory.CreateClient();
-            var login = await client.PostAsJsonAsync("/api/auth/login", new { Username = "superadmin", Password = "superpass" });
-            var token = (await login.Content.ReadFromJsonAsync<TokenResponse>())!.token;
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
             var response = await client.GetAsync("/api/users/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }
-
-        private class TokenResponse
-        {
-            public string token { get; set; } = string.Empty;
-            public DateTime expiresAt { get; set; }
         }
     }
 }
