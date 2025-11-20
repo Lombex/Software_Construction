@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CSharp Parking API\CSharp Parking API.csproj" />
+    <ProjectReference Include="..\CSharp_Parking_API\CSharp_Parking_API.csproj" />
   </ItemGroup>
 
 </Project>
