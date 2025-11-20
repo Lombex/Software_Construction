@@ -1,0 +1,144 @@
+name: CI/CD Workflow for CSharpAPI
+
+on:
+  push:
+    branches: [ "Development_CI/CD2.5", "master", "CI-CD" ]
+  pull_request:
+    branches: [ "Development_CI/CD2.5", "master" ]
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  PROJECT_PATH: './CSharpAPI/CSharpAPI.csproj'
+  TEST_PROJECT_PATH: './Integration.Tests/Integration.Tests.csproj'
+  UNIT_TEST_PROJECT_PATH: './Unit.Tests/Unit.Tests.csproj'
+  MIN_BRANCH_COVERAGE: 50
+
+jobs:
+  # Job 1: Build
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: |
+          dotnet restore ${{ env.PROJECT_PATH }}
+          dotnet restore ${{ env.TEST_PROJECT_PATH }}
+          dotnet restore ${{ env.UNIT_TEST_PROJECT_PATH }}
+
+      - name: Build
+        run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+
+  # Job 2: Test
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: |
+          dotnet restore ${{ env.PROJECT_PATH }}
+          dotnet restore ${{ env.TEST_PROJECT_PATH }}
+          dotnet restore ${{ env.UNIT_TEST_PROJECT_PATH }}
+
+      - name: Run Integration Tests with coverage
+        run: |
+          dotnet test ${{ env.TEST_PROJECT_PATH }} \
+            --configuration Release \
+            --no-restore \
+            --verbosity normal \
+            --collect:"XPlat Code Coverage" \
+            /p:CollectCoverage=true \
+            /p:CoverletOutput=./TestResults/Coverage/ \
+            /p:CoverletOutputFormat=cobertura
+
+      - name: Run Unit Tests with coverage
+        run: |
+          dotnet test ${{ env.UNIT_TEST_PROJECT_PATH }} \
+            --configuration Release \
+            --no-restore \
+            --verbosity normal \
+            --collect:"XPlat Code Coverage" \
+            /p:CollectCoverage=true \
+            /p:CoverletOutput=./TestResults/Coverage/ \
+            /p:CoverletOutputFormat=cobertura
+
+      - name: Generate coverage report
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+          reportgenerator \
+          "-reports:./Integration.Tests/TestResults/Coverage/coverage.cobertura.xml;./Unit.Tests/TestResults/Coverage/coverage.cobertura.xml" \
+          "-targetdir:coveragereport" \
+          "-reporttypes:TextSummary;Html;Cobertura"
+
+      - name: Add coverage report to job summary
+        run: |
+          echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
+          cat coveragereport/Summary.txt >> $GITHUB_STEP_SUMMARY
+
+      - name: Check branch coverage threshold
+        run: |
+          BRANCH_COVERAGE=$(grep -oP '(?<=Branch coverage: )[0-9.]+' coveragereport/Summary.txt || echo "0")
+          echo "Branch coverage: $BRANCH_COVERAGE%"
+          
+          if (( $(echo "$BRANCH_COVERAGE < ${{ env.MIN_BRANCH_COVERAGE }}" | bc -l) )); then
+            echo "❌ Branch coverage ($BRANCH_COVERAGE%) is below minimum threshold of ${{ env.MIN_BRANCH_COVERAGE }}%"
+            exit 1
+          else
+            echo "✅ Branch coverage ($BRANCH_COVERAGE%) meets minimum threshold of ${{ env.MIN_BRANCH_COVERAGE }}%"
+          fi
+
+      - name: Store coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coveragereport
+        if: always()
+
+  # Job 3: Deployment/Merge to Master
+  deployment:
+    needs: test
+    if: github.ref == 'refs/heads/Development_CI/CD2.5'
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: Development_CI/CD2.5
+
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@github.com"
+
+      - name: Merge to master
+        run: |
+          git checkout master
+          git merge --no-ff Development_CI/CD2.5 -m "Merge Development_CI/CD2.5 into master"
+          git push origin master
+
+      - name: Send webhook notification
+        if: success()
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{"content": "Deployment successful! Branch Development_CI/CD2.5 has been merged into master."}' \
+          $WEBHOOK_URL
