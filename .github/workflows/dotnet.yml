@@ -9,7 +9,7 @@ on:
 env:
   DOTNET_VERSION: '8.0.x'
   # PROJECT_PATH: '../CSharp Parking API/CSharp Parking API.csproj./CSharpAPI/CSharpAPI.csproj'
-  PROJECT_PATH: "../CSharp_Parking_Tests/CSharp_ParkingTests.csproj"
+  PROJECT_PATH: "../CSharp_Parking_Tests/CSharp_Parking_Tests.csproj"
   # UNIT_TEST_PROJECT_PATH: './Unit.Tests/Unit.Tests.csproj'
   MIN_BRANCH_COVERAGE: 50
  
