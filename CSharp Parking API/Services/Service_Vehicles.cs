@@ -38,7 +38,7 @@ namespace CSharpAPI.Services
             _vehicle.license_plate = updatedVehicle.license_plate;
             _vehicle.model = updatedVehicle.model;
             _vehicle.color = updatedVehicle.color;
-            // _vehicle.owner_id = updatedVehicle.owner_id; // Assuming owner_id is not needed anymore??
+            _vehicle.user_id = updatedVehicle.user_id;
             DbContext.Vehicles.Update(_vehicle);
             await DbContext.SaveChangesAsync();
         }

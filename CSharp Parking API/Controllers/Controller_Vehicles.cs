@@ -56,7 +56,7 @@ namespace CSharpAPI.Controllers
         public async Task<IActionResult> GetVehicleByID(Guid Id)
         {
             var vehicle = await _vehicleService.GetByID(Id);
-            if (vehicle == null) return NotFound($"User with id {Id} not found."); 
+            if (vehicle == null) return NotFound($"Vehicle with id {Id} not found."); 
             return Ok(vehicle);
         }
 
@@ -90,10 +90,10 @@ namespace CSharpAPI.Controllers
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateVehicle(Guid id, [FromBody] M_Vehicles m_vehicles)
         {
-            if (m_vehicles == null) return BadRequest("Invalid user data.");
+            if (m_vehicles == null) return BadRequest("Invalid vehicle data.");
 
             var existingVehicle = await _vehicleService.GetByID(id);
-            if (existingVehicle == null) return NotFound($"User with id {id} not found.");
+            if (existingVehicle == null) return NotFound($"Vehicle with id {id} not found.");
 
             await _vehicleService.UpdateVehicle(id, m_vehicles);
             return NoContent();
@@ -103,7 +103,7 @@ namespace CSharpAPI.Controllers
         public async Task<IActionResult> DeleteVehicle(Guid id)
         {
             var existingVehicle = await _vehicleService.GetByID(id);
-            if (existingVehicle == null) return NotFound($"User with id {id} not found.");
+            if (existingVehicle == null) return NotFound($"Vehicle with id {id} not found.");
             await _vehicleService.DeleteVehicle(id);
             return NoContent();
         }

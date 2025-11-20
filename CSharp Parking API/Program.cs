@@ -22,9 +22,18 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.PropertyNamingPolicy = null;
 });
 
-string RootFolder = Directory.GetCurrentDirectory();
-string MainFolder = Path.GetFullPath(Path.Combine(RootFolder, "..", "..", ".."));
-string DatabasePath = Path.Combine(MainFolder, "Database", "Parking.db");
+// Get the project root directory (where the .csproj file is located)
+string projectRoot = AppContext.BaseDirectory;
+// When running, BaseDirectory is bin/Debug/net8.0, so go up 3 levels to project root
+string projectFolder = Path.GetFullPath(Path.Combine(projectRoot, "..", "..", ".."));
+string DatabasePath = Path.Combine(projectFolder, "Database", "parking.db");
+
+// Ensure the Database directory exists
+var dbDirectory = Path.GetDirectoryName(DatabasePath);
+if (!string.IsNullOrEmpty(dbDirectory) && !Directory.Exists(dbDirectory))
+{
+    Directory.CreateDirectory(dbDirectory);
+}
 
 builder.Services.AddDbContext<SQLite_Database>(options => options.UseSqlite($"Data Source={DatabasePath}"));
 

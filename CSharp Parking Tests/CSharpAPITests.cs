@@ -1,5 +1,6 @@
 ﻿using CSharpAPI.Database;
 using CSharpAPI.Models;
+using CSharpAPI.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
@@ -25,6 +26,12 @@ namespace CSharpAPI.Tests
                 Connection.Open();
 
                 services.AddDbContext<SQLite_Database>(options => { options.UseSqlite(Connection); });
+
+                // Register services needed for tests
+                services.AddScoped<IUsersService, S_Users>();
+                services.AddScoped<IVehiclesService, S_Vehicles>();
+                services.AddScoped<IPaymentsService, S_Payments>();
+                services.AddScoped<ITokenService, TokenService>();
 
                 var sp = services.BuildServiceProvider();
                 using var scope = sp.CreateScope();

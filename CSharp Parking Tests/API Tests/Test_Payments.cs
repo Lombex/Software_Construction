@@ -1,4 +1,5 @@
 using CSharpAPI.Tests.Utillities;
+using CSharpAPI.Models;
 using FluentAssertions;
 using System.Net;
 using System.Net.Http.Headers;
@@ -38,7 +39,7 @@ namespace CSharpAPI.Tests.APITests
         }
 
         // Test: ParkingLotAdmin can view all payments
-        /*[Fact]
+        [Fact]
         public async Task GetAllPayments_WithLotAdminToken_Returns200()
         {
             var client = _factory.CreateClient();
@@ -49,10 +50,10 @@ namespace CSharpAPI.Tests.APITests
             // Access all payments
             var response = await client.GetAsync("/api/payments/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }*/
+        }
 
         // Test: SuperAdmin can view all payments
-        /*[Fact]
+        [Fact]
         public async Task GetAllPayments_WithSuperAdminToken_Returns200()
         {
             var client = _factory.CreateClient();
@@ -63,10 +64,10 @@ namespace CSharpAPI.Tests.APITests
             // Access all payments
             var response = await client.GetAsync("/api/payments/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }*/
+        }
 
         // Test: Regular user can create payment for their reservation
-        /*[Fact]
+        [Fact]
         public async Task CreatePayment_WithUserToken_Returns200()
         {
             var client = _factory.CreateClient();
@@ -74,8 +75,8 @@ namespace CSharpAPI.Tests.APITests
             // Login as regular user
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
 
-            // Create payment
-            var payment = new
+            // Create payment with all required fields
+            var payment = new M_Payments
             {
                 id = Guid.NewGuid(),
                 reservation_id = Guid.NewGuid(),
@@ -92,7 +93,7 @@ namespace CSharpAPI.Tests.APITests
 
             var response = await client.PostAsJsonAsync("/api/payments/create", payment);
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }*/
+        }
 
         // Test: Regular user cannot update payments (admin only)
         [Fact]
@@ -111,7 +112,7 @@ namespace CSharpAPI.Tests.APITests
         }
 
         // Test: ParkingLotAdmin can update payments
-        /*[Fact]
+        [Fact]
         public async Task UpdatePayment_WithLotAdminToken_Returns200()
         {
             var client = _factory.CreateClient();
@@ -121,7 +122,7 @@ namespace CSharpAPI.Tests.APITests
 
             // First create a payment
             var paymentId = Guid.NewGuid();
-            var createPayment = new
+            var createPayment = new M_Payments
             {
                 id = paymentId,
                 reservation_id = Guid.NewGuid(),
@@ -135,12 +136,27 @@ namespace CSharpAPI.Tests.APITests
                 session_id = Guid.NewGuid(),
                 parking_lot_id = Guid.NewGuid()
             };
-            await client.PostAsJsonAsync("/api/payments/create", createPayment);
+            var createResponse = await client.PostAsJsonAsync("/api/payments/create", createPayment);
+            createResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            // Update payment
-            var response = await client.PutAsJsonAsync($"/api/payments/update/{paymentId}", createPayment);
+            // Update payment with modified data
+            var updatePayment = new M_Payments
+            {
+                id = paymentId,
+                reservation_id = createPayment.reservation_id,
+                paid_at = createPayment.paid_at,
+                transactions = "TRX456-UPDATED",
+                amount = 75.0f,
+                initiator = "lotadmin",
+                created_at = createPayment.created_at,
+                completed = DateTime.UtcNow.AddMinutes(2),
+                hash = createPayment.hash,
+                session_id = createPayment.session_id,
+                parking_lot_id = createPayment.parking_lot_id
+            };
+            var response = await client.PutAsJsonAsync($"/api/payments/update/{paymentId}", updatePayment);
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }*/
+        }
 
         // Test: Regular user cannot delete payments (super admin only)
         [Fact]
@@ -173,7 +189,7 @@ namespace CSharpAPI.Tests.APITests
         }
 
         // Test: SuperAdmin can delete payments
-        /*[Fact]
+        [Fact]
         public async Task DeletePayment_WithSuperAdminToken_Returns200()
         {
             var client = _factory.CreateClient();
@@ -183,7 +199,7 @@ namespace CSharpAPI.Tests.APITests
 
             // Create a payment first
             var paymentId = Guid.NewGuid();
-            var payment = new
+            var payment = new M_Payments
             {
                 id = paymentId,
                 reservation_id = Guid.NewGuid(),
@@ -197,12 +213,13 @@ namespace CSharpAPI.Tests.APITests
                 session_id = Guid.NewGuid(),
                 parking_lot_id = Guid.NewGuid()
             };
-            await client.PostAsJsonAsync("/api/payments/create", payment);
+            var createResponse = await client.PostAsJsonAsync("/api/payments/create", payment);
+            createResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
             // Delete payment
             var response = await client.DeleteAsync($"/api/payments/delete/{paymentId}");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }*/
+        }
     }
 }
 

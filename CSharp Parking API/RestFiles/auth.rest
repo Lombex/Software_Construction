@@ -1,0 +1,55 @@
+### Login as Admin
+POST http://localhost:5001/api/auth/login
+Content-Type: application/json
+
+{
+  "Username": "admin",
+  "Password": "adminpass"
+}
+
+###
+
+### Login as User
+POST http://localhost:5001/api/auth/login
+Content-Type: application/json
+
+{
+  "Username": "user",
+  "Password": "userpass"
+}
+
+###
+
+### Login with Invalid Credentials
+POST http://localhost:5001/api/auth/login
+Content-Type: application/json
+
+{
+  "Username": "invalid",
+  "Password": "wrong"
+}
+
+###
+
+### Get Current User Info (requires token from login)
+# First login as admin or user, copy the token, then use it below
+GET http://localhost:5001/api/auth/me
+Authorization: Bearer YOUR_TOKEN_HERE
+
+###
+
+### Test Admin-Only Endpoint - Get All Users (requires admin token)
+GET http://localhost:5001/api/users/all?page=0
+Authorization: Bearer YOUR_ADMIN_TOKEN_HERE
+
+###
+
+### Test Admin-Only Endpoint with User Token (should return 403)
+GET http://localhost:5001/api/users/all?page=0
+Authorization: Bearer YOUR_USER_TOKEN_HERE
+
+###
+
+### Test Protected Endpoint Without Token (should return 401)
+GET http://localhost:5001/api/users/all?page=0
+

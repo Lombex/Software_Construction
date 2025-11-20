@@ -51,6 +51,50 @@ namespace CSharpAPI.Tests.APITests
             var response = await client.GetAsync("/api/users/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
+
+        [Fact]
+        public async Task Login_With_Invalid_Credentials_Should_Return_401()
+        {
+            var client = _factory.CreateClient();
+            var response = await client.PostAsJsonAsync("/api/auth/login", new { Username = "invalid", Password = "invalid" });
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task Get_Me_Endpoint_With_Valid_Token_Should_Return_User_Info()
+        {
+            var client = _factory.CreateClient();
+            var login = await client.PostAsJsonAsync("/api/auth/login", new { Username = "admin", Password = "adminpass" });
+            var token = (await login.Content.ReadFromJsonAsync<TokenResponse>())!.token;
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await client.GetAsync("/api/auth/me");
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var userInfo = await response.Content.ReadFromJsonAsync<UserInfoResponse>();
+            userInfo!.username.Should().Be("admin");
+            userInfo.role.Should().Be("Admin");
+        }
+
+        [Fact]
+        public async Task Get_Me_Endpoint_Without_Token_Should_Return_401()
+        {
+            var client = _factory.CreateClient();
+            var response = await client.GetAsync("/api/auth/me");
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        private class TokenResponse
+        {
+            public string token { get; set; } = string.Empty;
+            public DateTime expiresAt { get; set; }
+        }
+
+        private class UserInfoResponse
+        {
+            public string? id { get; set; }
+            public string? username { get; set; }
+            public string? role { get; set; }
+        }
     }
 }
 
