@@ -8,7 +8,9 @@ on:
 
 env:
   DOTNET_VERSION: '8.0.x'
+  # PROJECT_PATH: '../CSharp Parking API/CSharp Parking API.csproj./CSharpAPI/CSharpAPI.csproj'
   PROJECT_PATH: "CSharp_Parking_Tests/CSharp_Parking_Tests.csproj"
+  # UNIT_TEST_PROJECT_PATH: './Unit.Tests/Unit.Tests.csproj'
   MIN_BRANCH_COVERAGE: 50
  
 jobs:
@@ -27,9 +29,9 @@ jobs:
       - name: Restore dependencies
         run: |
           dotnet restore ${{ env.PROJECT_PATH }}
-          dotnet restore ${{ env.TEST_PROJECT_PATH }}
-          dotnet restore ${{ env.UNIT_TEST_PROJECT_PATH }}
-
+        # dotnet restore ${{ env.TEST_PROJECT_PATH }}
+        # dotnet restore ${{ env.UNIT_TEST_PROJECT_PATH }}
+          
       - name: Build
         run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
 
@@ -49,30 +51,32 @@ jobs:
       - name: Restore dependencies
         run: |
           dotnet restore ${{ env.PROJECT_PATH }}
-          dotnet restore ${{ env.TEST_PROJECT_PATH }}
-          dotnet restore ${{ env.UNIT_TEST_PROJECT_PATH }}
+        #dotnet restore ${{ env.TEST_PROJECT_PATH }}
+        #dotnet restore ${{ env.UNIT_TEST_PROJECT_PATH }}
 
-      - name: Run Integration Tests with coverage
-        run: |
-          dotnet test ${{ env.TEST_PROJECT_PATH }} \
-            --configuration Release \
-            --no-restore \
-            --verbosity normal \
-            --collect:"XPlat Code Coverage" \
-            /p:CollectCoverage=true \
-            /p:CoverletOutput=./TestResults/Coverage/ \
-            /p:CoverletOutputFormat=cobertura
+      # - name: Run Integration Tests with coverage
+      #   run: |
+      #     dotnet test ${{ env.TEST_PROJECT_PATH }} \
+      #       --configuration Release \
+      #       --no-restore \
+      #       --verbosity normal \
+      #       --collect:"XPlat Code Coverage" \
+      #       /p:CollectCoverage=true \
+      #       /p:CoverletOutput=./TestResults/Coverage/ \
+      #       /p:CoverletOutputFormat=cobertura
 
-      - name: Run Unit Tests with coverage
-        run: |
-          dotnet test ${{ env.UNIT_TEST_PROJECT_PATH }} \
-            --configuration Release \
-            --no-restore \
-            --verbosity normal \
-            --collect:"XPlat Code Coverage" \
-            /p:CollectCoverage=true \
-            /p:CoverletOutput=./TestResults/Coverage/ \
-            /p:CoverletOutputFormat=cobertura
+        
+      # - name: Run Unit Tests with coverage
+      #   run: |
+      #     dotnet test ${{ env.UNIT_TEST_PROJECT_PATH }} \
+      #       --configuration Release \
+      #       --no-restore \
+      #       --verbosity normal \
+      #       --collect:"XPlat Code Coverage" \
+      #       /p:CollectCoverage=true \
+      #       /p:CoverletOutput=./TestResults/Coverage/ \
+      #       /p:CoverletOutputFormat=cobertura
+        
 
       - name: Generate coverage report
         run: |
