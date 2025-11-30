@@ -4,6 +4,8 @@ using CSharpAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using CSharpAPI.Controllers.Utils;
+using Microsoft.AspNetCore.Identity;
 
 namespace CSharpAPI.Controllers
 {
@@ -38,22 +40,18 @@ namespace CSharpAPI.Controllers
             if (string.IsNullOrWhiteSpace(request?.Username) || string.IsNullOrWhiteSpace(request?.Password))
                 return BadRequest("Username and password are required.");
 
-            // Find active user with matching credentials (NOTE: passwords should be hashed in production)
-            var user = await _db.Users.FirstOrDefaultAsync(u => 
-                u.username == request.Username && 
-                u.password == request.Password && 
-                u.active);
-            
-            if (user == null)
-                return Unauthorized();
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.username == request.Username && u.active);
+
+            if (user == null || string.IsNullOrEmpty(user.password)) return Unauthorized();
+
+            var verifyPassword = C_Utils.VerifyPassword(request.Password, user.password);
+
+            if (!verifyPassword) return Unauthorized();
 
             // Generate JWT token with user id, username, and role claims
-            var token = _tokenService.GenerateToken(
-                user.id.ToString(), 
-                user.username ?? string.Empty, 
-                user.role.ToString(), 
-                out var expiresAt);
-            
+            var token = _tokenService.GenerateToken(user.id.ToString(), user.username ??
+                string.Empty, user.role.ToString(), out var expiresAt);
+
             return Ok(new { token, expiresAt });
         }
 

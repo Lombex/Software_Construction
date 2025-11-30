@@ -23,6 +23,22 @@ namespace CSharpAPI.Controllers.Utils
             return phoneNumber.All(char.IsDigit) && phoneNumber.Length >= 7 && phoneNumber.Length <= 15;
         }
 
+        // Hash password using SHA256
+        public static string HashPassword(string password)
+        {
+            using (var sha256 = System.Security.Cryptography.SHA256.Create())
+            {
+                var bytes = Encoding.UTF8.GetBytes(password);
+                var hash = sha256.ComputeHash(bytes);
+                return Convert.ToBase64String(hash);
+            }
+        }
+
+        public static bool VerifyPassword(string password, string hashedPassword)
+        {
+            var hashOfInput = HashPassword(password);
+            return StringComparer.Ordinal.Compare(hashOfInput, hashedPassword) == 0;
+        }
 
     }
 }

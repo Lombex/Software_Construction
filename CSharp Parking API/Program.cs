@@ -10,30 +10,26 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using CSharpAPI.Controllers.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string projectRoot = AppContext.BaseDirectory;
+string projectFolder = Path.GetFullPath(Path.Combine(projectRoot, "..", "..", ".."));
+string DatabasePath = Path.Combine(projectFolder, "Database", "parking.db");
+
+// Ensure the Database directory exists
+var dbDirectory = Path.GetDirectoryName(DatabasePath);
+if (!string.IsNullOrEmpty(dbDirectory) && !Directory.Exists(dbDirectory)) Directory.CreateDirectory(dbDirectory);
+
 // Load configuration (appsettings.json)
-builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+builder.Configuration.AddJsonFile(Path.Combine(projectFolder, "appsettings.json"), optional: true, reloadOnChange: true);
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     options.JsonSerializerOptions.PropertyNamingPolicy = null;
 });
-
-// Get the project root directory (where the .csproj file is located)
-string projectRoot = AppContext.BaseDirectory;
-// When running, BaseDirectory is bin/Debug/net8.0, so go up 3 levels to project root
-string projectFolder = Path.GetFullPath(Path.Combine(projectRoot, "..", "..", ".."));
-string DatabasePath = Path.Combine(projectFolder, "Database", "parking.db");
-
-// Ensure the Database directory exists
-var dbDirectory = Path.GetDirectoryName(DatabasePath);
-if (!string.IsNullOrEmpty(dbDirectory) && !Directory.Exists(dbDirectory))
-{
-    Directory.CreateDirectory(dbDirectory);
-}
 
 builder.Services.AddDbContext<SQLite_Database>(options => options.UseSqlite($"Data Source={DatabasePath}"));
 
@@ -164,7 +160,7 @@ if (!app.Environment.IsEnvironment("Testing"))
                 {
                     id = Guid.NewGuid(),
                     username = "superadmin",
-                    password = "superpass",
+                    password = C_Utils.HashPassword("superpass"),
                     name = "Super Administrator",
                     email = "super@example.com",
                     phone = "",
@@ -180,7 +176,7 @@ if (!app.Environment.IsEnvironment("Testing"))
                 {
                     id = Guid.NewGuid(),
                     username = "lotadmin",
-                    password = "lotpass",
+                    password = C_Utils.HashPassword("lotpass"),
                     name = "Lot Administrator",
                     email = "lotadmin@example.com",
                     phone = "",
@@ -196,7 +192,7 @@ if (!app.Environment.IsEnvironment("Testing"))
                 {
                     id = Guid.NewGuid(),
                     username = "user",
-                    password = "userpass",
+                    password = C_Utils.HashPassword("userpass"),
                     name = "Regular User",
                     email = "user@example.com",
                     phone = "",

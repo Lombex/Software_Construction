@@ -80,6 +80,8 @@ namespace CSharpAPI.Controllers
             if (m_users.birth_year > DateTime.Now) return BadRequest("Birth year cannot be in the future.");
             if (!Enum.IsDefined(typeof(M_Users.UserRole), m_users.role)) return BadRequest("Invalid user role.");
 
+            m_users.password = C_Utils.HashPassword(m_users.password);
+
             await _userService.CreateUser(m_users);
             return CreatedAtAction(nameof(GetUserByID), new { id = m_users.id }, m_users);
         }
