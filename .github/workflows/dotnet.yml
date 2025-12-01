@@ -61,9 +61,10 @@ jobs:
             --no-restore \
             --verbosity normal \
             /p:CollectCoverage=true \
-            /p:CoverletOutput=./CSharp_Parking_Tests/TestResults/Coverage/ \
+            /p:CoverletOutput=./TestResults/Coverage/ \
             /p:CoverletOutputFormat=cobertura \
             /p:MergeWith=""
+
 
         
       # - name: Run Unit Tests with coverage
@@ -82,7 +83,7 @@ jobs:
         run: |
           dotnet tool install -g dotnet-reportgenerator-globaltool
           reportgenerator \
-          "-reports:./CSharp_Parking_Tests/TestResults/Coverage/coverage.cobertura.xml" \
+          "-reports:CSharp_Parking_Tests/TestResults/Coverage/coverage.cobertura.xml" \
           "-targetdir:coveragereport" \
           "-reporttypes:TextSummary;Html;Cobertura"
 
