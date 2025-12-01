@@ -60,10 +60,10 @@ jobs:
             --configuration Release \
             --no-restore \
             --verbosity normal \
-            --collect:"XPlat Code Coverage" \
             /p:CollectCoverage=true \
-            /p:CoverletOutput=./TestResults/Coverage/ \
-            /p:CoverletOutputFormat=cobertura
+            /p:CoverletOutput=./CSharp_Parking_Tests/TestResults/Coverage/ \
+            /p:CoverletOutputFormat=cobertura \
+            /p:MergeWith=""
 
         
       # - name: Run Unit Tests with coverage
