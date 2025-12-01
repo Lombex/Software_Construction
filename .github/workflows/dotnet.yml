@@ -54,16 +54,13 @@ jobs:
         #dotnet restore ${{ env.TEST_PROJECT_PATH }}
         #dotnet restore ${{ env.UNIT_TEST_PROJECT_PATH }}
 
-      - name: Run Integration Tests with coverage
+      - name: Generate coverage report
         run: |
-          dotnet test ${{ env.PROJECT_PATH }} \
-            --configuration Release \
-            --no-restore \
-            --verbosity normal \
-            /p:CollectCoverage=true \
-            /p:CoverletOutput=./TestResults/Coverage/ \
-            /p:CoverletOutputFormat=cobertura \
-            /p:MergeWith=""
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+          reportgenerator \
+          "-reports:TestResults/Coverage/coverage.cobertura.xml" \
+          "-targetdir:coveragereport" \
+          "-reporttypes:TextSummary;Html;Cobertura"
 
 
         
@@ -83,7 +80,7 @@ jobs:
         run: |
           dotnet tool install -g dotnet-reportgenerator-globaltool
           reportgenerator \
-          "-reports:CSharp_Parking_Tests/TestResults/Coverage/coverage.cobertura.xml" \
+          "-reports:TestResults/Coverage/coverage.cobertura.xml" \
           "-targetdir:coveragereport" \
           "-reporttypes:TextSummary;Html;Cobertura"
 
