@@ -54,16 +54,16 @@ jobs:
         #dotnet restore ${{ env.TEST_PROJECT_PATH }}
         #dotnet restore ${{ env.UNIT_TEST_PROJECT_PATH }}
 
-      # - name: Run Integration Tests with coverage
-      #   run: |
-      #     dotnet test ${{ env.TEST_PROJECT_PATH }} \
-      #       --configuration Release \
-      #       --no-restore \
-      #       --verbosity normal \
-      #       --collect:"XPlat Code Coverage" \
-      #       /p:CollectCoverage=true \
-      #       /p:CoverletOutput=./TestResults/Coverage/ \
-      #       /p:CoverletOutputFormat=cobertura
+      - name: Run Integration Tests with coverage
+        run: |
+          dotnet test ${{ env.PROJECT_PATH }} \
+            --configuration Release \
+            --no-restore \
+            --verbosity normal \
+            --collect:"XPlat Code Coverage" \
+            /p:CollectCoverage=true \
+            /p:CoverletOutput=./TestResults/Coverage/ \
+            /p:CoverletOutputFormat=cobertura
 
         
       # - name: Run Unit Tests with coverage
