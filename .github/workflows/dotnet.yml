@@ -51,27 +51,28 @@ jobs:
       - name: Restore dependencies
         run: |
           dotnet restore ${{ env.PROJECT_PATH }}
-        #dotnet restore ${{ env.TEST_PROJECT_PATH }}
-        #dotnet restore ${{ env.UNIT_TEST_PROJECT_PATH }}
 
-      - name: Run Integration Tests with coverage
+      # ✅ Single, correct test step
+      - name: Run tests with coverage
         run: |
-          dotnet test ${{ env.TEST_PROJECT_PATH }} \
+          dotnet test ${{ env.PROJECT_PATH }} \
             --configuration Release \
             --no-restore \
             --verbosity normal \
-            --collect:"XPlat Code Coverage" \
             /p:CollectCoverage=true \
-            /p:CoverletOutput=./TestResults/Coverage/ \
+            /p:CoverletOutput=./TestResults/Coverage/coverage \
             /p:CoverletOutputFormat=cobertura
+
+      - name: Install ReportGenerator
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
 
       - name: Generate coverage report
         run: |
-          dotnet tool install -g dotnet-reportgenerator-globaltool
           reportgenerator \
-          "-reports:**/coverage.cobertura.xml" \
-          "-targetdir:coveragereport" \
-          "-reporttypes:TextSummary;Html;Cobertura"
+            "-reports:**/coverage.cobertura.xml" \
+            "-targetdir:coveragereport" \
+            "-reporttypes:TextSummary;Html;Cobertura"
 
       - name: Add coverage report to job summary
         run: |
@@ -82,7 +83,7 @@ jobs:
         run: |
           BRANCH_COVERAGE=$(grep -oP '(?<=Branch coverage: )[0-9.]+' coveragereport/Summary.txt || echo "0")
           echo "Branch coverage: $BRANCH_COVERAGE%"
-          
+
           if (( $(echo "$BRANCH_COVERAGE < ${{ env.MIN_BRANCH_COVERAGE }}" | bc -l) )); then
             echo "❌ Branch coverage ($BRANCH_COVERAGE%) is below minimum threshold of ${{ env.MIN_BRANCH_COVERAGE }}%"
             exit 1
@@ -91,11 +92,12 @@ jobs:
           fi
 
       - name: Store coverage report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coveragereport
-        if: always()
+
 
   # Job 3: Deployment/Merge to Master
   deployment:
