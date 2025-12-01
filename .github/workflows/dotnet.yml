@@ -36,10 +36,11 @@ jobs:
         run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
 
   # Job 2: Test
-      - name:Debug: Find Cobertura report
+      - name: "Debug: Find Cobertura report"
         run: |
-          echo "Searching for coverage.cobertura.xml..." 
+          echo "Searching for coverage.cobertura.xml..."
           find . -name "coverage.cobertura.xml" -print || true
+
 
   test:
     needs: build
