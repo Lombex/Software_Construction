@@ -36,11 +36,6 @@ jobs:
         run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
 
   # Job 2: Test
-      - name: "Debug: Find Cobertura report"
-        run: |
-          echo "Searching for coverage.cobertura.xml..."
-          find . -name "coverage.cobertura.xml" -print || true
-
 
   test:
     needs: build
@@ -60,27 +55,16 @@ jobs:
         #dotnet restore ${{ env.TEST_PROJECT_PATH }}
         #dotnet restore ${{ env.UNIT_TEST_PROJECT_PATH }}
 
-      - name: Generate coverage report
+      - name: Run Tests with coverage
         run: |
-          dotnet tool install -g dotnet-reportgenerator-globaltool
-          reportgenerator \
-          "-reports:TestResults/Coverage/coverage.cobertura.xml" \
-          "-targetdir:coveragereport" \
-          "-reporttypes:TextSummary;Html;Cobertura"
-
-
-        
-      # - name: Run Unit Tests with coverage
-      #   run: |
-      #     dotnet test ${{ env.UNIT_TEST_PROJECT_PATH }} \
-      #       --configuration Release \
-      #       --no-restore \
-      #       --verbosity normal \
-      #       --collect:"XPlat Code Coverage" \
-      #       /p:CollectCoverage=true \
-      #       /p:CoverletOutput=./TestResults/Coverage/ \
-      #       /p:CoverletOutputFormat=cobertura
-        
+          dotnet test ${{ env.PROJECT_PATH }} \
+            --configuration Release \
+            --no-restore \
+            --verbosity normal \
+            --collect:"XPlat Code Coverage" \
+            /p:CollectCoverage=true \
+            /p:CoverletOutput=./TestResults/Coverage/ \
+            /p:CoverletOutputFormat=cobertura
 
       - name: Generate coverage report
         run: |
