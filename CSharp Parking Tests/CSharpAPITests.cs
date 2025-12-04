@@ -1,6 +1,7 @@
 ﻿using CSharpAPI.Database;
 using CSharpAPI.Models;
 using CSharpAPI.Services;
+using CSharpAPI.Tests.Utillities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
@@ -52,7 +53,7 @@ namespace CSharpAPI.Tests
             {
                 id = Guid.NewGuid(),
                 username = "superadmin",
-                password = "superpass",
+                password = Utils.HashPassword("superpass"),
                 name = "Super Administrator",
                 email = "super@example.com",
                 phone = "",
@@ -67,7 +68,7 @@ namespace CSharpAPI.Tests
             {
                 id = Guid.NewGuid(),
                 username = "lotadmin",
-                password = "lotpass",
+                password = Utils.HashPassword("lotpass"),
                 name = "Lot Administrator",
                 email = "lotadmin@example.com",
                 phone = "",
@@ -82,7 +83,7 @@ namespace CSharpAPI.Tests
             {
                 id = Guid.NewGuid(),
                 username = "user",
-                password = "userpass",
+                password = Utils.HashPassword("userpass"),
                 name = "Regular User",
                 email = "user@example.com",
                 phone = "",

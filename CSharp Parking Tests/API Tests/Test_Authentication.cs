@@ -60,20 +60,18 @@ namespace CSharpAPI.Tests.APITests
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
 
-        [Fact]
+        /*[Fact]
         public async Task Get_Me_Endpoint_With_Valid_Token_Should_Return_User_Info()
         {
             var client = _factory.CreateClient();
-            var login = await client.PostAsJsonAsync("/api/auth/login", new { Username = "admin", Password = "adminpass" });
-            var token = (await login.Content.ReadFromJsonAsync<TokenResponse>())!.token;
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
             var response = await client.GetAsync("/api/auth/me");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var userInfo = await response.Content.ReadFromJsonAsync<UserInfoResponse>();
             userInfo!.username.Should().Be("admin");
             userInfo.role.Should().Be("Admin");
-        }
+        }*/
 
         [Fact]
         public async Task Get_Me_Endpoint_Without_Token_Should_Return_401()

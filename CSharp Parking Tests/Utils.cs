@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
 
 namespace CSharpAPI.Tests.Utillities
 {
@@ -20,6 +21,16 @@ namespace CSharpAPI.Tests.Utillities
             var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
             if (tokenResponse is null || string.IsNullOrWhiteSpace(tokenResponse.token)) throw new InvalidOperationException("Login did not return a token.");
             return new AuthenticationHeaderValue("Bearer", tokenResponse.token);
+        }
+
+        public static string HashPassword(string password)
+        {
+            using (var sha256 = System.Security.Cryptography.SHA256.Create())
+            {
+                var bytes = Encoding.UTF8.GetBytes(password);
+                var hash = sha256.ComputeHash(bytes);
+                return Convert.ToBase64String(hash);
+            }
         }
     }
     public class TokenResponse
