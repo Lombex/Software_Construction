@@ -78,11 +78,7 @@ namespace CSharpAPI.Services
             return lots;
         }
 
-        public async Task<M_Parkinglots> GetByID(Guid id)
-        {
-            var parkinglot = await DbContext.Parkinglots.FirstOrDefaultAsync(x => x.id == id);
-            return parkinglot!;
-        }
+     
 
         /*public async Task<List<M_Tariff>> GetRatesParkinglot(Guid parkinglotId)
         {
