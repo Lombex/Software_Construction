@@ -34,6 +34,11 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddDbContext<SQLite_Database>(options => options.UseSqlite($"Data Source={DatabasePath}"));
 
 builder.Services.AddScoped<IUsersService, S_Users>();
+builder.Services.AddScoped<IParkinglotsService, S_Parkinglots>();
+builder.Services.AddScoped<IProfileService, Service_Profile>();
+builder.Services.AddScoped<IPaymentsService, S_Payments>();
+builder.Services.AddScoped<ISessionsService, S_Sessions>();
+builder.Services.AddScoped<IReservationsService, S_Reservations>();
 builder.Services.AddScoped<IVehiclesService, S_Vehicles>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 // Add other services here
