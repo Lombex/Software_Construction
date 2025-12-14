@@ -1,0 +1,72 @@
+using CSharpAPI.Tests.Utillities;
+using CSharpAPI.Models;
+using FluentAssertions;
+using System.Net;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+
+namespace CSharpAPI.Tests.APITests
+{
+    
+    public class Test_Parkinglots : IClassFixture<CSharpAPITests>
+    {
+        private readonly CSharpAPITests _factory;
+        public Test_Parkinglots(CSharpAPITests factory) => _factory = factory;
+
+        private M_Parkinglots CreateSampleParkinglot()
+        {
+            return new M_Parkinglots
+            {
+                name = "Test Parkinglot",
+                location = "Test Location",
+                address = "Test Street 123",
+                capacity = 100,
+                reserved = 10,
+                daytarriff = 15.5f,
+                coordinates = new Coordinates
+                {
+                    lat = 52.507f,
+                    long = -0.127f
+                }
+
+            };
+        }
+    }
+
+    [Fact]
+    public async Task Test_GetAllParkinglots_ShouldReturnOk()
+    {
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
+
+        var response = await client.GetAsync("api/parkinglots");
+        response.StatusCode.Should().Be(HttpsStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task Test_GetById_NotFound()
+    {
+        var client = _factoryCreateClient();
+        client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
+
+        var fakeId = Guid.NewGuid();
+        var response = await client.GetAsync($"api/parkinglots/{fakeId}");
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task Test_UpdateParkinglot_NotFound()
+    {
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
+
+        var lot = CreateSampleParkinglot();
+        var randomId = Guid.NewGuid();
+
+        var response = await client.PutAsJsonAsync($"api/parkinglots/{randomId}", lot);
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+
+
+}
