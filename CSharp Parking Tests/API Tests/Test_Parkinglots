@@ -68,5 +68,17 @@ namespace CSharpAPI.Tests.APITests
     }
 
 
+    [Fact]
+    public async Task Test_DeleteParkinglot_NotFound()
+    {
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
+
+        var randomId = Guid.NewGuid();
+        var response = await client.DeleteAsync($"api/parkinglots/{randomId}");
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+        //nog niet klaar
 
 }
