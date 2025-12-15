@@ -26,12 +26,12 @@ namespace CSharpAPI.Tests.APITests
                 coordinates = new Coordinates
                 {
                     lat = 52.507f,
-                    long = -0.127f
+                    lng = -0.127f
                 }
 
             };
         }
-    }
+    
 
     [Fact]
     public async Task Test_GetAllParkinglots_ShouldReturnOk()
@@ -90,6 +90,8 @@ namespace CSharpAPI.Tests.APITests
         var response = await client.PostAsJsonAsync("api/parkinglots", invalidLot);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
+    
 
-
+    }
 }
+        
