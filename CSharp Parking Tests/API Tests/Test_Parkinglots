@@ -79,6 +79,17 @@ namespace CSharpAPI.Tests.APITests
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
-        //nog niet klaar
+    [Fact]
+    public async Task Test_CreateParkinglot_BadData()
+    {
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
+
+        var invalidLot = new M_Parkinglots();  // required (missing) fields
+
+        var response = await client.PostAsJsonAsync("api/parkinglots", invalidLot);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
 
 }
