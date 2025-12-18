@@ -22,13 +22,13 @@ namespace CSharpAPI.Models
 
         // navigatie-eigenschappen
         [ForeignKey(nameof(user_id))]
-        public M_Users user { get; set; }
+        public M_Users ?user { get; set; }
 
         [ForeignKey(nameof(parking_lot_id))]
-        public M_Parkinglots parking_lot { get; set; }
+        public M_Parkinglots ?parking_lot { get; set; }
 
         [ForeignKey(nameof(vehicle_id))]
-        public M_Vehicles vehicle { get; set; }
+        public M_Vehicles ?vehicle { get; set; }
 
         public DateTime start_time { get; set; }
         public DateTime end_time { get; set; }
