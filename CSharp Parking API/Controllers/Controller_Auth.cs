@@ -82,7 +82,8 @@ namespace CSharpAPI.Controllers
 
         }
 
-        // register new user
+        [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             // Validate username and password are provided
@@ -103,9 +104,9 @@ namespace CSharpAPI.Controllers
                 name = request.Name,
                 email = request.Email,
                 phone = request.Phone,
-                role = M_Users.UserRole.ParkingUser,
+                role = M_Users.UserRole.ParkingUser, // this is not getting assinged?
                 created_at = DateTime.UtcNow,
-                birth_year = request.BirthYear ?? DateTime.UtcNow,
+                birth_year = request.BirthYear ?? DateTime.Now,
                 active = true
             };
 
