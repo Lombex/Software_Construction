@@ -68,6 +68,51 @@ namespace CSharpAPI.Controllers
             
             return Ok(new { id, username, role });
         }
+
+
+        public class RegisterRequest
+        {
+            public string? Username { get; set; }
+            public string? Password { get; set; } 
+            public string? ConfirmPassword { get; set; }
+            public string? Phone { get; set; }
+            public string? Email { get; set; }
+            public string? Name { get; set; }
+            public DateTime? BirthYear { get; set; }
+
+        }
+
+        // register new user
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        {
+            // Validate username and password are provided
+            if (string.IsNullOrWhiteSpace(request?.Username) || string.IsNullOrWhiteSpace(request?.Password)) return BadRequest("Username and password are required.");
+            if (request.Password != request.ConfirmPassword) return BadRequest("Passwords do not match.");
+            if (!C_Utils.IsValidEmail(request.Email ?? "")) return BadRequest("Invalid email format.");
+            if (!C_Utils.IsValidPhoneNumber(request.Phone ?? "")) return BadRequest("Invalid phone number format.");
+            var existingUser = await _db.Users.FirstOrDefaultAsync(u => u.username == request.Username);
+            var existingEmail = await _db.Users.FirstOrDefaultAsync(u => u.email == request.Email);
+            if (existingEmail != null) return BadRequest("Email already registered.");
+            if (existingUser != null) return BadRequest("Username already exists.");
+            
+            var newUser = new M_Users
+            {
+                id = Guid.NewGuid(),
+                username = request.Username,
+                password = C_Utils.HashPassword(request.Password),
+                name = request.Name,
+                email = request.Email,
+                phone = request.Phone,
+                role = M_Users.UserRole.ParkingUser,
+                created_at = DateTime.UtcNow,
+                birth_year = request.BirthYear ?? DateTime.UtcNow,
+                active = true
+            };
+
+            _db.Users.Add(newUser);
+            await _db.SaveChangesAsync();
+            return Ok(new { message = "User registered successfully." });
+        }
     }
 }
 
