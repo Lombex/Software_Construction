@@ -11,6 +11,9 @@ namespace CSharpAPI.Tests.APITests
     
     public class Test_Parkinglots : IClassFixture<CSharpAPITests>
     {
+        private readonly CSharpAPITests _factory;
+        public Test_Parkinglots(CSharpAPITests factory) => _factory = factory;
+    
         [Fact]
         public async Task Test_CreateParkinglot_ShouldReturnCreated()
         {
@@ -77,8 +80,6 @@ namespace CSharpAPI.Tests.APITests
             deleteResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
     
-    private readonly CSharpAPITests _factory;
-    public Test_Parkinglots(CSharpAPITests factory) => _factory = factory;
 
         private M_Parkinglots CreateSampleParkinglot()
         {
