@@ -6,7 +6,7 @@ using CSharpAPI.Database;
 namespace CSharpAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/parkinglots")]
     public class C_Parkinglots : ControllerBase
     {
         private readonly SQLite_Database _context;
@@ -38,8 +38,8 @@ namespace CSharpAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] M_Parkinglots lot)
         {
-            if (lot == null)
-                return BadRequest("Invalid data.");
+            if (lot == null || string.IsNullOrWhiteSpace(lot.name) || string.IsNullOrWhiteSpace(lot.location) || lot.coordinates == null)
+                return BadRequest("Missing required fields: name, location, or coordinates.");
 
             lot.id = Guid.NewGuid();
             lot.created_at = DateTime.UtcNow;
@@ -84,6 +84,27 @@ namespace CSharpAPI.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        // search nearby parking lots
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchNearby([FromQuery] float lat, [FromQuery] float lng, [FromQuery] float radius)
+        {
+            // Bounding box method: 1 degree latitude ≈ 111 km
+            float degreeRadius = radius / 111f;
+            float minLat = lat - degreeRadius;
+            float maxLat = lat + degreeRadius;
+            float minLng = lng - degreeRadius;
+            float maxLng = lng + degreeRadius;
+
+            var lots = await _context.Parkinglots.ToListAsync();
+            var nearbyLots = lots.Where(lot =>
+                lot.coordinates != null &&
+                lot.coordinates.lat >= minLat && lot.coordinates.lat <= maxLat &&
+                lot.coordinates.lng >= minLng && lot.coordinates.lng <= maxLng
+            ).ToList();
+
+            return Ok(nearbyLots);
         }
     }
 }

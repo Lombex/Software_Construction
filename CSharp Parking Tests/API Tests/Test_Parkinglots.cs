@@ -1,0 +1,174 @@
+using CSharpAPI.Tests.Utillities;
+using CSharpAPI.Models;
+using FluentAssertions;
+using System.Net;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Security.Cryptography;
+
+namespace CSharpAPI.Tests.APITests
+{
+    
+    public class Test_Parkinglots : IClassFixture<CSharpAPITests>
+    {
+        private readonly CSharpAPITests _factory;
+        public Test_Parkinglots(CSharpAPITests factory) => _factory = factory;
+    
+        [Fact]
+        public async Task Test_CreateParkinglot_ShouldReturnCreated()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
+            var lot = CreateSampleParkinglot();
+            var response = await client.PostAsJsonAsync("api/parkinglots", lot);
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
+            var created = await response.Content.ReadFromJsonAsync<M_Parkinglots>();
+            created.Should().NotBeNull();
+            created!.name.Should().Be(lot.name);
+        }
+
+        [Fact]
+        public async Task Test_GetParkinglotById_ShouldReturnOk()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
+            var lot = CreateSampleParkinglot();
+            var createResponse = await client.PostAsJsonAsync("api/parkinglots", lot);
+            var created = await createResponse.Content.ReadFromJsonAsync<M_Parkinglots>();
+            var id = created!.id;
+            var getResponse = await client.GetAsync($"api/parkinglots/{id}");
+            getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            var getLot = await getResponse.Content.ReadFromJsonAsync<M_Parkinglots>();
+            getLot.Should().NotBeNull();
+            getLot!.id.Should().Be(id);
+        }
+
+        [Fact]
+        public async Task Test_UpdateParkinglot_ShouldReturnNoContent()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
+            var lot = CreateSampleParkinglot();
+            var createResponse = await client.PostAsJsonAsync("api/parkinglots", lot);
+            var created = await createResponse.Content.ReadFromJsonAsync<M_Parkinglots>();
+            var id = created!.id;
+            var updatedLot = new M_Parkinglots
+            {
+                id = id,
+                name = "Updated Lot",
+                location = "Updated Location",
+                address = "Updated Address",
+                capacity = 200,
+                reserved = 20,
+                daytarriff = 20.0f,
+                coordinates = new Coordinates { lat = 40.0f, lng = 10.0f }
+            };
+            var updateResponse = await client.PutAsJsonAsync($"api/parkinglots/{id}", updatedLot);
+            updateResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        }
+
+        [Fact]
+        public async Task Test_DeleteParkinglot_ShouldReturnNoContent()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
+            var lot = CreateSampleParkinglot();
+            var createResponse = await client.PostAsJsonAsync("api/parkinglots", lot);
+            var created = await createResponse.Content.ReadFromJsonAsync<M_Parkinglots>();
+            var id = created!.id;
+            var deleteResponse = await client.DeleteAsync($"api/parkinglots/{id}");
+            deleteResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+    }
+    
+
+        private M_Parkinglots CreateSampleParkinglot()
+        {
+            return new M_Parkinglots
+            {
+                name = "Test Parkinglot",
+                location = "Test Location",
+                address = "Test Street 123",
+                capacity = 100,
+                reserved = 10,
+                daytarriff = 15.5f,
+                coordinates = new Coordinates
+                {
+                    lat = 52.507f,
+                    lng = -0.127f
+                }
+
+            };
+        }
+  
+
+    [Fact]
+    public async Task Test_GetAllParkinglots_ShouldReturnOk()
+    {
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
+
+        var response = await client.GetAsync("api/parkinglots");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task Test_GetById_NotFound()
+    {
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
+
+        var fakeId = Guid.NewGuid();
+        var response = await client.GetAsync($"api/parkinglots/{fakeId}");
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task Test_UpdateParkinglot_NotFound()
+    {
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
+
+        var lot = CreateSampleParkinglot();
+        var randomId = Guid.NewGuid();
+
+        var response = await client.PutAsJsonAsync($"api/parkinglots/{randomId}", lot);
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+
+    [Fact]
+    public async Task Test_DeleteParkinglot_NotFound()
+    {
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
+
+        var randomId = Guid.NewGuid();
+        var response = await client.DeleteAsync($"api/parkinglots/{randomId}");
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task Test_CreateParkinglot_BadData()
+    {
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
+
+        var invalidLot = new M_Parkinglots();  // required (missing) fields
+
+        var response = await client.PostAsJsonAsync("api/parkinglots", invalidLot);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+    
+    [Fact]
+    public async Task Test_SearchNearbyParkinglots_ShouldReturnOk()
+    {
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
+        var response = await client.GetAsync("api/parkinglots/search");
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    }
+    
+}
+    
