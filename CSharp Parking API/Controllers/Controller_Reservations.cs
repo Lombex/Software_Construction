@@ -65,41 +65,28 @@ namespace CSharpAPI.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateReservation([FromBody] CreateReservationDto dto)
+        public async Task<IActionResult> CreateReservation([FromBody] Models.ReservationCreateDto dto)
         {
             if (dto == null) return BadRequest("Request body is required.");
-            if (dto.id == Guid.Empty || dto.vehicle_id == Guid.Empty || dto.parking_lot_id == Guid.Empty)
-                return BadRequest("Invalid identifiers.");
-            if (dto.start_time >= dto.end_time) return BadRequest("Invalid time range.");
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            // Users can only create reservations for themselves, admins can create for any user
-            if (!IsAdminOrAbove)
-            {
-                if (CurrentUserId == null) return Unauthorized();
-                dto.user_id = CurrentUserId.Value; // Force ownership to current user
-            }
-            else if (dto.user_id == Guid.Empty)
-            {
-                // Admin creating reservation but no user_id specified - default to current user
-                if (CurrentUserId == null) return Unauthorized();
-                dto.user_id = CurrentUserId.Value;
-            }
+            if (dto.start_time >= dto.end_time) return BadRequest("Invalid time range.");
 
             var reservation = new M_Reservations
             {
-                id = dto.id,
+                id = Guid.NewGuid(),
                 user_id = dto.user_id,
-                vehicle_id = dto.vehicle_id,
                 parking_lot_id = dto.parking_lot_id,
+                vehicle_id = dto.vehicle_id,
                 start_time = dto.start_time,
                 end_time = dto.end_time,
-                status = dto.status,
-                created_at = dto.created_at,
-                cost = dto.cost
+                status = M_Reservations.Status.Active,
+                created_at = DateTime.UtcNow,
+                cost = 0f
             };
 
             var createdReservation = await _reservationService.Create(reservation);
-            return Ok(createdReservation);
+            return CreatedAtAction(nameof(GetReservationById), new { id = createdReservation.id }, createdReservation);
         }
 
         [HttpPost("cancel/{id}")]

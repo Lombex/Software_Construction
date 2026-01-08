@@ -33,6 +33,7 @@ namespace CSharpAPI.Tests
                 services.AddScoped<IVehiclesService, S_Vehicles>();
                 services.AddScoped<IPaymentsService, S_Payments>();
                 services.AddScoped<ITokenService, TokenService>();
+                services.AddScoped<IReservationsService, S_Reservations>();
 
                 var sp = services.BuildServiceProvider();
                 using var scope = sp.CreateScope();
