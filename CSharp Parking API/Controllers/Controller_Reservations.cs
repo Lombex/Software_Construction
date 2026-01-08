@@ -51,12 +51,28 @@ namespace CSharpAPI.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateReservation([FromBody] M_Reservations reservation)
+        public async Task<IActionResult> CreateReservation([FromBody] Models.ReservationCreateDto dto)
         {
-            if (reservation == null) return BadRequest("Request body is required.");
+            if (dto == null) return BadRequest("Request body is required.");
             if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            if (dto.start_time >= dto.end_time) return BadRequest("Invalid time range.");
+
+            var reservation = new M_Reservations
+            {
+                id = Guid.NewGuid(),
+                user_id = dto.user_id,
+                parking_lot_id = dto.parking_lot_id,
+                vehicle_id = dto.vehicle_id,
+                start_time = dto.start_time,
+                end_time = dto.end_time,
+                status = M_Reservations.Status.Active,
+                created_at = DateTime.UtcNow,
+                cost = 0f
+            };
+
             var createdReservation = await _reservationService.Create(reservation);
-            return Ok(createdReservation);
+            return CreatedAtAction(nameof(GetReservationById), new { id = createdReservation.id }, createdReservation);
         }
 
         [HttpPost("cancel/{id}")]
