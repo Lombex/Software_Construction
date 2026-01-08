@@ -26,6 +26,7 @@ namespace CSharpAPI.Services
         public async Task<M_Reservations> Create(M_Reservations res)
         {
             if (res == null) throw new ArgumentNullException(nameof(res));
+            // Ensure only FK fields are used when creating; navigations should not be inserted.
             await DbContext.Reservations.AddAsync(res);
             await DbContext.SaveChangesAsync();
             return res;
