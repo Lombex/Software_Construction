@@ -11,8 +11,18 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using CSharpAPI.Controllers.Utils;
+using Serilog;
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("logs/parking-api-.log", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Use Serilog for logging
+builder.Host.UseSerilog();
 
 string projectRoot = AppContext.BaseDirectory;
 string projectFolder = Path.GetFullPath(Path.Combine(projectRoot, "..", "..", ".."));
@@ -41,6 +51,8 @@ builder.Services.AddScoped<ISessionsService, S_Sessions>();
 builder.Services.AddScoped<IReservationsService, S_Reservations>();
 builder.Services.AddScoped<IVehiclesService, S_Vehicles>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ITokenRevocationService, TokenRevocationService>();
+builder.Services.AddScoped<IBillingService, S_Billing>();
 // Add other services here
 
 builder.Services.AddCors(options =>
@@ -78,6 +90,26 @@ if (!string.IsNullOrWhiteSpace(key))
                 ValidAudience = audience,
                 IssuerSigningKey = signingKey,
                 ClockSkew = TimeSpan.FromMinutes(1)
+            };
+
+            // Add custom token validation to check if token is revoked
+            options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+            {
+                OnTokenValidated = async context =>
+                {
+                    var tokenRevocationService = context.HttpContext.RequestServices
+                        .GetRequiredService<ITokenRevocationService>();
+                    
+                    var token = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        var isRevoked = await tokenRevocationService.IsTokenRevokedAsync(token);
+                        if (isRevoked)
+                        {
+                            context.Fail("Token has been revoked (user logged out).");
+                        }
+                    }
+                }
             };
         });
 

@@ -3,6 +3,7 @@ using CSharpAPI.Models.DTOs.Reservations;
 using CSharpAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using static CSharpAPI.Models.M_Reservations;
 
 namespace CSharpAPI.Controllers
@@ -17,6 +18,17 @@ namespace CSharpAPI.Controllers
         {
             _reservationService = reservationService;
         }
+
+        private Guid? CurrentUserId
+        {
+            get
+            {
+                var idClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                return Guid.TryParse(idClaim, out var id) ? id : null;
+            }
+        }
+
+        private bool IsAdminOrAbove => User.IsInRole("SuperAdmin") || User.IsInRole("ParkingLotAdmin");
 
         [HttpGet("all")]
         [Authorize(Policy = "AdminOrAbove")] // Only admins can view all reservations
@@ -55,9 +67,22 @@ namespace CSharpAPI.Controllers
         public async Task<IActionResult> CreateReservation([FromBody] CreateReservationDto dto)
         {
             if (dto == null) return BadRequest("Request body is required.");
-            if (dto.id == Guid.Empty || dto.user_id == Guid.Empty || dto.vehicle_id == Guid.Empty || dto.parking_lot_id == Guid.Empty)
+            if (dto.id == Guid.Empty || dto.vehicle_id == Guid.Empty || dto.parking_lot_id == Guid.Empty)
                 return BadRequest("Invalid identifiers.");
             if (dto.start_time >= dto.end_time) return BadRequest("Invalid time range.");
+
+            // Users can only create reservations for themselves, admins can create for any user
+            if (!IsAdminOrAbove)
+            {
+                if (CurrentUserId == null) return Unauthorized();
+                dto.user_id = CurrentUserId.Value; // Force ownership to current user
+            }
+            else if (dto.user_id == Guid.Empty)
+            {
+                // Admin creating reservation but no user_id specified - default to current user
+                if (CurrentUserId == null) return Unauthorized();
+                dto.user_id = CurrentUserId.Value;
+            }
 
             var reservation = new M_Reservations
             {
@@ -82,6 +107,14 @@ namespace CSharpAPI.Controllers
             try
             {
                 if (id == Guid.Empty) return BadRequest("Invalid reservation ID.");
+
+                var reservation = await _reservationService.GetById(id);
+                if (reservation == null) return NotFound("Reservation not found.");
+
+                // Users can only cancel their own reservations, admins can cancel any
+                if (!IsAdminOrAbove && (CurrentUserId == null || reservation.user_id != CurrentUserId.Value))
+                    return Forbid();
+
                 await _reservationService.Cancel(id);
                 return Ok($"Reservation with id {id} has been cancelled.");
             }
@@ -97,6 +130,11 @@ namespace CSharpAPI.Controllers
             if (id == Guid.Empty) return BadRequest("Invalid reservation ID.");
             var reservation = await _reservationService.GetById(id);
             if (reservation == null) return NotFound("Reservation not found.");
+
+            // Users can only view their own reservations, admins can view any
+            if (!IsAdminOrAbove && (CurrentUserId == null || reservation.user_id != CurrentUserId.Value))
+                return Forbid();
+
             return Ok(reservation);
         }
 
@@ -104,6 +142,11 @@ namespace CSharpAPI.Controllers
         public async Task<IActionResult> ListReservationsByUser(Guid userId, [FromQuery] Status Status)
         {
             if (userId == Guid.Empty) return BadRequest("Invalid user ID.");
+
+            // Users can only view their own reservations, admins can view any user's reservations
+            if (!IsAdminOrAbove && (CurrentUserId == null || userId != CurrentUserId.Value))
+                return Forbid();
+
             var reservations = await _reservationService.ListByUser(userId, Status);
             return Ok(reservations);
         }

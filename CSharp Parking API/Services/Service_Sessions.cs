@@ -1,6 +1,7 @@
 using CSharpAPI.Database;
 using CSharpAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using static CSharpAPI.Models.M_Reservations;
 
 namespace CSharpAPI.Services
@@ -25,8 +26,60 @@ namespace CSharpAPI.Services
         public async Task<M_Session> Start(M_Session session)
         {
             if (session == null) throw new ArgumentNullException(nameof(session));
+
+            // Check if there's already an active session for this license plate
+            var existingSessions = await DbContext.Sessions
+                .Where(s => 
+                    (s.license_plate != null && s.license_plate == session.license_plate) ||
+                    (s.vehicle_id == session.vehicle_id && s.vehicle_id != Guid.Empty))
+                .ToListAsync();
+
+            // Check if any session is active (stopped time is in the future or not set)
+            var activeSession = existingSessions
+                .FirstOrDefault(s => s.stopped == default || s.stopped > DateTime.UtcNow);
+
+            if (activeSession != null)
+            {
+                Log.Warning("Attempted to start session for license plate {LicensePlate} but active session already exists", session.license_plate);
+                throw new InvalidOperationException($"There is already an active session for license plate '{session.license_plate}'. Please stop the existing session first.");
+            }
+
+            // Check parking lot capacity
+            var parkingLot = await DbContext.Parkinglots.FindAsync(session.parking_lot_id);
+            if (parkingLot == null)
+            {
+                Log.Error("Parking lot {ParkingLotId} not found when starting session", session.parking_lot_id);
+                throw new InvalidOperationException("Parking lot not found.");
+            }
+
+            // Count active sessions for this parking lot
+            var activeSessionsCount = await DbContext.Sessions
+                .CountAsync(s => s.parking_lot_id == session.parking_lot_id && 
+                               (s.stopped == default || s.stopped > DateTime.UtcNow));
+
+            // Count active reservations for this parking lot
+            var activeReservationsCount = await DbContext.Reservations
+                .CountAsync(r => r.parking_lot_id == session.parking_lot_id && 
+                               r.status == M_Reservations.Status.Active &&
+                               r.start_time <= DateTime.UtcNow && 
+                               r.end_time > DateTime.UtcNow);
+
+            var totalOccupied = activeSessionsCount + activeReservationsCount;
+            if (totalOccupied >= parkingLot.capacity)
+            {
+                Log.Warning("Parking lot {ParkingLotName} is full. Capacity: {Capacity}, Occupied: {Occupied}", 
+                    parkingLot.name, parkingLot.capacity, totalOccupied);
+                throw new InvalidOperationException($"Parking lot '{parkingLot.name}' is full. Capacity: {parkingLot.capacity}, Occupied: {totalOccupied}");
+            }
+
+            // Set started time if not set
+            if (session.started == default)
+                session.started = DateTime.UtcNow;
+
             await DbContext.Sessions.AddAsync(session);
             await DbContext.SaveChangesAsync();
+            Log.Information("Session {SessionId} started for license plate {LicensePlate} at parking lot {ParkingLotId}", 
+                session.id, session.license_plate, session.parking_lot_id);
             return session;
         }
         public async Task<M_Session?> Stop(Guid id)
