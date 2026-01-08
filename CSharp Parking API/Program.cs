@@ -53,6 +53,9 @@ builder.Services.AddScoped<IVehiclesService, S_Vehicles>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITokenRevocationService, TokenRevocationService>();
 builder.Services.AddScoped<IBillingService, S_Billing>();
+builder.Services.AddScoped<IUserBalanceService, S_UserBalance>();
+builder.Services.AddScoped<ICompanyService, S_Company>();
+builder.Services.AddScoped<IHotelService, S_Hotel>();
 // Add other services here
 
 builder.Services.AddCors(options =>

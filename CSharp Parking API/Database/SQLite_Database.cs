@@ -15,6 +15,12 @@ namespace CSharpAPI.Database
         public DbSet<M_Session> Sessions { get; set; }
         public DbSet<M_RevokedTokens> RevokedTokens { get; set; }
         public DbSet<M_Billing> Billing { get; set; }
+        public DbSet<M_UserBalance> UserBalances { get; set; }
+        public DbSet<M_BalanceTransaction> BalanceTransactions { get; set; }
+        public DbSet<M_Company> Companies { get; set; }
+        public DbSet<M_CompanyUser> CompanyUsers { get; set; }
+        public DbSet<M_Hotel> Hotels { get; set; }
+        public DbSet<M_HotelGuest> HotelGuests { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -35,6 +41,12 @@ namespace CSharpAPI.Database
             modelBuilder.Entity<M_Payments>().HasKey(p => p.hash);
             modelBuilder.Entity<M_RevokedTokens>().HasKey(r => r.TokenId);
             modelBuilder.Entity<M_Billing>().HasKey(b => b.id);
+            modelBuilder.Entity<M_UserBalance>().HasKey(b => b.id);
+            modelBuilder.Entity<M_BalanceTransaction>().HasKey(t => t.id);
+            modelBuilder.Entity<M_Company>().HasKey(c => c.id);
+            modelBuilder.Entity<M_CompanyUser>().HasKey(cu => cu.id);
+            modelBuilder.Entity<M_Hotel>().HasKey(h => h.id);
+            modelBuilder.Entity<M_HotelGuest>().HasKey(hg => hg.id);
 
             base.OnModelCreating(modelBuilder);
         }

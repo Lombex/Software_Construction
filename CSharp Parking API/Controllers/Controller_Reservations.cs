@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using static CSharpAPI.Models.M_Reservations;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CSharpAPI.Controllers
 {
@@ -160,8 +161,35 @@ namespace CSharpAPI.Controllers
             var availability = await _reservationService.CheckAvailability(parkingLotId, from, to);
             return Ok(availability);
         }
+
+        // Admin-only: Create reservation for another user
+        [HttpPost("admin/create-for-user")]
+        [Authorize(Policy = "AdminOrAbove")]
+        public async Task<IActionResult> CreateReservationForUser([FromBody] CreateReservationForUserDto dto)
+        {
+            if (dto == null) return BadRequest("Request body is required.");
+            if (dto.user_id == Guid.Empty || dto.vehicle_id == Guid.Empty || dto.parking_lot_id == Guid.Empty)
+                return BadRequest("Invalid identifiers.");
+            if (dto.start_time >= dto.end_time) return BadRequest("Invalid time range.");
+
+            var reservation = new M_Reservations
+            {
+                id = dto.id == Guid.Empty ? Guid.NewGuid() : dto.id,
+                user_id = dto.user_id,
+                vehicle_id = dto.vehicle_id,
+                parking_lot_id = dto.parking_lot_id,
+                start_time = dto.start_time,
+                end_time = dto.end_time,
+                status = dto.status,
+                created_at = dto.created_at == default ? DateTime.UtcNow : dto.created_at,
+                cost = dto.cost
+            };
+
+            var createdReservation = await _reservationService.Create(reservation);
+            return Ok(createdReservation);
+        }
             
-        
+
 
 
 

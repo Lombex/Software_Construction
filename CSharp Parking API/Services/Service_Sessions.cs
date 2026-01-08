@@ -12,6 +12,7 @@ namespace CSharpAPI.Services
         Task<M_Session?> Stop(Guid id);
         Task<List<M_Session>> GetSessionById(string user);
         Task<List<M_Session>> GetAllSessions(string user, M_Session.PaymentStatus status);
+        Task<List<M_Session>> GetAll();
         Task<M_Session>? Pay(Guid id);
     }
 
@@ -106,6 +107,11 @@ namespace CSharpAPI.Services
         {
             var query = DbContext.Sessions.AsQueryable().Where(s => s.user == user && s.status == status);
             return await query.ToListAsync();
+        }
+
+        public async Task<List<M_Session>> GetAll()
+        {
+            return await DbContext.Sessions.AsNoTracking().ToListAsync();
         }
 
         public async Task<M_Session>? Pay(Guid id)
