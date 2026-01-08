@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using CSharpAPI.Models;
 using CSharpAPI.Database;
 
@@ -7,6 +8,7 @@ namespace CSharpAPI.Controllers
 {
     [ApiController]
     [Route("api/parkinglots")]
+    [Authorize] // All parking lot endpoints require authentication
     public class C_Parkinglots : ControllerBase
     {
         private readonly SQLite_Database _context;
@@ -15,6 +17,8 @@ namespace CSharpAPI.Controllers
         {
             _context = context;
         }
+
+        private bool IsAdminOrAbove => User.IsInRole("SuperAdmin") || User.IsInRole("ParkingLotAdmin");
 
         // GET: api/parkinglots
         [HttpGet]
@@ -36,6 +40,7 @@ namespace CSharpAPI.Controllers
 
         // POST: api/parkinglots
         [HttpPost]
+        [Authorize(Policy = "AdminOrAbove")] // Only admins can create parking lots
         public async Task<IActionResult> Create([FromBody] M_Parkinglots lot)
         {
             if (lot == null || string.IsNullOrWhiteSpace(lot.name) || string.IsNullOrWhiteSpace(lot.location) || lot.coordinates == null)
@@ -52,6 +57,7 @@ namespace CSharpAPI.Controllers
 
         // PUT: api/parkinglots/{id}
         [HttpPut("{id}")]
+        [Authorize(Policy = "AdminOrAbove")] // Only admins can update parking lots
         public async Task<IActionResult> Update(Guid id, [FromBody] M_Parkinglots lot)
         {
             var existing = await _context.Parkinglots.FindAsync(id);
@@ -74,6 +80,7 @@ namespace CSharpAPI.Controllers
 
         // DELETE: api/parkinglots/{id}
         [HttpDelete("{id}")]
+        [Authorize(Policy = "SuperAdminOnly")] // Only SuperAdmin can delete parking lots
         public async Task<IActionResult> Delete(Guid id)
         {
             var lot = await _context.Parkinglots.FindAsync(id);

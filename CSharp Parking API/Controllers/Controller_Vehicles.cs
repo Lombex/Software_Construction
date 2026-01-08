@@ -2,6 +2,7 @@ using CSharpAPI.Models;
 using CSharpAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CSharpAPI.Controllers
 {
@@ -15,6 +16,17 @@ namespace CSharpAPI.Controllers
         {
             _vehicleService = vehicleService;
         }
+
+        private Guid? CurrentUserId
+        {
+            get
+            {
+                var idClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                return Guid.TryParse(idClaim, out var id) ? id : null;
+            }
+        }
+
+        private bool IsAdminOrAbove => User.IsInRole("SuperAdmin") || User.IsInRole("ParkingLotAdmin");
 
         [HttpGet("all")]
         [Authorize(Policy = "AdminOrAbove")] // Only admins can view all vehicles
@@ -56,7 +68,12 @@ namespace CSharpAPI.Controllers
         public async Task<IActionResult> GetVehicleByID(Guid Id)
         {
             var vehicle = await _vehicleService.GetByID(Id);
-            if (vehicle == null) return NotFound($"Vehicle with id {Id} not found."); 
+            if (vehicle == null) return NotFound($"Vehicle with id {Id} not found.");
+
+            // Users can only view their own vehicles, admins can view any
+            if (!IsAdminOrAbove && (CurrentUserId == null || vehicle.user_id != CurrentUserId.Value))
+                return Forbid();
+
             return Ok(vehicle);
         }
 
@@ -65,7 +82,18 @@ namespace CSharpAPI.Controllers
         {
             if (m_vehicles == null) return BadRequest("Vehicle data is null.");
 
-            // Additional validation can be added here (e.g., check for duplicate license plates)
+            // Users can only create vehicles for themselves, admins can create for any user
+            if (!IsAdminOrAbove)
+            {
+                if (CurrentUserId == null) return Unauthorized();
+                m_vehicles.user_id = CurrentUserId.Value; // Force ownership to current user
+            }
+            else if (m_vehicles.user_id == Guid.Empty)
+            {
+                // Admin creating vehicle but no user_id specified - default to current user
+                if (CurrentUserId == null) return Unauthorized();
+                m_vehicles.user_id = CurrentUserId.Value;
+            }
 
             if (string.IsNullOrWhiteSpace(m_vehicles.license_plate) || 
                 string.IsNullOrWhiteSpace(m_vehicles.make) || string.IsNullOrWhiteSpace(m_vehicles.model))
@@ -95,6 +123,16 @@ namespace CSharpAPI.Controllers
             var existingVehicle = await _vehicleService.GetByID(id);
             if (existingVehicle == null) return NotFound($"Vehicle with id {id} not found.");
 
+            // Users can only update their own vehicles, admins can update any
+            if (!IsAdminOrAbove && (CurrentUserId == null || existingVehicle.user_id != CurrentUserId.Value))
+                return Forbid();
+
+            // Prevent users from changing ownership
+            if (!IsAdminOrAbove)
+            {
+                m_vehicles.user_id = existingVehicle.user_id;
+            }
+
             await _vehicleService.UpdateVehicle(id, m_vehicles);
             return NoContent();
         }
@@ -104,6 +142,11 @@ namespace CSharpAPI.Controllers
         {
             var existingVehicle = await _vehicleService.GetByID(id);
             if (existingVehicle == null) return NotFound($"Vehicle with id {id} not found.");
+
+            // Users can only delete their own vehicles, admins can delete any
+            if (!IsAdminOrAbove && (CurrentUserId == null || existingVehicle.user_id != CurrentUserId.Value))
+                return Forbid();
+
             await _vehicleService.DeleteVehicle(id);
             return NoContent();
         }

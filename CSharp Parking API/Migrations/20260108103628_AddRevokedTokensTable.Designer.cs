@@ -3,6 +3,7 @@ using System;
 using CSharpAPI.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,66 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CSharp_Parking_API.Migrations
 {
     [DbContext(typeof(SQLite_Database))]
-    partial class SQLite_DatabaseModelSnapshot : ModelSnapshot
+    [Migration("20260108103628_AddRevokedTokensTable")]
+    partial class AddRevokedTokensTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
-
-            modelBuilder.Entity("CSharpAPI.Models.M_Billing", b =>
-                {
-                    b.Property<Guid>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("amount")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("created_at")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("currency")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("due_date")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("invoice_number")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("paid")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("paid_at")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("payment_id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("reservation_id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("session_id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("status")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("type")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<Guid>("user_id")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("id");
-
-                    b.ToTable("Billing");
-                });
 
             modelBuilder.Entity("CSharpAPI.Models.M_Parkinglots", b =>
                 {

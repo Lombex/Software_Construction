@@ -13,6 +13,8 @@ namespace CSharpAPI.Database
         public DbSet<M_Reservations> Reservations { get; set; }
         public DbSet<M_Payments> Payments { get; set; }
         public DbSet<M_Session> Sessions { get; set; }
+        public DbSet<M_RevokedTokens> RevokedTokens { get; set; }
+        public DbSet<M_Billing> Billing { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -31,6 +33,8 @@ namespace CSharpAPI.Database
             modelBuilder.Entity<M_Payments>().OwnsOne(t => t.t_data);
             modelBuilder.Entity<M_Parkinglots>().OwnsOne(c => c.coordinates);
             modelBuilder.Entity<M_Payments>().HasKey(p => p.hash);
+            modelBuilder.Entity<M_RevokedTokens>().HasKey(r => r.TokenId);
+            modelBuilder.Entity<M_Billing>().HasKey(b => b.id);
 
             base.OnModelCreating(modelBuilder);
         }
