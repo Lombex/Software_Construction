@@ -108,13 +108,13 @@ namespace CSharpAPI.Tests.APITests
         client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
         var response = await client.GetAsync("api/parkinglots");
-        response.StatusCode.Should().Be(HttpsStatusCode.OK);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     [Fact]
     public async Task Test_GetById_NotFound()
     {
-        var client = _factoryCreateClient();
+        var client = _factory.CreateClient();
         client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
         var fakeId = Guid.NewGuid();
@@ -165,7 +165,7 @@ namespace CSharpAPI.Tests.APITests
         var client = _factory.CreateClient();
         client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
         var response = await client.GetAsync("api/parkinglots/search");
-        response.StatusCode.Should().Be(HttpsStatusCode.OK);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     }
