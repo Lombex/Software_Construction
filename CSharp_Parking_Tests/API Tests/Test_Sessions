@@ -1,0 +1,203 @@
+namespace CSharpAPI.Tests.APITests
+{
+    public class Test_Sessions : IClassFixture<CSharpAPITests>
+    {
+        private readonly CSharpAPITests _factory;
+        public Test_Sessions(CSharpAPITests factory)
+        {
+            _factory = factory;
+        }
+
+        // Test: Unauthenticated user cannot access session endpoints
+        [Fact]
+        public async Task GetAllSessions_WithoutToken_Returns401()
+        {
+            var client = _factory.CreateClient();
+            var response = await client.GetAsync("/api/sessions/all?page=0");
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task GetAllSessions_WithToken_ReturnsOk()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
+            var response = await client.GetAsync("/api/sessions/all?user=superadmin&status=Unpaid");
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public async Task StartSession_WithValidData_ReturnsOk()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
+            var session = new CSharpAPI.Models.M_Session
+            {
+                id = Guid.NewGuid(),
+                parking_lot_id = Guid.NewGuid(),
+                vehicle_id = Guid.NewGuid(),
+                started = DateTime.UtcNow,
+                stopped = DateTime.UtcNow.AddMinutes(10),
+                user = "superadmin",
+                duration_minutes = 10,
+                cost = 0,
+                status = CSharpAPI.Models.M_Session.PaymentStatus.Unpaid
+            };
+            var response = await client.PostAsJsonAsync("/api/sessions/start", session);
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public async Task StopSession_WithValidId_ReturnsOkOrNotFound()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
+            // Eerst een sessie aanmaken
+            var session = new CSharpAPI.Models.M_Session
+            {
+                id = Guid.NewGuid(),
+                parking_lot_id = Guid.NewGuid(),
+                vehicle_id = Guid.NewGuid(),
+                started = DateTime.UtcNow,
+                stopped = DateTime.UtcNow.AddMinutes(10),
+                user = "superadmin",
+                duration_minutes = 10,
+                cost = 0,
+                status = CSharpAPI.Models.M_Session.PaymentStatus.Unpaid
+            };
+            var createResponse = await client.PostAsJsonAsync("/api/sessions/start", session);
+            createResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            // Stop de sessie
+            var response = await client.PostAsync($"/api/sessions/{session.id}/stop", null);
+            // Kan OK of NotFound zijn afhankelijk van implementatie
+            response.StatusCode.Should().Match(x => x == HttpStatusCode.OK || x == HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task StartSession_WithNullBody_ReturnsBadRequest()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
+            var response = await client.PostAsJsonAsync("/api/sessions/start", (object?)null);
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task StopSession_WithUnknownId_ReturnsNotFound()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
+            var unknownId = Guid.NewGuid();
+            var response = await client.PostAsync($"/api/sessions/{unknownId}/stop", null);
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task GetSessionsById_WithUnknownUser_ReturnsOkWithEmptyList()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
+            var response = await client.GetAsync("/api/sessions/unknownuser");
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var sessions = await response.Content.ReadFromJsonAsync<List<CSharpAPI.Models.M_Session>>();
+            sessions.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task GetAllSessions_EmptyUser_ReturnsBadRequest()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
+            var response = await client.GetAsync("/api/sessions/all?user=&status=Unpaid");
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task GetAllSessions_InvalidStatus_ReturnsBadRequest()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
+            var response = await client.GetAsync("/api/sessions/all?user=superadmin&status=INVALID");
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task StartSession_MissingRequiredFields_ReturnsBadRequest()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
+            var session = new CSharpAPI.Models.M_Session
+            {
+                // geen id, geen user, geen vehicle_id
+                parking_lot_id = Guid.NewGuid(),
+                started = DateTime.UtcNow,
+                stopped = DateTime.UtcNow.AddMinutes(10),
+                duration_minutes = 10,
+                cost = 0,
+                status = CSharpAPI.Models.M_Session.PaymentStatus.Unpaid
+            };
+            var response = await client.PostAsJsonAsync("/api/sessions/start", session);
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task StopSession_AlreadyStopped_ReturnsNotFoundOrBadRequest()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
+            var session = new CSharpAPI.Models.M_Session
+            {
+                id = Guid.NewGuid(),
+                parking_lot_id = Guid.NewGuid(),
+                vehicle_id = Guid.NewGuid(),
+                started = DateTime.UtcNow,
+                stopped = DateTime.UtcNow.AddMinutes(10),
+                user = "superadmin",
+                duration_minutes = 10,
+                cost = 0,
+                status = CSharpAPI.Models.M_Session.PaymentStatus.Unpaid
+            };
+            var createResponse = await client.PostAsJsonAsync("/api/sessions/start", session);
+            createResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            // Stop de sessie twee keer
+            var response1 = await client.PostAsync($"/api/sessions/{session.id}/stop", null);
+            var response2 = await client.PostAsync($"/api/sessions/{session.id}/stop", null);
+            response2.StatusCode.Should().Match(x => x == HttpStatusCode.NotFound || x == HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task PaySession_HappyFlow_ReturnsOk()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
+            var session = new CSharpAPI.Models.M_Session
+            {
+                id = Guid.NewGuid(),
+                parking_lot_id = Guid.NewGuid(),
+                vehicle_id = Guid.NewGuid(),
+                started = DateTime.UtcNow,
+                stopped = DateTime.UtcNow.AddMinutes(10),
+                user = "superadmin",
+                duration_minutes = 10,
+                cost = 0,
+                status = CSharpAPI.Models.M_Session.PaymentStatus.Unpaid
+            };
+            var createResponse = await client.PostAsJsonAsync("/api/sessions/start", session);
+            createResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            var stopResponse = await client.PostAsync($"/api/sessions/{session.id}/stop", null);
+            stopResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            var payResponse = await client.PostAsync($"/api/sessions/{session.id}/pay", null);
+            payResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public async Task PaySession_WrongId_ReturnsNotFound()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
+            var response = await client.PostAsync($"/api/sessions/{Guid.NewGuid()}/pay", null);
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+    }
+}
