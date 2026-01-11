@@ -1,0 +1,141 @@
+### ============================================
+### Billing API - Comprehensive Test Suite
+### ============================================
+### Base URL
+@baseUrl = http://localhost:5001
+@contentType = application/json
+
+### ============================================
+### STEP 1: LOGIN TO GET TOKENS
+### ============================================
+
+### Login as SuperAdmin
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "Username": "superadmin",
+  "Password": "superpass"
+}
+
+### Copy the token from response and paste it below
+@superAdminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZjMxNTYwYS1lOWU1LTRkY2MtOWNlNS05NDg0YzhkN2Q1OTAiLCJ1bmlxdWVfbmFtZSI6InN1cGVyYWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjhmMzE1NjBhLWU5ZTUtNGRjYy05Y2U1LTk0ODRjOGQ3ZDU5MCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJzdXBlcmFkbWluIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiU3VwZXJBZG1pbiIsIm5iZiI6MTc2Nzk5MzQ5NSwiZXhwIjoxNzY4MDAwNjk1LCJpc3MiOiJDU2hhcnBQYXJraW5nQVBJIiwiYXVkIjoiQ1NoYXJwUGFya2luZ0FQSUNsaWVudHMifQ._27Dm2crecSkPk8jAeey-I_qeY3AKrzKm7AQKvrddvo
+
+###
+
+### Login as ParkingLotAdmin
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "Username": "lotadmin",
+  "Password": "lotpass"
+}
+
+### Copy the token from response and paste it below
+@lotAdminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlOWUxZTI5Yi05YzI2LTQ0OWEtYWIzZC0xNmVhZWE4YTdiYWQiLCJ1bmlxdWVfbmFtZSI6ImxvdGFkbWluIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiJlOWUxZTI5Yi05YzI2LTQ0OWEtYWIzZC0xNmVhZWE4YTdiYWQiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoibG90YWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJQYXJraW5nTG90QWRtaW4iLCJuYmYiOjE3Njc5OTM1NDIsImV4cCI6MTc2ODAwMDc0MiwiaXNzIjoiQ1NoYXJwUGFya2luZ0FQSSIsImF1ZCI6IkNTaGFycFBhcmtpbmdBUElDbGllbnRzIn0.In8i3LTipWcspjR_3zcRgAap0Ux0gOmrBcXHuAdOT7w
+
+###
+
+### Login as Regular User
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "Username": "user",
+  "Password": "userpass"
+}
+
+### Copy the token from response and paste it below
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxYWJlMzFlZi0yNTVhLTRjNTItODhjNy1kNGNhNGMzNmZkYjEiLCJ1bmlxdWVfbmFtZSI6InVzZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjFhYmUzMWVmLTI1NWEtNGM1Mi04OGM3LWQ0Y2E0YzM2ZmRiMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJ1c2VyIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUGFya2luZ1VzZXIiLCJuYmYiOjE3Njc5OTM1NjksImV4cCI6MTc2ODAwMDc2OSwiaXNzIjoiQ1NoYXJwUGFya2luZ0FQSSIsImF1ZCI6IkNTaGFycFBhcmtpbmdBUElDbGllbnRzIn0.dTnLhjtacf5iGxEOkbfLelbSZ1jC7Ni7Qerk_IEHYUw
+###
+
+GET http://localhost:5001/api/users/all
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZjMxNTYwYS1lOWU1LTRkY2MtOWNlNS05NDg0YzhkN2Q1OTAiLCJ1bmlxdWVfbmFtZSI6InN1cGVyYWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjhmMzE1NjBhLWU5ZTUtNGRjYy05Y2U1LTk0ODRjOGQ3ZDU5MCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJzdXBlcmFkbWluIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiU3VwZXJBZG1pbiIsIm5iZiI6MTc2Nzk5MzQ5NSwiZXhwIjoxNzY4MDAwNjk1LCJpc3MiOiJDU2hhcnBQYXJraW5nQVBJIiwiYXVkIjoiQ1NoYXJwUGFya2luZ0FQSUNsaWVudHMifQ._27Dm2crecSkPk8jAeey-I_qeY3AKrzKm7AQKvrddvo
+
+###
+POST http://localhost:5001/api/billing/create
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZjMxNTYwYS1lOWU1LTRkY2MtOWNlNS05NDg0YzhkN2Q1OTAiLCJ1bmlxdWVfbmFtZSI6InN1cGVyYWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjhmMzE1NjBhLWU5ZTUtNGRjYy05Y2U1LTk0ODRjOGQ3ZDU5MCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJzdXBlcmFkbWluIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiU3VwZXJBZG1pbiIsIm5iZiI6MTc2Nzk5MzQ5NSwiZXhwIjoxNzY4MDAwNjk1LCJpc3MiOiJDU2hhcnBQYXJraW5nQVBJIiwiYXVkIjoiQ1NoYXJwUGFya2luZ0FQSUNsaWVudHMifQ._27Dm2crecSkPk8jAeey-I_qeY3AKrzKm7AQKvrddvo
+Content-Type: application/json
+
+{
+  "user_id": "1abe31ef-255a-4c52-88c7-d4ca4c36fdb1",
+  "amount": 25.50,
+  "currency": "EUR",
+  "due_date": "2026-01-15T00:00:00Z",
+  "type": "ParkingSession",
+  "status": "Pending",
+  "description": "Manual test bill"
+}
+
+###
+# Get all billing records (admin only)
+GET http://localhost:5000/api/billing/all
+Authorization: Bearer YOUR_ADMIN_TOKEN_HERE
+
+###
+# Get current user's billing records
+GET http://localhost:5000/api/billing/mine
+Authorization: Bearer YOUR_USER_TOKEN_HERE
+
+###
+# Create a new billing record (admin only)
+POST http://localhost:5000/api/billing/create
+Authorization: Bearer YOUR_ADMIN_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "user_id": "PASTE_VALID_USER_ID_HERE",
+  "session_id": null,
+  "reservation_id": null,
+  "payment_id": null,
+  "amount": 25.50,
+  "currency": "EUR",
+  "description": "Test bill",
+  "due_date": "2026-01-15T00:00:00Z",
+  "paid": false,
+  "created_at": "2026-01-09T00:00:00Z",
+  "paid_at": null,
+  "invoice_number": null,
+  "type": 0,
+  "status": 0
+}
+
+###
+# Delete a billing record (SuperAdmin only)
+DELETE http://localhost:5000/api/billing/delete/PASTE_BILL_ID_HERE
+Authorization: Bearer YOUR_SUPERADMIN_TOKEN_HERE
+
+###
+# Get a billing record by ID
+GET http://localhost:5000/api/billing/PASTE_BILL_ID_HERE
+Authorization: Bearer YOUR_ADMIN_TOKEN_HERE
+
+###
+# Mark a bill as paid
+POST http://localhost:5000/api/billing/PASTE_BILL_ID_HERE/mark-paid
+Authorization: Bearer YOUR_USER_OR_ADMIN_TOKEN_HERE
+
+###
+# Cancel a bill (admin only)
+POST http://localhost:5000/api/billing/PASTE_BILL_ID_HERE/cancel
+Authorization: Bearer YOUR_ADMIN_TOKEN_HERE
+
+###
+# Update a billing record
+PUT http://localhost:5000/api/billing/update/PASTE_BILL_ID_HERE
+Authorization: Bearer YOUR_ADMIN_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "amount": 30.00,
+  "currency": "EUR",
+  "description": "Updated bill",
+  "due_date": "2026-01-20T00:00:00Z",
+  "status": 1
+}
+
+###
+# Get monthly bundle invoices for a user (admin only)
+GET http://localhost:5000/api/billing/monthly-bundle/PASTE_USER_ID_HERE?month=2026-01-01
+Authorization: Bearer YOUR_ADMIN_TOKEN_HERE
