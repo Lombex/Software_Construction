@@ -7,7 +7,7 @@ using CSharpAPI.Database;
 namespace CSharpAPI.Controllers
 {
     [ApiController]
-    [Route("api/parkinglots")]
+    [Route("api/v2/parkinglots")]
     [Authorize] // All parking lot endpoints require authentication
     public class C_Parkinglots : ControllerBase
     {

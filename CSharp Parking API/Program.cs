@@ -135,7 +135,7 @@ if (!string.IsNullOrWhiteSpace(key))
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "CSharpAPI", Version = "v1" });
+    c.SwaggerDoc("v2", new OpenApiInfo { Title = "CSharpAPI", Version = "v2" });
     // Add JWT Authentication to Swagger
     var jwtSecurityScheme = new OpenApiSecurityScheme
     {
@@ -164,7 +164,7 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CSharpAPI v1"));
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v2/swagger.json", "CSharpAPI v2"));
 }
 
 app.UseRouting();

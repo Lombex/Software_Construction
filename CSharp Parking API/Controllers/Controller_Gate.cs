@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace CSharpAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v2/[controller]")]
     [AllowAnonymous] // Gate endpoints might be called by hardware
     public class C_Gate : ControllerBase
     {

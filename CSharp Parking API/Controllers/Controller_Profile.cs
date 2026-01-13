@@ -7,7 +7,7 @@ using static CSharpAPI.Models.M_Reservations;
 
 namespace CSharpAPI.Controllers
 {
-    [Route("api/profile")]
+    [Route("api/v2/profile")]
     [ApiController]
     [Authorize] // All profile endpoints require authentication
     public class C_Profile : ControllerBase

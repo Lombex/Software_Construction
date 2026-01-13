@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CSharpAPI.Controllers
 {
-    [Route("api/sessions")]
+    [Route("api/v2/sessions")]
     [ApiController]
     [Authorize] // All session endpoints require authentication
     public class C_Sessions : ControllerBase

@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace CSharpAPI.Controllers
 {
-    [Route("api/vehicles")]
+    [Route("api/v2/vehicles")]
     [ApiController]
     [Authorize] // All vehicle endpoints require authentication
     public class C_Vehicles : ControllerBase

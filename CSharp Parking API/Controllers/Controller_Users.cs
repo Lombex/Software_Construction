@@ -6,7 +6,7 @@ using CSharpAPI.Controllers.Utils;
 
 namespace CSharpAPI.Controllers
 {
-    [Route("api/users")]
+    [Route("api/v2/users")]
     [ApiController]
     [Authorize]
     public class C_Users : ControllerBase
