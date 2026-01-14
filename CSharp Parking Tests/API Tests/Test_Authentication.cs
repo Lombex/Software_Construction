@@ -18,7 +18,7 @@ namespace CSharpAPI.Tests.APITests
         public async Task Login_Should_Return_Token_For_Valid_Credentials()
         {
             var client = _factory.CreateClient();
-            var response = await client.PostAsJsonAsync("/api/auth/login", new { Username = "superadmin", Password = "superpass" });
+            var response = await client.PostAsJsonAsync("/api/v2/auth/login", new { Username = "superadmin", Password = "superpass" });
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var payload = await response.Content.ReadFromJsonAsync<TokenResponse>();
             payload!.token.Should().NotBeNullOrEmpty();
@@ -28,7 +28,7 @@ namespace CSharpAPI.Tests.APITests
         public async Task Get_Admin_Only_Without_Token_Should_Return_401()
         {
             var client = _factory.CreateClient();
-            var response = await client.GetAsync("/api/users/all?page=0");
+            var response = await client.GetAsync("/api/v2/users/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
 
@@ -38,7 +38,7 @@ namespace CSharpAPI.Tests.APITests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
 
-            var response = await client.GetAsync("/api/users/all?page=0");
+            var response = await client.GetAsync("/api/v2/users/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
         }
 
@@ -48,7 +48,7 @@ namespace CSharpAPI.Tests.APITests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
-            var response = await client.GetAsync("/api/users/all?page=0");
+            var response = await client.GetAsync("/api/v2/users/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -56,7 +56,7 @@ namespace CSharpAPI.Tests.APITests
         public async Task Login_With_Invalid_Credentials_Should_Return_401()
         {
             var client = _factory.CreateClient();
-            var response = await client.PostAsJsonAsync("/api/auth/login", new { Username = "invalid", Password = "invalid" });
+            var response = await client.PostAsJsonAsync("/api/v2/auth/login", new { Username = "invalid", Password = "invalid" });
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
 
@@ -77,7 +77,7 @@ namespace CSharpAPI.Tests.APITests
         public async Task Get_Me_Endpoint_Without_Token_Should_Return_401()
         {
             var client = _factory.CreateClient();
-            var response = await client.GetAsync("/api/auth/me");
+            var response = await client.GetAsync("/api/v2/auth/me");
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
 

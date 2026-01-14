@@ -20,7 +20,7 @@ namespace CSharpAPI.Tests.APITests
         public async Task GetAllPayments_WithoutToken_Returns401()
         {
             var client = _factory.CreateClient();
-            var response = await client.GetAsync("/api/payments/all?page=0");
+            var response = await client.GetAsync("/api/v2/payments/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
 
@@ -34,7 +34,7 @@ namespace CSharpAPI.Tests.APITests
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
 
             // Try to access all payments (admin only endpoint)
-            var response = await client.GetAsync("/api/payments/all?page=0");
+            var response = await client.GetAsync("/api/v2/payments/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
         }
 
@@ -48,7 +48,7 @@ namespace CSharpAPI.Tests.APITests
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "lotadmin", "lotpass");
 
             // Access all payments
-            var response = await client.GetAsync("/api/payments/all?page=0");
+            var response = await client.GetAsync("/api/v2/payments/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -62,7 +62,7 @@ namespace CSharpAPI.Tests.APITests
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
             // Access all payments
-            var response = await client.GetAsync("/api/payments/all?page=0");
+            var response = await client.GetAsync("/api/v2/payments/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -91,7 +91,7 @@ namespace CSharpAPI.Tests.APITests
                 parking_lot_id = Guid.NewGuid()
             };
 
-            var response = await client.PostAsJsonAsync("/api/payments/create", payment);
+            var response = await client.PostAsJsonAsync("/api/v2/payments/create", payment);
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -107,7 +107,7 @@ namespace CSharpAPI.Tests.APITests
             // Try to update payment
             var paymentId = Guid.NewGuid();
             var payment = new { amount = 75.0f };
-            var response = await client.PutAsJsonAsync($"/api/payments/update/{paymentId}", payment);
+            var response = await client.PutAsJsonAsync($"/api/v2/payments/update/{paymentId}", payment);
             response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
         }
 
@@ -136,7 +136,7 @@ namespace CSharpAPI.Tests.APITests
                 session_id = Guid.NewGuid(),
                 parking_lot_id = Guid.NewGuid()
             };
-            var createResponse = await client.PostAsJsonAsync("/api/payments/create", createPayment);
+            var createResponse = await client.PostAsJsonAsync("/api/v2/payments/create", createPayment);
             createResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
             // Update payment with modified data
@@ -154,7 +154,7 @@ namespace CSharpAPI.Tests.APITests
                 session_id = createPayment.session_id,
                 parking_lot_id = createPayment.parking_lot_id
             };
-            var response = await client.PutAsJsonAsync($"/api/payments/update/{paymentId}", updatePayment);
+            var response = await client.PutAsJsonAsync($"/api/v2/payments/update/{paymentId}", updatePayment);
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -169,7 +169,7 @@ namespace CSharpAPI.Tests.APITests
 
             // Try to delete payment
             var paymentId = Guid.NewGuid();
-            var response = await client.DeleteAsync($"/api/payments/delete/{paymentId}");
+            var response = await client.DeleteAsync($"/api/v2/payments/delete/{paymentId}");
             response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
         }
 
@@ -184,7 +184,7 @@ namespace CSharpAPI.Tests.APITests
 
             // Try to delete payment
             var paymentId = Guid.NewGuid();
-            var response = await client.DeleteAsync($"/api/payments/delete/{paymentId}");
+            var response = await client.DeleteAsync($"/api/v2/payments/delete/{paymentId}");
             response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
         }
 
@@ -213,11 +213,11 @@ namespace CSharpAPI.Tests.APITests
                 session_id = Guid.NewGuid(),
                 parking_lot_id = Guid.NewGuid()
             };
-            var createResponse = await client.PostAsJsonAsync("/api/payments/create", payment);
+            var createResponse = await client.PostAsJsonAsync("/api/v2/payments/create", payment);
             createResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
             // Delete payment
-            var response = await client.DeleteAsync($"/api/payments/delete/{paymentId}");
+            var response = await client.DeleteAsync($"/api/v2/payments/delete/{paymentId}");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }

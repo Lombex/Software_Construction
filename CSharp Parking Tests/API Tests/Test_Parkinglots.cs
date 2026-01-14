@@ -20,7 +20,7 @@ namespace CSharpAPI.Tests.APITests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
             var lot = CreateSampleParkinglot();
-            var response = await client.PostAsJsonAsync("api/parkinglots", lot);
+            var response = await client.PostAsJsonAsync("api/v2/parkinglots", lot);
             response.StatusCode.Should().Be(HttpStatusCode.Created);
             var created = await response.Content.ReadFromJsonAsync<M_Parkinglots>();
             created.Should().NotBeNull();
@@ -33,10 +33,10 @@ namespace CSharpAPI.Tests.APITests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
             var lot = CreateSampleParkinglot();
-            var createResponse = await client.PostAsJsonAsync("api/parkinglots", lot);
+            var createResponse = await client.PostAsJsonAsync("api/v2/parkinglots", lot);
             var created = await createResponse.Content.ReadFromJsonAsync<M_Parkinglots>();
             var id = created!.id;
-            var getResponse = await client.GetAsync($"api/parkinglots/{id}");
+            var getResponse = await client.GetAsync($"api/v2/parkinglots/{id}");
             getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
             var getLot = await getResponse.Content.ReadFromJsonAsync<M_Parkinglots>();
             getLot.Should().NotBeNull();
@@ -49,7 +49,7 @@ namespace CSharpAPI.Tests.APITests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
             var lot = CreateSampleParkinglot();
-            var createResponse = await client.PostAsJsonAsync("api/parkinglots", lot);
+            var createResponse = await client.PostAsJsonAsync("api/v2/parkinglots", lot);
             var created = await createResponse.Content.ReadFromJsonAsync<M_Parkinglots>();
             var id = created!.id;
             var updatedLot = new M_Parkinglots
@@ -63,7 +63,7 @@ namespace CSharpAPI.Tests.APITests
                 daytarriff = 20.0f,
                 coordinates = new Coordinates { lat = 40.0f, lng = 10.0f }
             };
-            var updateResponse = await client.PutAsJsonAsync($"api/parkinglots/{id}", updatedLot);
+            var updateResponse = await client.PutAsJsonAsync($"api/v2/parkinglots/{id}", updatedLot);
             updateResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
         }
 
@@ -73,10 +73,10 @@ namespace CSharpAPI.Tests.APITests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
             var lot = CreateSampleParkinglot();
-            var createResponse = await client.PostAsJsonAsync("api/parkinglots", lot);
+            var createResponse = await client.PostAsJsonAsync("api/v2/parkinglots", lot);
             var created = await createResponse.Content.ReadFromJsonAsync<M_Parkinglots>();
             var id = created!.id;
-            var deleteResponse = await client.DeleteAsync($"api/parkinglots/{id}");
+            var deleteResponse = await client.DeleteAsync($"api/v2/parkinglots/{id}");
             deleteResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
     
@@ -107,7 +107,7 @@ namespace CSharpAPI.Tests.APITests
         var client = _factory.CreateClient();
         client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
-        var response = await client.GetAsync("api/parkinglots");
+        var response = await client.GetAsync("api/v2/parkinglots");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
@@ -118,7 +118,7 @@ namespace CSharpAPI.Tests.APITests
         client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
         var fakeId = Guid.NewGuid();
-        var response = await client.GetAsync($"api/parkinglots/{fakeId}");
+        var response = await client.GetAsync($"api/v2/parkinglots/{fakeId}");
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
@@ -131,7 +131,7 @@ namespace CSharpAPI.Tests.APITests
         var lot = CreateSampleParkinglot();
         var randomId = Guid.NewGuid();
 
-        var response = await client.PutAsJsonAsync($"api/parkinglots/{randomId}", lot);
+        var response = await client.PutAsJsonAsync($"api/v2/parkinglots/{randomId}", lot);
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
@@ -143,7 +143,7 @@ namespace CSharpAPI.Tests.APITests
         client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
         var randomId = Guid.NewGuid();
-        var response = await client.DeleteAsync($"api/parkinglots/{randomId}");
+        var response = await client.DeleteAsync($"api/v2/parkinglots/{randomId}");
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
@@ -155,7 +155,7 @@ namespace CSharpAPI.Tests.APITests
 
         var invalidLot = new M_Parkinglots();  // required (missing) fields
 
-        var response = await client.PostAsJsonAsync("api/parkinglots", invalidLot);
+        var response = await client.PostAsJsonAsync("api/v2/parkinglots", invalidLot);
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
     
@@ -164,7 +164,7 @@ namespace CSharpAPI.Tests.APITests
     {
         var client = _factory.CreateClient();
         client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
-        var response = await client.GetAsync("api/parkinglots/search");
+        var response = await client.GetAsync("api/v2/parkinglots/search");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 

@@ -27,7 +27,7 @@ namespace CSharpAPI.Tests.APITests
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
-            var response = await client.GetAsync("/api/reservations/all");
+            var response = await client.GetAsync("/api/v2/reservations/all");
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
@@ -37,7 +37,7 @@ namespace CSharpAPI.Tests.APITests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
             // Prepare required related entities: user, parking lot, vehicle
-            var usersResp = await client.GetAsync("/api/users/all");
+            var usersResp = await client.GetAsync("/api/v2/users/all");
             usersResp.EnsureSuccessStatusCode();
             var usersBody = await usersResp.Content.ReadFromJsonAsync<JsonElement>();
             var usersArray = usersBody.GetProperty("Users");
@@ -53,7 +53,7 @@ namespace CSharpAPI.Tests.APITests
                 daytarriff = 5.0f,
                 coordinates = new { lat = 1.0f, lng = 1.0f }
             };
-            var lotResp = await client.PostAsJsonAsync("/api/parkinglots", lot);
+            var lotResp = await client.PostAsJsonAsync("/api/v2/parkinglots", lot);
             lotResp.EnsureSuccessStatusCode();
             var lotCreated = await lotResp.Content.ReadFromJsonAsync<JsonElement>();
             var lotId = lotCreated.GetProperty("id").GetGuid();
@@ -67,7 +67,7 @@ namespace CSharpAPI.Tests.APITests
                 color = "Blue",
                 year = DateTime.UtcNow
             };
-            var vehResp = await client.PostAsJsonAsync("/api/vehicles/create", vehicle);
+            var vehResp = await client.PostAsJsonAsync("/api/v2/vehicles/create", vehicle);
             vehResp.EnsureSuccessStatusCode();
             var vehCreated = await vehResp.Content.ReadFromJsonAsync<JsonElement>();
             var vehicleId = vehCreated.GetProperty("id").GetGuid();
@@ -81,7 +81,7 @@ namespace CSharpAPI.Tests.APITests
                 end_time = DateTime.UtcNow.AddHours(1)
             };
 
-            var response = await client.PostAsJsonAsync("/api/reservations/create", dto);
+            var response = await client.PostAsJsonAsync("/api/v2/reservations/create", dto);
             if (response.StatusCode != HttpStatusCode.Created)
             {
                 var s = await response.Content.ReadAsStringAsync();
@@ -105,7 +105,7 @@ namespace CSharpAPI.Tests.APITests
             };
 
             // prepare related entities
-            var usersResp = await client.GetAsync("/api/users/all");
+            var usersResp = await client.GetAsync("/api/v2/users/all");
             usersResp.EnsureSuccessStatusCode();
             var usersBody = await usersResp.Content.ReadFromJsonAsync<JsonElement>();
             var usersArray = usersBody.GetProperty("Users");
@@ -121,7 +121,7 @@ namespace CSharpAPI.Tests.APITests
                 daytarriff = 5.0f,
                 coordinates = new { lat = 1.0f, lng = 1.0f }
             };
-            var lotResp = await client.PostAsJsonAsync("/api/parkinglots", lot);
+            var lotResp = await client.PostAsJsonAsync("/api/v2/parkinglots", lot);
             lotResp.EnsureSuccessStatusCode();
             var lotCreated = await lotResp.Content.ReadFromJsonAsync<JsonElement>();
             var lotId = lotCreated.GetProperty("id").GetGuid();
@@ -135,7 +135,7 @@ namespace CSharpAPI.Tests.APITests
                 color = "Red",
                 year = DateTime.UtcNow
             };
-            var vehResp = await client.PostAsJsonAsync("/api/vehicles/create", vehicle);
+            var vehResp = await client.PostAsJsonAsync("/api/v2/vehicles/create", vehicle);
             vehResp.EnsureSuccessStatusCode();
             var vehCreated = await vehResp.Content.ReadFromJsonAsync<JsonElement>();
             var vehicleId = vehCreated.GetProperty("id").GetGuid();
@@ -149,7 +149,7 @@ namespace CSharpAPI.Tests.APITests
                 end_time = DateTime.UtcNow.AddHours(2)
             };
 
-            var createResp = await client.PostAsJsonAsync("/api/reservations/create", dtoFull);
+            var createResp = await client.PostAsJsonAsync("/api/v2/reservations/create", dtoFull);
             if (createResp.StatusCode != HttpStatusCode.Created)
             {
                 var s = await createResp.Content.ReadAsStringAsync();
@@ -159,11 +159,11 @@ namespace CSharpAPI.Tests.APITests
             Assert.True(created.TryGetProperty("id", out var idProp));
             var id = idProp.GetGuid();
 
-            var cancelResp = await client.PostAsync($"/api/reservations/cancel/{id}", null);
+            var cancelResp = await client.PostAsync($"/api/v2/reservations/cancel/{id}", null);
             Assert.Equal(HttpStatusCode.OK, cancelResp.StatusCode);
 
             // Verify status changed to Cancelled
-            var getResp = await client.GetAsync($"/api/reservations/{id}");
+            var getResp = await client.GetAsync($"/api/v2/reservations/{id}");
             Assert.Equal(HttpStatusCode.OK, getResp.StatusCode);
             var getBody = await getResp.Content.ReadFromJsonAsync<JsonElement>();
             Assert.True(getBody.TryGetProperty("status", out var statusProp));
@@ -184,7 +184,7 @@ namespace CSharpAPI.Tests.APITests
             };
 
             // prepare related entities
-            var usersResp = await client.GetAsync("/api/users/all");
+            var usersResp = await client.GetAsync("/api/v2/users/all");
             usersResp.EnsureSuccessStatusCode();
             var usersBody = await usersResp.Content.ReadFromJsonAsync<JsonElement>();
             var usersArray = usersBody.GetProperty("Users");
@@ -200,7 +200,7 @@ namespace CSharpAPI.Tests.APITests
                 daytarriff = 5.0f,
                 coordinates = new { lat = 1.0f, lng = 1.0f }
             };
-            var lotResp = await client.PostAsJsonAsync("/api/parkinglots", lot);
+            var lotResp = await client.PostAsJsonAsync("/api/v2/parkinglots", lot);
             lotResp.EnsureSuccessStatusCode();
             var lotCreated = await lotResp.Content.ReadFromJsonAsync<JsonElement>();
             var lotId = lotCreated.GetProperty("id").GetGuid();
@@ -214,7 +214,7 @@ namespace CSharpAPI.Tests.APITests
                 color = "Green",
                 year = DateTime.UtcNow
             };
-            var vehResp = await client.PostAsJsonAsync("/api/vehicles/create", vehicle);
+            var vehResp = await client.PostAsJsonAsync("/api/v2/vehicles/create", vehicle);
             vehResp.EnsureSuccessStatusCode();
             var vehCreated = await vehResp.Content.ReadFromJsonAsync<JsonElement>();
             var vehicleId = vehCreated.GetProperty("id").GetGuid();
@@ -228,7 +228,7 @@ namespace CSharpAPI.Tests.APITests
                 end_time = DateTime.UtcNow.AddHours(1)
             };
 
-            var createResp = await client.PostAsJsonAsync("/api/reservations/create", dtoSingle);
+            var createResp = await client.PostAsJsonAsync("/api/v2/reservations/create", dtoSingle);
             if (createResp.StatusCode != HttpStatusCode.Created)
             {
                 var s = await createResp.Content.ReadAsStringAsync();
@@ -238,7 +238,7 @@ namespace CSharpAPI.Tests.APITests
             Assert.True(created.TryGetProperty("id", out var idProp));
             var id = idProp.GetGuid();
 
-            var getResp = await client.GetAsync($"/api/reservations/{id}");
+            var getResp = await client.GetAsync($"/api/v2/reservations/{id}");
             Assert.Equal(HttpStatusCode.OK, getResp.StatusCode);
 
             var body = await getResp.Content.ReadFromJsonAsync<JsonElement>();
@@ -254,7 +254,7 @@ namespace CSharpAPI.Tests.APITests
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
             var bad = new { }; // missing required fields
-            var resp = await client.PostAsJsonAsync("/api/reservations/create", bad);
+            var resp = await client.PostAsJsonAsync("/api/v2/reservations/create", bad);
             Assert.Equal(HttpStatusCode.BadRequest, resp.StatusCode);
         }
 
@@ -265,7 +265,7 @@ namespace CSharpAPI.Tests.APITests
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
             var id = Guid.NewGuid();
-            var resp = await client.PostAsync($"/api/reservations/cancel/{id}", null);
+            var resp = await client.PostAsync($"/api/v2/reservations/cancel/{id}", null);
             Assert.Equal(HttpStatusCode.NotFound, resp.StatusCode);
         }
     }
