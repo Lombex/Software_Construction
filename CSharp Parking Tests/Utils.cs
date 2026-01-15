@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Headers;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 
@@ -16,7 +16,7 @@ namespace CSharpAPI.Tests.Utillities
         public static async Task<AuthenticationHeaderValue> AuthenticateAsync(HttpClient client, string Username = "superadmin", string Password = "superpass")
         {
             var loginData = new { Username, Password };
-            var response = await client.PostAsJsonAsync("/api/auth/login", loginData);
+            var response = await client.PostAsJsonAsync("/api/v2/auth/login", loginData);
             response.EnsureSuccessStatusCode();
             var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
             if (tokenResponse is null || string.IsNullOrWhiteSpace(tokenResponse.token)) throw new InvalidOperationException("Login did not return a token.");

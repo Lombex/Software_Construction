@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace CSharpAPI.Controllers
 {
     [ApiController]
-    [Route("api/v2/[controller]")]
+    [Route("api/v2/balance")]
     [Authorize]
     public class C_Balance : ControllerBase
     {
