@@ -17,7 +17,7 @@ namespace CSharp_Parking_Tests.API_Tests
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
-            var response = await client.GetAsync("/api/vehicles/all?page=0");
+            var response = await client.GetAsync("/api/v2/vehicles/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -26,7 +26,7 @@ namespace CSharp_Parking_Tests.API_Tests
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
-            var response = await client.GetAsync("/api/vehicles/all?page=-1");
+            var response = await client.GetAsync("/api/v2/vehicles/all?page=-1");
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -35,7 +35,7 @@ namespace CSharp_Parking_Tests.API_Tests
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
-            var response = await client.GetAsync("/api/vehicles/all?page=abc");
+            var response = await client.GetAsync("/api/v2/vehicles/all?page=abc");
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -44,7 +44,7 @@ namespace CSharp_Parking_Tests.API_Tests
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
-            var response = await client.GetAsync("/api/vehicles/all");
+            var response = await client.GetAsync("/api/v2/vehicles/all");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -54,7 +54,7 @@ namespace CSharp_Parking_Tests.API_Tests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
             var unknownId = Guid.NewGuid();
-            var response = await client.GetAsync($"/api/vehicles/{unknownId}");
+            var response = await client.GetAsync($"/api/v2/vehicles/{unknownId}");
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -63,7 +63,7 @@ namespace CSharp_Parking_Tests.API_Tests
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
-            var response = await client.GetAsync($"/api/vehicles/invalid-guid");
+            var response = await client.GetAsync($"/api/v2/vehicles/invalid-guid");
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -100,7 +100,7 @@ namespace CSharp_Parking_Tests.API_Tests
                 }
             };
 
-            var response = await client.PostAsJsonAsync("/api/vehicles/create", newVehicle);
+            var response = await client.PostAsJsonAsync("/api/v2/vehicles/create", newVehicle);
             response.StatusCode.Should().Be(HttpStatusCode.Created);
         }
 
@@ -137,7 +137,7 @@ namespace CSharp_Parking_Tests.API_Tests
                 }
             };
 
-            var response = await client.PostAsJsonAsync("/api/vehicles/create", newVehicle);
+            var response = await client.PostAsJsonAsync("/api/v2/vehicles/create", newVehicle);
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -174,7 +174,7 @@ namespace CSharp_Parking_Tests.API_Tests
                 }
             };
 
-            var response = await client.PostAsJsonAsync("/api/vehicles/create", newVehicle);
+            var response = await client.PostAsJsonAsync("/api/v2/vehicles/create", newVehicle);
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -211,7 +211,7 @@ namespace CSharp_Parking_Tests.API_Tests
                 }
             };
 
-            var response = await client.PostAsJsonAsync("/api/vehicles/create", newVehicle);
+            var response = await client.PostAsJsonAsync("/api/v2/vehicles/create", newVehicle);
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -248,7 +248,7 @@ namespace CSharp_Parking_Tests.API_Tests
                 }
             };
 
-            var response = await client.PostAsJsonAsync("/api/vehicles/create", newVehicle);
+            var response = await client.PostAsJsonAsync("/api/v2/vehicles/create", newVehicle);
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -269,7 +269,7 @@ namespace CSharp_Parking_Tests.API_Tests
                 color = "Red",
             };
 
-            var response = await client.PutAsJsonAsync($"/api/vehicles/update/{userGuid}", newVehicle);
+            var response = await client.PutAsJsonAsync($"/api/v2/vehicles/update/{userGuid}", newVehicle);
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -307,7 +307,7 @@ namespace CSharp_Parking_Tests.API_Tests
             };
 
             // CREATE
-            var createResponse = await client.PostAsJsonAsync("/api/vehicles/create", newVehicle);
+            var createResponse = await client.PostAsJsonAsync("/api/v2/vehicles/create", newVehicle);
             createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
             var createdVehicle = await createResponse.Content.ReadFromJsonAsync<M_Vehicles>();
@@ -315,7 +315,7 @@ namespace CSharp_Parking_Tests.API_Tests
             createdVehicle!.id.Should().NotBe(Guid.Empty);
 
             // GET
-            var getResponse = await client.GetAsync($"/api/vehicles/{createdVehicle.id}");
+            var getResponse = await client.GetAsync($"/api/v2/vehicles/{createdVehicle.id}");
             getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var fetchedVehicle = await getResponse.Content.ReadFromJsonAsync<M_Vehicles>();
@@ -325,7 +325,7 @@ namespace CSharp_Parking_Tests.API_Tests
             // UPDATE
             createdVehicle.license_plate = "UPDATED123";
 
-            var updateResponse = await client.PutAsJsonAsync($"/api/vehicles/update/{createdVehicle.id}", createdVehicle);
+            var updateResponse = await client.PutAsJsonAsync($"/api/v2/vehicles/update/{createdVehicle.id}", createdVehicle);
             updateResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
             // GET AFTER UPDATE
@@ -337,11 +337,11 @@ namespace CSharp_Parking_Tests.API_Tests
             updatedVehicle!.license_plate.Should().Be("UPDATED123");
 
             // DELETE
-            var deleteResponse = await client.DeleteAsync($"/api/vehicles/delete/{createdVehicle.id}");
+            var deleteResponse = await client.DeleteAsync($"/api/v2/vehicles/delete/{createdVehicle.id}");
             deleteResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
             // OPTIONAL: VERIFY IT'S REALLY GONE
-            var getAfterDeleteResponse = await client.GetAsync($"/api/vehicles/{createdVehicle.id}");
+            var getAfterDeleteResponse = await client.GetAsync($"/api/v2/vehicles/{createdVehicle.id}");
             getAfterDeleteResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
     }

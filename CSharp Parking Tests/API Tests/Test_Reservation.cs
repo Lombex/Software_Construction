@@ -21,7 +21,7 @@ namespace CSharpAPI.Tests.APITests
         public async Task GetAllReservations_WithoutToken_Returns401()
         {
             var client = _factory.CreateClient();
-            var response = await client.GetAsync("/api/reservations/all?page=0");
+            var response = await client.GetAsync("/api/v2/reservations/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
 
@@ -30,7 +30,7 @@ namespace CSharpAPI.Tests.APITests
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
-            var response = await client.GetAsync("/api/reservations/all?page=0");
+            var response = await client.GetAsync("/api/v2/reservations/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
         }
 
@@ -39,7 +39,7 @@ namespace CSharpAPI.Tests.APITests
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "lotadmin", "lotpass");
-            var response = await client.GetAsync("/api/reservations/all?page=0");
+            var response = await client.GetAsync("/api/v2/reservations/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         }
@@ -49,7 +49,7 @@ namespace CSharpAPI.Tests.APITests
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "superadmin", "superpass");
-            var response = await client.GetAsync("/api/reservations/all?page=0");
+            var response = await client.GetAsync("/api/v2/reservations/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -106,7 +106,7 @@ namespace CSharpAPI.Tests.APITests
                 cost = 20.0f
             };
 
-            var response = await client.PostAsJsonAsync("/api/reservations/create", newReservation);
+            var response = await client.PostAsJsonAsync("/api/v2/reservations/create", newReservation);
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var createdReservation = await response.Content.ReadFromJsonAsync<M_Reservations>();
@@ -137,7 +137,7 @@ namespace CSharpAPI.Tests.APITests
                 cost = 15.0f
             };
 
-            var response = await client.PostAsJsonAsync("/api/reservations/create", badReservation);
+            var response = await client.PostAsJsonAsync("/api/v2/reservations/create", badReservation);
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -147,7 +147,7 @@ namespace CSharpAPI.Tests.APITests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
 
-            var response = await client.GetAsync($"/api/reservations/{Guid.NewGuid()}");
+            var response = await client.GetAsync($"/api/v2/reservations/{Guid.NewGuid()}");
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -157,7 +157,7 @@ namespace CSharpAPI.Tests.APITests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
 
-            var response = await client.GetAsync($"/api/reservations/{Guid.Empty}");
+            var response = await client.GetAsync($"/api/v2/reservations/{Guid.Empty}");
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -167,7 +167,7 @@ namespace CSharpAPI.Tests.APITests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
 
-            var response = await client.PostAsync($"/api/reservations/cancel/{Guid.Empty}", null);
+            var response = await client.PostAsync($"/api/v2/reservations/cancel/{Guid.Empty}", null);
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -177,7 +177,7 @@ namespace CSharpAPI.Tests.APITests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
 
-            var response = await client.PostAsync($"/api/reservations/cancel/{Guid.NewGuid()}", null);
+            var response = await client.PostAsync($"/api/v2/reservations/cancel/{Guid.NewGuid()}", null);
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -201,10 +201,10 @@ namespace CSharpAPI.Tests.APITests
                 created_at = DateTime.UtcNow,
                 cost = 10.0f
             };
-            var create = await client.PostAsJsonAsync("/api/reservations/create", reservation);
+            var create = await client.PostAsJsonAsync("/api/v2/reservations/create", reservation);
             create.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var cancel = await client.PostAsync($"/api/reservations/cancel/{resId}", null);
+            var cancel = await client.PostAsync($"/api/v2/reservations/cancel/{resId}", null);
             cancel.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -214,7 +214,7 @@ namespace CSharpAPI.Tests.APITests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
 
-            var response = await client.GetAsync($"/api/reservations/user/{Guid.Empty}?Status=Active");
+            var response = await client.GetAsync($"/api/v2/reservations/user/{Guid.Empty}?Status=Active");
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -238,10 +238,10 @@ namespace CSharpAPI.Tests.APITests
                 created_at = DateTime.UtcNow,
                 cost = 5.0f
             };
-            var create = await client.PostAsJsonAsync("/api/reservations/create", reservation);
+            var create = await client.PostAsJsonAsync("/api/v2/reservations/create", reservation);
             create.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var response = await client.GetAsync($"/api/reservations/user/{userId}?Status=Active");
+            var response = await client.GetAsync($"/api/v2/reservations/user/{userId}?Status=Active");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -254,7 +254,7 @@ namespace CSharpAPI.Tests.APITests
             var (_, lotId, _) = await SeedReservationDependenciesAsync();
             var from = DateTime.UtcNow.AddHours(2);
             var to = DateTime.UtcNow;
-            var response = await client.GetAsync($"/api/reservations/check-availability/parking-lots/{lotId}?from={from:o}&to={to:o}");
+            var response = await client.GetAsync($"/api/v2/reservations/check-availability/parking-lots/{lotId}?from={from:o}&to={to:o}");
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -266,7 +266,7 @@ namespace CSharpAPI.Tests.APITests
 
             var from = DateTime.UtcNow;
             var to = DateTime.UtcNow.AddHours(1);
-            var response = await client.GetAsync($"/api/reservations/check-availability/parking-lots/{Guid.Empty}?from={from:o}&to={to:o}");
+            var response = await client.GetAsync($"/api/v2/reservations/check-availability/parking-lots/{Guid.Empty}?from={from:o}&to={to:o}");
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -279,7 +279,7 @@ namespace CSharpAPI.Tests.APITests
             var (_, lotId, _) = await SeedReservationDependenciesAsync();
             var from = DateTime.UtcNow.AddHours(1);
             var to = DateTime.UtcNow.AddHours(2);
-            var response = await client.GetAsync($"/api/reservations/check-availability/parking-lots/{lotId}?from={from:o}&to={to:o}");
+            var response = await client.GetAsync($"/api/v2/reservations/check-availability/parking-lots/{lotId}?from={from:o}&to={to:o}");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -289,7 +289,7 @@ namespace CSharpAPI.Tests.APITests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "superadmin", "superpass");
 
-            var response = await client.GetAsync("/api/reservations/all?page=999");
+            var response = await client.GetAsync("/api/v2/reservations/all?page=999");
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -348,7 +348,7 @@ namespace CSharpAPI.Tests.APITests
                 cost = 20.0f
             };
 
-            var response = await client.PostAsJsonAsync("/api/reservations/create", incompleteReservation);
+            var response = await client.PostAsJsonAsync("/api/v2/reservations/create", incompleteReservation);
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 

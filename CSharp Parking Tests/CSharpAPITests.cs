@@ -1,4 +1,4 @@
-﻿using CSharpAPI.Database;
+using CSharpAPI.Database;
 using CSharpAPI.Models;
 using CSharpAPI.Services;
 using CSharpAPI.Tests.Utillities;
@@ -28,12 +28,20 @@ namespace CSharpAPI.Tests
 
                 services.AddDbContext<SQLite_Database>(options => { options.UseSqlite(Connection); });
 
-                // Register services needed for tests
+                // Register all services needed for tests
                 services.AddScoped<IUsersService, S_Users>();
                 services.AddScoped<IVehiclesService, S_Vehicles>();
                 services.AddScoped<IPaymentsService, S_Payments>();
                 services.AddScoped<ITokenService, TokenService>();
                 services.AddScoped<IReservationsService, S_Reservations>();
+                services.AddScoped<IParkinglotsService, S_Parkinglots>();
+                services.AddScoped<IProfileService, Service_Profile>();
+                services.AddScoped<ISessionsService, S_Sessions>();
+                services.AddScoped<ITokenRevocationService, TokenRevocationService>();
+                services.AddScoped<IBillingService, S_Billing>();
+                services.AddScoped<IUserBalanceService, S_UserBalance>();
+                services.AddScoped<ICompanyService, S_Company>();
+                services.AddScoped<IHotelService, S_Hotel>();
 
                 var sp = services.BuildServiceProvider();
                 using var scope = sp.CreateScope();
