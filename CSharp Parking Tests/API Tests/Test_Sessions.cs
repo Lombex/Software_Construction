@@ -1,3 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
+using FluentAssertions;
+using Xunit;
+
 namespace CSharpAPI.Tests.APITests
 {
     public class Test_Sessions : IClassFixture<CSharpAPITests>
@@ -13,7 +22,7 @@ namespace CSharpAPI.Tests.APITests
         public async Task GetAllSessions_WithoutToken_Returns401()
         {
             var client = _factory.CreateClient();
-            var response = await client.GetAsync("/api/sessions/all?page=0");
+            var response = await client.GetAsync("/api/v2/sessions/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
 
@@ -21,8 +30,8 @@ namespace CSharpAPI.Tests.APITests
         public async Task GetAllSessions_WithToken_ReturnsOk()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
-            var response = await client.GetAsync("/api/sessions/all?user=superadmin&status=Unpaid");
+            client.DefaultRequestHeaders.Authorization = await AuthenticateAsync(client);
+            var response = await client.GetAsync("/api/v2/sessions/all?user=superadmin&status=Unpaid");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -30,7 +39,7 @@ namespace CSharpAPI.Tests.APITests
         public async Task StartSession_WithValidData_ReturnsOk()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
+            client.DefaultRequestHeaders.Authorization = await AuthenticateAsync(client);
             var session = new CSharpAPI.Models.M_Session
             {
                 id = Guid.NewGuid(),
@@ -43,7 +52,7 @@ namespace CSharpAPI.Tests.APITests
                 cost = 0,
                 status = CSharpAPI.Models.M_Session.PaymentStatus.Unpaid
             };
-            var response = await client.PostAsJsonAsync("/api/sessions/start", session);
+            var response = await client.PostAsJsonAsync("/api/v2/sessions/start", session);
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -51,7 +60,7 @@ namespace CSharpAPI.Tests.APITests
         public async Task StopSession_WithValidId_ReturnsOkOrNotFound()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
+            client.DefaultRequestHeaders.Authorization = await AuthenticateAsync(client);
 
             var session = new CSharpAPI.Models.M_Session
             {
@@ -65,10 +74,10 @@ namespace CSharpAPI.Tests.APITests
                 cost = 0,
                 status = CSharpAPI.Models.M_Session.PaymentStatus.Unpaid
             };
-            var createResponse = await client.PostAsJsonAsync("/api/sessions/start", session);
+            var createResponse = await client.PostAsJsonAsync("/api/v2/sessions/start", session);
             createResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var response = await client.PostAsync($"/api/sessions/{session.id}/stop", null);
+            var response = await client.PostAsync($"/api/v2/sessions/{session.id}/stop", null);
 
             response.StatusCode.Should().Match(x => x == HttpStatusCode.OK || x == HttpStatusCode.NotFound);
         }
@@ -77,8 +86,8 @@ namespace CSharpAPI.Tests.APITests
         public async Task StartSession_WithNullBody_ReturnsBadRequest()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
-            var response = await client.PostAsJsonAsync("/api/sessions/start", (object?)null);
+            client.DefaultRequestHeaders.Authorization = await AuthenticateAsync(client);
+            var response = await client.PostAsJsonAsync("/api/v2/sessions/start", (object?)null);
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -86,9 +95,9 @@ namespace CSharpAPI.Tests.APITests
         public async Task StopSession_WithUnknownId_ReturnsNotFound()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
+            client.DefaultRequestHeaders.Authorization = await AuthenticateAsync(client);
             var unknownId = Guid.NewGuid();
-            var response = await client.PostAsync($"/api/sessions/{unknownId}/stop", null);
+            var response = await client.PostAsync($"/api/v2/sessions/{unknownId}/stop", null);
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -96,8 +105,8 @@ namespace CSharpAPI.Tests.APITests
         public async Task GetSessionsById_WithUnknownUser_ReturnsOkWithEmptyList()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
-            var response = await client.GetAsync("/api/sessions/unknownuser");
+            client.DefaultRequestHeaders.Authorization = await AuthenticateAsync(client);
+            var response = await client.GetAsync("/api/v2/sessions/unknownuser");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var sessions = await response.Content.ReadFromJsonAsync<List<CSharpAPI.Models.M_Session>>();
             sessions.Should().BeEmpty();
@@ -107,8 +116,8 @@ namespace CSharpAPI.Tests.APITests
         public async Task GetAllSessions_EmptyUser_ReturnsBadRequest()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
-            var response = await client.GetAsync("/api/sessions/all?user=&status=Unpaid");
+            client.DefaultRequestHeaders.Authorization = await AuthenticateAsync(client);
+            var response = await client.GetAsync("/api/v2/sessions/all?user=&status=Unpaid");
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -116,8 +125,8 @@ namespace CSharpAPI.Tests.APITests
         public async Task GetAllSessions_InvalidStatus_ReturnsBadRequest()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
-            var response = await client.GetAsync("/api/sessions/all?user=superadmin&status=INVALID");
+            client.DefaultRequestHeaders.Authorization = await AuthenticateAsync(client);
+            var response = await client.GetAsync("/api/v2/sessions/all?user=superadmin&status=INVALID");
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -125,7 +134,7 @@ namespace CSharpAPI.Tests.APITests
         public async Task StartSession_MissingRequiredFields_ReturnsBadRequest()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
+            client.DefaultRequestHeaders.Authorization = await AuthenticateAsync(client);
             var session = new CSharpAPI.Models.M_Session
             {
                 // no id, no user, no vehicle_id
@@ -136,7 +145,7 @@ namespace CSharpAPI.Tests.APITests
                 cost = 0,
                 status = CSharpAPI.Models.M_Session.PaymentStatus.Unpaid
             };
-            var response = await client.PostAsJsonAsync("/api/sessions/start", session);
+            var response = await client.PostAsJsonAsync("/api/v2/sessions/start", session);
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -144,7 +153,7 @@ namespace CSharpAPI.Tests.APITests
         public async Task StopSession_AlreadyStopped_ReturnsNotFoundOrBadRequest()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
+            client.DefaultRequestHeaders.Authorization = await AuthenticateAsync(client);
             var session = new CSharpAPI.Models.M_Session
             {
                 id = Guid.NewGuid(),
@@ -157,11 +166,11 @@ namespace CSharpAPI.Tests.APITests
                 cost = 0,
                 status = CSharpAPI.Models.M_Session.PaymentStatus.Unpaid
             };
-            var createResponse = await client.PostAsJsonAsync("/api/sessions/start", session);
+            var createResponse = await client.PostAsJsonAsync("/api/v2/sessions/start", session);
             createResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var response1 = await client.PostAsync($"/api/sessions/{session.id}/stop", null);
-            var response2 = await client.PostAsync($"/api/sessions/{session.id}/stop", null);
+            var response1 = await client.PostAsync($"/api/v2/sessions/{session.id}/stop", null);
+            var response2 = await client.PostAsync($"/api/v2/sessions/{session.id}/stop", null);
             response2.StatusCode.Should().Match(x => x == HttpStatusCode.NotFound || x == HttpStatusCode.BadRequest);
         }
 
@@ -169,7 +178,7 @@ namespace CSharpAPI.Tests.APITests
         public async Task PaySession_HappyFlow_ReturnsOk()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
+            client.DefaultRequestHeaders.Authorization = await AuthenticateAsync(client);
             var session = new CSharpAPI.Models.M_Session
             {
                 id = Guid.NewGuid(),
@@ -182,11 +191,11 @@ namespace CSharpAPI.Tests.APITests
                 cost = 0,
                 status = CSharpAPI.Models.M_Session.PaymentStatus.Unpaid
             };
-            var createResponse = await client.PostAsJsonAsync("/api/sessions/start", session);
+            var createResponse = await client.PostAsJsonAsync("/api/v2/sessions/start", session);
             createResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-            var stopResponse = await client.PostAsync($"/api/sessions/{session.id}/stop", null);
+            var stopResponse = await client.PostAsync($"/api/v2/sessions/{session.id}/stop", null);
             stopResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-            var payResponse = await client.PostAsync($"/api/sessions/{session.id}/pay", null);
+            var payResponse = await client.PostAsync($"/api/v2/sessions/{session.id}/pay", null);
             payResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -194,9 +203,25 @@ namespace CSharpAPI.Tests.APITests
         public async Task PaySession_WrongId_ReturnsNotFound()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utillities.Utils.AuthenticateAsync(client);
-            var response = await client.PostAsync($"/api/sessions/{Guid.NewGuid()}/pay", null);
+            client.DefaultRequestHeaders.Authorization = await AuthenticateAsync(client);
+            var response = await client.PostAsync($"/api/v2/sessions/{Guid.NewGuid()}/pay", null);
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        private async Task<System.Net.Http.Headers.AuthenticationHeaderValue> AuthenticateAsync(HttpClient client, string Username = "superadmin", string Password = "superpass")
+        {
+            var loginData = new { Username, Password };
+            var response = await client.PostAsJsonAsync("/api/v2/auth/login", loginData);
+            response.EnsureSuccessStatusCode();
+            var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
+            if (tokenResponse is null || string.IsNullOrWhiteSpace(tokenResponse.token)) throw new InvalidOperationException("Login did not return a token.");
+            return new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenResponse.token);
+        }
+
+        private class TokenResponse
+        {
+            public string token { get; set; } = string.Empty;
+            public DateTime expiresAt { get; set; }
         }
     }
 }
