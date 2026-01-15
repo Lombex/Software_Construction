@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace CSharpAPI.Controllers
 {
     [ApiController]
-    [Route("api/v2/[controller]")]
+    [Route("api/v2/hotel")]
     [Authorize]
     public class C_Hotel : ControllerBase
     {
