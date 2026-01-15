@@ -154,8 +154,8 @@ namespace CSharpAPI.Controllers
             return NoContent();
         }
 
-        // POST /api/billing/{id}/mark-paid - Mark a bill as paid
-        [HttpPost("{id}/mark-paid")]
+        // PUT /api/billing/{id}/mark-paid - Mark a bill as paid (= update to an existing bill)
+        [HttpPut("{id}/mark-paid")]
         public async Task<IActionResult> MarkPaid(Guid id)
         {
             if (id == Guid.Empty) return BadRequest("Invalid billing ID.");

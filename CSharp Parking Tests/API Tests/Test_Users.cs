@@ -16,16 +16,16 @@ namespace CSharpAPI.Tests.APITests
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
-            var response = await client.GetAsync("/api/users/all?page=0");
+            var response = await client.GetAsync("/api/v2/users/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
-     
+    
         [Fact]
         public async Task Test_Pagination_NegativePage()
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
-            var response = await client.GetAsync("/api/users/all?page=-1");
+            var response = await client.GetAsync("/api/v2/users/all?page=-1");
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
         
@@ -34,7 +34,7 @@ namespace CSharpAPI.Tests.APITests
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
-            var response = await client.GetAsync("/api/users/all");
+            var response = await client.GetAsync("/api/v2/users/all");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -44,7 +44,7 @@ namespace CSharpAPI.Tests.APITests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
             var unknownId = Guid.NewGuid();
-            var response = await client.GetAsync($"/api/users/{unknownId}");
+            var response = await client.GetAsync($"/api/v2/users/{unknownId}");
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -67,7 +67,7 @@ namespace CSharpAPI.Tests.APITests
                 active = true
             };
 
-            var response = await client.PostAsJsonAsync("/api/users/create", user);
+            var response = await client.PostAsJsonAsync("/api/v2/users/create", user);
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -83,7 +83,7 @@ namespace CSharpAPI.Tests.APITests
                 email = "not-an-email" // invalid
             };
 
-            var response = await client.PostAsJsonAsync("/api/users/create", badUser);
+            var response = await client.PostAsJsonAsync("/api/v2/users/create", badUser);
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -105,7 +105,7 @@ namespace CSharpAPI.Tests.APITests
                 birth_year = new DateTime(1990, 5, 20),
                 active = true
             };
-            var response = await client.PostAsJsonAsync("/api/users/create", user);
+            var response = await client.PostAsJsonAsync("/api/v2/users/create", user);
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -128,7 +128,7 @@ namespace CSharpAPI.Tests.APITests
                 active = true
             };
 
-            var response = await client.PostAsJsonAsync("/api/users/create", user);
+            var response = await client.PostAsJsonAsync("/api/v2/users/create", user);
             response.StatusCode.Should().Be(HttpStatusCode.Created);
         }
 
@@ -150,7 +150,7 @@ namespace CSharpAPI.Tests.APITests
                 active = true
             };
 
-            var response = await client.PutAsJsonAsync($"/api/users/update/{Guid.NewGuid()}", updateUser);
+            var response = await client.PutAsJsonAsync($"/api/v2/users/update/{Guid.NewGuid()}", updateUser);
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -172,7 +172,7 @@ namespace CSharpAPI.Tests.APITests
                 active = true
             };
 
-            var response = await client.PutAsJsonAsync($"/api/users/update/{Guid.NewGuid()}", updateUser);
+            var response = await client.PutAsJsonAsync($"/api/v2/users/update/{Guid.NewGuid()}", updateUser);
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
         
@@ -181,7 +181,7 @@ namespace CSharpAPI.Tests.APITests
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
-            var response = await client.DeleteAsync($"/api/users/delete/{Guid.NewGuid()}");
+            var response = await client.DeleteAsync($"/api/v2/users/delete/{Guid.NewGuid()}");
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -206,7 +206,7 @@ namespace CSharpAPI.Tests.APITests
                 active = true
             };
 
-            var createResponse = await client.PostAsJsonAsync("/api/users/create", newUser);
+            var createResponse = await client.PostAsJsonAsync("/api/v2/users/create", newUser);
             createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
             // Body is the created M_Users, mapped to UserDto
@@ -218,7 +218,7 @@ namespace CSharpAPI.Tests.APITests
             var id = createdUser.id;
 
             // 2. GET BY ID
-            var getResponse = await client.GetAsync($"/api/users/{id}");
+            var getResponse = await client.GetAsync($"/api/v2/users/{id}");
             getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var getUser = await getResponse.Content.ReadFromJsonAsync<UserDto>();
@@ -241,11 +241,11 @@ namespace CSharpAPI.Tests.APITests
                 active = true
             };
 
-            var updateResponse = await client.PutAsJsonAsync($"/api/users/update/{id}", updateUser);
+            var updateResponse = await client.PutAsJsonAsync($"/api/v2/users/update/{id}", updateUser);
             updateResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
             // 4. GET AFTER UPDATE
-            var afterUpdate = await client.GetAsync($"/api/users/{id}");
+            var afterUpdate = await client.GetAsync($"/api/v2/users/{id}");
             afterUpdate.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var updatedUser = await afterUpdate.Content.ReadFromJsonAsync<UserDto>();
@@ -254,11 +254,11 @@ namespace CSharpAPI.Tests.APITests
             updatedUser.phone.Should().Be("0699999999");
 
             // 5. DELETE
-            var deleteResponse = await client.DeleteAsync($"/api/users/delete/{id}");
+            var deleteResponse = await client.DeleteAsync($"/api/v2/users/delete/{id}");
             deleteResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
             // 6. CONFIRM DELETE
-            var checkDeleted = await client.GetAsync($"/api/users/{id}");
+            var checkDeleted = await client.GetAsync($"/api/v2/users/{id}");
             checkDeleted.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
