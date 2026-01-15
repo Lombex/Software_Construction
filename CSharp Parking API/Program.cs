@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Net.Sockets;
 using CSharpAPI.Controllers.Utils;
 using Serilog;
 
@@ -175,7 +176,40 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Urls.Add("http://localhost:5001");
+// Helper method to check if a port is in use
+static bool IsPortInUse(int port)
+{
+    try
+    {
+        // Try to bind to the port - if it fails, the port is in use
+        using var listener = new TcpListener(System.Net.IPAddress.Loopback, port);
+        listener.Start();
+        listener.Stop();
+        return false; // Port is available (binding succeeded)
+    }
+    catch (SocketException ex) when (ex.SocketErrorCode == SocketError.AddressAlreadyInUse)
+    {
+        return true; // Port is in use
+    }
+    catch
+    {
+        // Other exceptions - assume port is available
+        return false;
+    }
+}
+
+// Check if port 5001 is available before binding
+int port = 5001;
+if (IsPortInUse(port))
+{
+    Log.Error($"Port {port} is already in use. Please stop the other application using this port or change the port configuration.");
+    Console.WriteLine($"\n[ERROR] Port {port} is already in use.");
+    Console.WriteLine($"Please stop the other application using this port or change the port configuration.");
+    Console.WriteLine($"You can check which process is using the port with: netstat -ano | findstr :{port}");
+    Environment.Exit(1);
+}
+
+app.Urls.Add($"http://localhost:{port}");
 
 if (!app.Environment.IsEnvironment("Testing"))
 {
