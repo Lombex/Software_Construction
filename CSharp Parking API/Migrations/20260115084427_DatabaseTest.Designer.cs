@@ -3,6 +3,7 @@ using System;
 using CSharpAPI.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CSharp_Parking_API.Migrations
 {
     [DbContext(typeof(SQLite_Database))]
-    partial class SQLite_DatabaseModelSnapshot : ModelSnapshot
+    [Migration("20260115084427_DatabaseTest")]
+    partial class DatabaseTest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");

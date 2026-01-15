@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace CSharpAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v2/[controller]")]
     [Authorize]
     public class C_Company : ControllerBase
     {

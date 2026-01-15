@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace CSharpAPI.Controllers
 {
-    [Route("api/billing")]
+    [Route("api/v2/billing")]
     [ApiController]
     [Authorize] // All billing endpoints require authentication
     public class C_Billing : ControllerBase

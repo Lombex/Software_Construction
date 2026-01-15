@@ -9,7 +9,7 @@ using static CSharpAPI.Models.M_Billing;
 
 namespace CSharpAPI.Controllers
 {
-    [Route("api/payments")]
+    [Route("api/v2/payments")]
     [ApiController]
     [Authorize] // All payment endpoints require authentication
     public class C_Payments : ControllerBase

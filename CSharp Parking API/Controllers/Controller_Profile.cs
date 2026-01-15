@@ -7,7 +7,7 @@ using static CSharpAPI.Models.M_Reservations;
 
 namespace CSharpAPI.Controllers
 {
-    [Route("api/profile")]
+    [Route("api/v2/profile")]
     [ApiController]
     [Authorize] // All profile endpoints require authentication
     public class C_Profile : ControllerBase
@@ -33,11 +33,21 @@ namespace CSharpAPI.Controllers
         public async Task<IActionResult> GetProfile([FromQuery] Guid id)
         {
             // Users can only view their own profile, admins can view any
-            if (!IsAdminOrAbove && (CurrentUserId == null || id != CurrentUserId.Value))
-                return Forbid();
+            if (!IsAdminOrAbove && (CurrentUserId == null || id != CurrentUserId.Value)) return Forbid();
 
             var user = await _profileService.GetById(id);
-            return Ok(user);
+            return Ok(new {
+                id = user.id,
+                username = user.username,
+                name = user.name,
+                email = user.email,
+                phone = user.phone,
+                role = user.role,
+                parking_lot_id = user.parking_lot_id,
+                created_at = user.created_at,
+                birth_year = user.birth_year,
+                active = user.active
+            });
         }
 
         [HttpGet("{id}")]

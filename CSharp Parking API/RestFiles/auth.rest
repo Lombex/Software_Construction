@@ -34,7 +34,7 @@ Content-Type: application/json
 ### Get Current User Info (requires token from login)
 # First login as admin or user, copy the token, then use it below
 GET http://localhost:5001/api/auth/me
-Authorization: Bearer YOUR_TOKEN_HERE
+Authorization: Bearer YOUR_ADMIN_TOKEN_HERE
 
 ###
 

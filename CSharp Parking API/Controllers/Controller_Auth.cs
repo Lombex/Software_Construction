@@ -11,7 +11,7 @@ using Serilog;
 namespace CSharpAPI.Controllers
 {
     // Authentication controller - handles login and JWT token validation
-    [Route("api/auth")]
+    [Route("api/v2/auth")]
     [ApiController]
     public class C_Auth : ControllerBase
     {

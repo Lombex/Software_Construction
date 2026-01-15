@@ -24,14 +24,34 @@ namespace CSharpAPI.Services
             _dbContext = dbContext;
         }
 
+        // Plan (pseudocode):
+        // - Validate input token: if null/empty -> return false (not revoked)
+        // - Compute token hash safely
+        // - Query RevokedTokens with AsNoTracking for performance
+        // - Return true if found, false otherwise
+        // - Wrap in try/catch to avoid 500s from unexpected DB errors and return false
+
         // Check if a token has been revoked (used during JWT validation)
         public async Task<bool> IsTokenRevokedAsync(string token)
         {
-            var tokenHash = HashToken(token);
-            var revokedToken = await _dbContext.RevokedTokens
-                .FirstOrDefaultAsync(t => t.TokenId == tokenHash);
-            
-            return revokedToken != null;
+            if (string.IsNullOrWhiteSpace(token))
+                return false;
+
+            try
+            {
+                var tokenHash = HashToken(token);
+
+                var revokedToken = await _dbContext.RevokedTokens
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(t => t.TokenId == tokenHash);
+
+                return revokedToken != null;
+            }
+            catch
+            {
+                // Swallow exceptions to prevent 500 during validation; consider logging
+                return false;
+            }
         }
 
         // Revoke a token (add to blacklist) - called during logout

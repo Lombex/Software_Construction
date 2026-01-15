@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CSharpAPI.Controllers
 {
-    [Route("api/reservations")]
+    [Route("api/v2/reservations")]
     [ApiController]
     [Authorize] // All reservation endpoints require authentication
     public class C_Reservations : ControllerBase

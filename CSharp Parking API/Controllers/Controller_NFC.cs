@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace CSharpAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v2/[controller]")]
     [AllowAnonymous] // NFC endpoints might be called by hardware
     public class C_NFC : ControllerBase
     {
