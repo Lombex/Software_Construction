@@ -46,7 +46,10 @@ namespace CSharpAPI.Services
             }
 
             // Check parking lot capacity
-            var parkingLot = await DbContext.Parkinglots.FindAsync(session.parking_lot_id);
+            // Use AsNoTracking() since we only need to read the capacity, not track the entity
+            var parkingLot = await DbContext.Parkinglots
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.id == session.parking_lot_id);
             if (parkingLot == null)
             {
                 Log.Error("Parking lot {ParkingLotId} not found when starting session", session.parking_lot_id);
@@ -77,11 +80,24 @@ namespace CSharpAPI.Services
             if (session.started == default)
                 session.started = DateTime.UtcNow;
 
+            // Clear navigation properties to avoid tracking conflicts
+            // EF Core will use the foreign key IDs (parking_lot_id, vehicle_id) instead
+            session.parking_lot = null;
+            session.vehicle_license_plate = null;
+
             await DbContext.Sessions.AddAsync(session);
             await DbContext.SaveChangesAsync();
+            
+            // Reload session with navigation properties for response
+            var savedSession = await DbContext.Sessions
+                .Include(s => s.parking_lot)
+                .Include(s => s.vehicle_license_plate)
+                    .ThenInclude(v => v.M_Users)
+                .FirstOrDefaultAsync(s => s.id == session.id);
+            
             Log.Information("Session {SessionId} started for license plate {LicensePlate} at parking lot {ParkingLotId}", 
                 session.id, session.license_plate, session.parking_lot_id);
-            return session;
+            return savedSession ?? session;
         }
         public async Task<M_Session?> Stop(Guid id)
         {
