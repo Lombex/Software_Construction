@@ -1,0 +1,131 @@
+POST http://localhost:8000/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "Jason3",
+  "password": "12345",
+  "name": "Jason Bourne"
+}
+
+
+
+###
+POST http://localhost:8000/parking-lots/1499/sessions/start HTTP/1.1
+Content-Type: application/json
+Authorization: df87f6ab-eff8-4feb-936e-1be4da711ef6
+
+{
+  "licenseplate": "CDE-123"
+}
+
+###
+POST http://localhost:8000/parking-lots/1499/sessions/stop HTTP/1.1
+Content-Type: application/json
+Authorization: df87f6ab-eff8-4feb-936e-1be4da711ef6
+
+{
+  "licenseplate": "CDE-123"
+}
+
+
+#####
+
+POST http://localhost:8000/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "id": "8599",
+  "username": "fenna.adriaanse",
+  "password": "fenna",
+  "name": "Fenna Adriaanse",
+  "email": "fenna.adriaanse@ziggo.nl",
+  "phone": "+310769682812",
+  "role": "USER",
+  "birth_year": 1963
+}
+
+###
+
+POST http://localhost:8000/parking-lots
+Content-Type: application/json
+Authorization: ce08083c-c822-4932-8f1d-f1b425043a34
+
+{
+  "name": "Nieuwe parkeerplaats",
+  "location": "Locatie",
+  "address": "Adres",
+  "capacity": 100,
+  "reserved": 0,
+  "tariff": 2.5,
+  "daytariff": 10,
+  "created_at": "2025-09-25",
+  "coordinates": { "lat": 52.0, "lng": 5.0 }
+}
+
+
+###
+
+POST http://localhost:8000/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "fenna.adriaanse",
+  "password": "fenna"
+}
+
+
+###
+POST http://localhost:8000/vehicles HTTP/1.1
+Content-Type: application/json
+Authorization : 6f8565f4-8e45-4328-b07d-8ff89d08430a
+
+{
+    "name": "Fenna.adriaanse",
+    "license_plate": "YE-496-F",
+    "make": "Fenna nieuwe auto",
+    "model": "Corolla",
+    "color": "Orange",
+    "year": 2024,
+    "created_at": "2024-08-03"
+  }
+
+### 
+
+POST http://localhost:8000/vehicles/14210/entry HTTP/1.1
+Content-Type: application/json
+Authorization : 6f8565f4-8e45-4328-b07d-8ff89d08430a
+
+{
+  "name": "Mazda",
+  "license_plate": "59-DED-E",
+  "parkinglot": 1499
+}
+###
+
+
+
+###
+POST http://localhost:8000/payments HTTP/1.1
+Content-Type: application/json
+Authorization : a6b3c387-5600-48a6-b08c-92e79c59aebe
+
+
+
+####
+# {
+#   "id": "8599",
+#   "username": "fenna.adriaanse",
+#   "password": "831fc3acf61a6ac7f44f73287ece2942",
+#   "name": "Fenna Adriaanse",
+#   "email": "fenna.adriaanse@ziggo.nl",
+#   "phone": "+310769682812",
+#   "role": "USER",
+#   "created_at": "2025-06-07",
+#   "birth_year": 1963,
+#   "active": true
+# }
+
+###
+POST http://localhost:8000/payments/refund HTTP/1.1
+Content-Type: application/json
+Authorization : a24289fa-6fed-4e7e-ab00-ed669fe580ef
