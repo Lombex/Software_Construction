@@ -56,8 +56,21 @@ namespace CSharpAPI.Controllers
                 session.user = username;
             }
 
-            var startedSession = await _sessionsService.Start(session);
-            return Ok(startedSession);
+            try
+            {
+                var startedSession = await _sessionsService.Start(session);
+                return Ok(startedSession);
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Handle business logic errors (parking lot not found, already active session, full capacity, etc.)
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error starting session");
+                return StatusCode(500, "An error occurred while starting the session.");
+            }
         }
 
         [HttpPost("{id}/stop")]

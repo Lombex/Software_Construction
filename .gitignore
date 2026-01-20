@@ -24,4 +24,5 @@ CSharp Parking Tests/obj
 CSharp Parking Tests/bin
 CSharp Parking Tests/.vs
 
-*.md
+# Ignore build artifacts from referenced projects
+CSharp Parking API.Tests/

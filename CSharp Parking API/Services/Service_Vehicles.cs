@@ -1,3 +1,4 @@
+using System;
 using CSharpAPI.Database;
 using CSharpAPI.Models;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ namespace CSharpAPI.Services
     public interface IVehiclesService
     {
         Task<List<M_Vehicles>> GetAllVehicles();
+        Task<List<M_Vehicles>> GetVehiclesByUserId(Guid userId);
         Task<M_Vehicles> GetByID(Guid id);
         Task CreateVehicle(M_Vehicles newVehicle);
         Task UpdateVehicle(Guid id, M_Vehicles updatedVehicle);
@@ -22,6 +24,14 @@ namespace CSharpAPI.Services
         }
         
         public async Task<List<M_Vehicles>> GetAllVehicles() => await DbContext.Vehicles.AsQueryable().ToListAsync();
+        
+        public async Task<List<M_Vehicles>> GetVehiclesByUserId(Guid userId)
+        {
+            return await DbContext.Vehicles
+                .Where(v => v.user_id == userId)
+                .ToListAsync();
+        }
+        
         public async Task<M_Vehicles> GetByID(Guid id)
         {
             var vehicle = await DbContext.Vehicles.FirstOrDefaultAsync(x => x.id == id);
@@ -37,6 +47,18 @@ namespace CSharpAPI.Services
             
             if (existingVehicle != null)
                 throw new InvalidOperationException($"License plate '{model.license_plate}' already exists for this user.");
+
+            // Ensure navigation property is null to prevent EF from trying to insert/update the User entity
+            // We only want to set the foreign key (user_id), not the navigation property
+            model.M_Users = null;
+            
+            // Ensure id is set if not already
+            if (model.id == Guid.Empty)
+                model.id = Guid.NewGuid();
+            
+            // Set created_at if not set
+            if (model.created_at == default)
+                model.created_at = DateTime.UtcNow;
 
             await DbContext.Vehicles.AddAsync(model);
             await DbContext.SaveChangesAsync();
@@ -63,7 +85,11 @@ namespace CSharpAPI.Services
             _vehicle.make = updatedVehicle.make;
             _vehicle.model = updatedVehicle.model;
             _vehicle.color = updatedVehicle.color;
-            _vehicle.user_id = updatedVehicle.user_id;
+            _vehicle.year = updatedVehicle.year;
+            
+            // Ensure navigation property is null to prevent EF from trying to insert/update the User entity
+            _vehicle.M_Users = null;
+            
             DbContext.Vehicles.Update(_vehicle);
             await DbContext.SaveChangesAsync();
         }

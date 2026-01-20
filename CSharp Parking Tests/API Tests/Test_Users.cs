@@ -21,7 +21,7 @@ namespace CSharpAPI.Tests.APITests
             var response = await client.GetAsync("/api/v2/users/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
-     
+    
         [Fact]
         public async Task Test_Pagination_NegativePage()
         {
