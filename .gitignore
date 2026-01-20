@@ -1,4 +1,4 @@
-﻿Python Parking API/__MACOSX
+Python Parking API/__MACOSX
 Python Parking API/api/data
 *.DS_Store
 
@@ -26,3 +26,17 @@ CSharp Parking Tests/.vs
 
 # Ignore build artifacts from referenced projects
 CSharp Parking API.Tests/
+
+# Ignore test results and coverage files
+CSharp Parking Tests/TestResults/
+*.trx
+coverage*.xml
+
+# Ignore temporary files and AI-generated content
+tmpclaude-*
+.claude/
+*.claude
+
+# Ignore documentation files that shouldn't be versioned
+TEST_*.md
+RBAC_*.md
