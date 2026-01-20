@@ -1,0 +1,534 @@
+### ============================================
+### Payment API - Comprehensive Test Suite
+### ============================================
+### Base URL
+@baseUrl = http://localhost:5001
+@contentType = application/json
+
+### ============================================
+### STEP 1: LOGIN TO GET TOKENS
+### ============================================
+
+### Login as SuperAdmin
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "Username": "superadmin",
+  "Password": "superpass"
+}
+
+### Copy the token from response and paste it below
+@superAdminToken = YOUR_SUPERADMIN_TOKEN_HERE
+
+###
+
+### Login as ParkingLotAdmin
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "Username": "lotadmin",
+  "Password": "lotpass"
+}
+
+### Copy the token from response and paste it below
+@lotAdminToken = YOUR_LOTADMIN_TOKEN_HERE
+
+###
+
+### Login as Regular User
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "Username": "user",
+  "Password": "userpass"
+}
+
+### Copy the token from response and paste it below
+@userToken = YOUR_USER_TOKEN_HERE
+
+###
+
+### ============================================
+### STEP 2: GET ALL PAYMENTS TESTS
+### ============================================
+
+### Test 1: Get All Payments as SuperAdmin (Should return 200)
+GET {{baseUrl}}/api/payments/all?page=0
+Authorization: Bearer {{superAdminToken}}
+
+###
+
+### Test 2: Get All Payments as ParkingLotAdmin (Should return 200)
+GET {{baseUrl}}/api/payments/all?page=0
+Authorization: Bearer {{lotAdminToken}}
+
+###
+
+### Test 3: Get All Payments as Regular User (Should return 403 Forbidden)
+GET {{baseUrl}}/api/payments/all?page=0
+Authorization: Bearer {{userToken}}
+
+###
+
+### Test 4: Get All Payments Without Token (Should return 401 Unauthorized)
+GET {{baseUrl}}/api/payments/all?page=0
+
+###
+
+### Test 5: Get All Payments with Invalid Page (Should return 400)
+GET {{baseUrl}}/api/payments/all?page=-1
+Authorization: Bearer {{superAdminToken}}
+
+###
+
+### ============================================
+### STEP 3: CREATE PAYMENT TESTS
+### ============================================
+
+### Test 6: Create Payment as Regular User (Should return 200)
+POST {{baseUrl}}/api/payments/create
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "id": "00000000-0000-0000-0000-000000000001",
+  "reservation_id": "00000000-0000-0000-0000-000000000010",
+  "paid_at": "2025-01-15T10:00:00Z",
+  "transactions": "TRX-USER-001",
+  "amount": 25.50,
+  "initiator": "user",
+  "created_at": "2025-01-15T10:00:00Z",
+  "completed": "2025-01-15T10:01:00Z",
+  "hash": "00000000-0000-0000-0000-000000000100",
+  "session_id": "00000000-0000-0000-0000-000000000020",
+  "parking_lot_id": "00000000-0000-0000-0000-000000000030"
+}
+
+### Save the payment ID from response for later tests
+@paymentId1 = 00000000-0000-0000-0000-000000000001
+
+###
+
+### Test 7: Create Payment as ParkingLotAdmin (Should return 200)
+POST {{baseUrl}}/api/payments/create
+Content-Type: {{contentType}}
+Authorization: Bearer {{lotAdminToken}}
+
+{
+  "id": "00000000-0000-0000-0000-000000000002",
+  "reservation_id": "00000000-0000-0000-0000-000000000011",
+  "paid_at": "2025-01-15T11:00:00Z",
+  "transactions": "TRX-LOTADMIN-001",
+  "amount": 50.75,
+  "initiator": "lotadmin",
+  "created_at": "2025-01-15T11:00:00Z",
+  "completed": "2025-01-15T11:01:00Z",
+  "hash": "00000000-0000-0000-0000-000000000101",
+  "session_id": "00000000-0000-0000-0000-000000000021",
+  "parking_lot_id": "00000000-0000-0000-0000-000000000031"
+}
+
+@paymentId2 = 00000000-0000-0000-0000-000000000002
+
+###
+
+### Test 8: Create Payment as SuperAdmin (Should return 200)
+POST {{baseUrl}}/api/payments/create
+Content-Type: {{contentType}}
+Authorization: Bearer {{superAdminToken}}
+
+{
+  "id": "00000000-0000-0000-0000-000000000003",
+  "reservation_id": "00000000-0000-0000-0000-000000000012",
+  "paid_at": "2025-01-15T12:00:00Z",
+  "transactions": "TRX-SUPERADMIN-001",
+  "amount": 100.00,
+  "initiator": "superadmin",
+  "created_at": "2025-01-15T12:00:00Z",
+  "completed": "2025-01-15T12:01:00Z",
+  "hash": "00000000-0000-0000-0000-000000000102",
+  "session_id": "00000000-0000-0000-0000-000000000022",
+  "parking_lot_id": "00000000-0000-0000-0000-000000000032"
+}
+
+@paymentId3 = 00000000-0000-0000-0000-000000000003
+
+###
+
+### Test 9: Create Payment Without Token (Should return 401)
+POST {{baseUrl}}/api/payments/create
+Content-Type: {{contentType}}
+
+{
+  "id": "00000000-0000-0000-0000-000000000004",
+  "reservation_id": "00000000-0000-0000-0000-000000000013",
+  "paid_at": "2025-01-15T13:00:00Z",
+  "transactions": "TRX-UNAUTH",
+  "amount": 15.00,
+  "initiator": "anonymous",
+  "created_at": "2025-01-15T13:00:00Z",
+  "completed": "2025-01-15T13:01:00Z",
+  "hash": "00000000-0000-0000-0000-000000000103",
+  "session_id": "00000000-0000-0000-0000-000000000023",
+  "parking_lot_id": "00000000-0000-0000-0000-000000000033"
+}
+
+###
+
+### Test 10: Create Payment with Missing Required Fields (Should return 400)
+POST {{baseUrl}}/api/payments/create
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "amount": 25.50,
+  "transactions": "TRX-INCOMPLETE"
+}
+
+###
+
+### ============================================
+### STEP 4: GET PAYMENT BY ID TESTS
+### ============================================
+
+### Test 11: Get Payment By ID as Regular User (Should return 200)
+GET {{baseUrl}}/api/payments/{{paymentId1}}
+Authorization: Bearer {{userToken}}
+
+###
+
+### Test 12: Get Payment By ID as ParkingLotAdmin (Should return 200)
+GET {{baseUrl}}/api/payments/{{paymentId2}}
+Authorization: Bearer {{lotAdminToken}}
+
+###
+
+### Test 13: Get Payment By ID as SuperAdmin (Should return 200)
+GET {{baseUrl}}/api/payments/{{paymentId3}}
+Authorization: Bearer {{superAdminToken}}
+
+###
+
+### Test 14: Get Payment By ID Without Token (Should return 401)
+GET {{baseUrl}}/api/payments/{{paymentId1}}
+
+###
+
+### Test 15: Get Non-Existent Payment (Should return 404)
+GET {{baseUrl}}/api/payments/00000000-0000-0000-0000-000000000999
+Authorization: Bearer {{superAdminToken}}
+
+###
+
+### ============================================
+### STEP 5: UPDATE PAYMENT TESTS
+### ============================================
+
+### Test 16: Update Payment as ParkingLotAdmin (Should return 200)
+PUT {{baseUrl}}/api/payments/update/{{paymentId2}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{lotAdminToken}}
+
+{
+  "id": "{{paymentId2}}",
+  "reservation_id": "00000000-0000-0000-0000-000000000011",
+  "paid_at": "2025-01-15T11:00:00Z",
+  "transactions": "TRX-LOTADMIN-001-UPDATED",
+  "amount": 75.00,
+  "initiator": "lotadmin",
+  "created_at": "2025-01-15T11:00:00Z",
+  "completed": "2025-01-15T11:05:00Z",
+  "hash": "00000000-0000-0000-0000-000000000101",
+  "session_id": "00000000-0000-0000-0000-000000000021",
+  "parking_lot_id": "00000000-0000-0000-0000-000000000031"
+}
+
+###
+
+### Test 17: Update Payment as SuperAdmin (Should return 200)
+PUT {{baseUrl}}/api/payments/update/{{paymentId3}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{superAdminToken}}
+
+{
+  "id": "{{paymentId3}}",
+  "reservation_id": "00000000-0000-0000-0000-000000000012",
+  "paid_at": "2025-01-15T12:00:00Z",
+  "transactions": "TRX-SUPERADMIN-001-UPDATED",
+  "amount": 150.00,
+  "initiator": "superadmin",
+  "created_at": "2025-01-15T12:00:00Z",
+  "completed": "2025-01-15T12:10:00Z",
+  "hash": "00000000-0000-0000-0000-000000000102",
+  "session_id": "00000000-0000-0000-0000-000000000022",
+  "parking_lot_id": "00000000-0000-0000-0000-000000000032"
+}
+
+###
+
+### Test 18: Update Payment as Regular User (Should return 403 Forbidden)
+PUT {{baseUrl}}/api/payments/update/{{paymentId1}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "id": "{{paymentId1}}",
+  "reservation_id": "00000000-0000-0000-0000-000000000010",
+  "paid_at": "2025-01-15T10:00:00Z",
+  "transactions": "TRX-USER-001-UPDATED",
+  "amount": 30.00,
+  "initiator": "user",
+  "created_at": "2025-01-15T10:00:00Z",
+  "completed": "2025-01-15T10:02:00Z",
+  "hash": "00000000-0000-0000-0000-000000000100",
+  "session_id": "00000000-0000-0000-0000-000000000020",
+  "parking_lot_id": "00000000-0000-0000-0000-000000000030"
+}
+
+###
+
+### Test 19: Update Payment Without Token (Should return 401)
+PUT {{baseUrl}}/api/payments/update/{{paymentId1}}
+Content-Type: {{contentType}}
+
+{
+  "amount": 30.00
+}
+
+###
+
+### Test 20: Update Non-Existent Payment (Should return 404 or 500)
+PUT {{baseUrl}}/api/payments/update/00000000-0000-0000-0000-000000000999
+Content-Type: {{contentType}}
+Authorization: Bearer {{superAdminToken}}
+
+{
+  "id": "00000000-0000-0000-0000-000000000999",
+  "reservation_id": "00000000-0000-0000-0000-000000000013",
+  "paid_at": "2025-01-15T13:00:00Z",
+  "transactions": "TRX-NOTEXIST",
+  "amount": 99.99,
+  "initiator": "test",
+  "created_at": "2025-01-15T13:00:00Z",
+  "completed": "2025-01-15T13:01:00Z",
+  "hash": "00000000-0000-0000-0000-000000000999",
+  "session_id": "00000000-0000-0000-0000-000000000023",
+  "parking_lot_id": "00000000-0000-0000-0000-000000000033"
+}
+
+###
+
+### ============================================
+### STEP 6: DELETE PAYMENT TESTS
+### ============================================
+
+### Test 21: Delete Payment as SuperAdmin (Should return 200)
+DELETE {{baseUrl}}/api/payments/delete/{{paymentId3}}
+Authorization: Bearer {{superAdminToken}}
+
+###
+
+### Test 22: Delete Payment as ParkingLotAdmin (Should return 403 Forbidden)
+DELETE {{baseUrl}}/api/payments/delete/{{paymentId2}}
+Authorization: Bearer {{lotAdminToken}}
+
+###
+
+### Test 23: Delete Payment as Regular User (Should return 403 Forbidden)
+DELETE {{baseUrl}}/api/payments/delete/{{paymentId1}}
+Authorization: Bearer {{userToken}}
+
+###
+
+### Test 24: Delete Payment Without Token (Should return 401)
+DELETE {{baseUrl}}/api/payments/delete/{{paymentId1}}
+
+###
+
+### Test 25: Delete Non-Existent Payment (Should return 404 or 500)
+DELETE {{baseUrl}}/api/payments/delete/00000000-0000-0000-0000-000000000999
+Authorization: Bearer {{superAdminToken}}
+
+###
+
+### ============================================
+### STEP 7: RBAC VERIFICATION TESTS
+### ============================================
+
+### Test 26: Verify Regular User Cannot Access Admin Endpoints
+### Try to get all payments (should fail with 403)
+GET {{baseUrl}}/api/payments/all?page=0
+Authorization: Bearer {{userToken}}
+
+###
+
+### Test 27: Verify Regular User Cannot Update Payments
+### Try to update payment (should fail with 403)
+PUT {{baseUrl}}/api/payments/update/{{paymentId1}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "id": "{{paymentId1}}",
+  "amount": 999.99
+}
+
+###
+
+### Test 28: Verify ParkingLotAdmin Cannot Delete Payments
+### Try to delete payment (should fail with 403)
+DELETE {{baseUrl}}/api/payments/delete/{{paymentId2}}
+Authorization: Bearer {{lotAdminToken}}
+
+###
+
+### Test 29: Verify SuperAdmin Has Full Access
+### Get all payments (should succeed)
+GET {{baseUrl}}/api/payments/all?page=0
+Authorization: Bearer {{superAdminToken}}
+
+###
+
+### ============================================
+### STEP 8: EDGE CASES & ERROR HANDLING
+### ============================================
+
+### Test 30: Create Payment with Invalid GUID Format (Should return 400)
+POST {{baseUrl}}/api/payments/create
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "id": "invalid-guid",
+  "reservation_id": "00000000-0000-0000-0000-000000000010",
+  "paid_at": "2025-01-15T10:00:00Z",
+  "transactions": "TRX-INVALID",
+  "amount": 25.50,
+  "initiator": "user",
+  "created_at": "2025-01-15T10:00:00Z",
+  "completed": "2025-01-15T10:01:00Z",
+  "hash": "00000000-0000-0000-0000-000000000100",
+  "session_id": "00000000-0000-0000-0000-000000000020",
+  "parking_lot_id": "00000000-0000-0000-0000-000000000030"
+}
+
+###
+
+### Test 31: Create Payment with Negative Amount (Should return 400 or 200 with validation)
+POST {{baseUrl}}/api/payments/create
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "id": "00000000-0000-0000-0000-000000000005",
+  "reservation_id": "00000000-0000-0000-0000-000000000014",
+  "paid_at": "2025-01-15T14:00:00Z",
+  "transactions": "TRX-NEGATIVE",
+  "amount": -10.00,
+  "initiator": "user",
+  "created_at": "2025-01-15T14:00:00Z",
+  "completed": "2025-01-15T14:01:00Z",
+  "hash": "00000000-0000-0000-0000-000000000104",
+  "session_id": "00000000-0000-0000-0000-000000000024",
+  "parking_lot_id": "00000000-0000-0000-0000-000000000034"
+}
+
+###
+
+### Test 32: Get Payment with Invalid GUID Format (Should return 400)
+GET {{baseUrl}}/api/payments/invalid-guid-format
+Authorization: Bearer {{superAdminToken}}
+
+###
+
+### Test 33: Update Payment with Mismatched ID (URL vs Body)
+PUT {{baseUrl}}/api/payments/update/{{paymentId1}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{superAdminToken}}
+
+{
+  "id": "00000000-0000-0000-0000-000000000999",
+  "reservation_id": "00000000-0000-0000-0000-000000000010",
+  "paid_at": "2025-01-15T10:00:00Z",
+  "transactions": "TRX-MISMATCH",
+  "amount": 50.00,
+  "initiator": "user",
+  "created_at": "2025-01-15T10:00:00Z",
+  "completed": "2025-01-15T10:01:00Z",
+  "hash": "00000000-0000-0000-0000-000000000100",
+  "session_id": "00000000-0000-0000-0000-000000000020",
+  "parking_lot_id": "00000000-0000-0000-0000-000000000030"
+}
+
+###
+
+### ============================================
+### STEP 9: COMPREHENSIVE WORKFLOW TEST
+### ============================================
+
+### Test 34: Complete Payment Workflow
+### Step 1: Create payment as user
+POST {{baseUrl}}/api/payments/create
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "id": "00000000-0000-0000-0000-000000000100",
+  "reservation_id": "00000000-0000-0000-0000-000000000200",
+  "paid_at": "2025-01-15T15:00:00Z",
+  "transactions": "TRX-WORKFLOW-001",
+  "amount": 45.00,
+  "initiator": "user",
+  "created_at": "2025-01-15T15:00:00Z",
+  "completed": "2025-01-15T15:01:00Z",
+  "hash": "00000000-0000-0000-0000-000000000200",
+  "session_id": "00000000-0000-0000-0000-000000000300",
+  "parking_lot_id": "00000000-0000-0000-0000-000000000400"
+}
+
+@workflowPaymentId = 00000000-0000-0000-0000-000000000100
+
+###
+
+### Step 2: Verify payment exists (as user)
+GET {{baseUrl}}/api/payments/{{workflowPaymentId}}
+Authorization: Bearer {{userToken}}
+
+###
+
+### Step 3: Admin updates the payment
+PUT {{baseUrl}}/api/payments/update/{{workflowPaymentId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{lotAdminToken}}
+
+{
+  "id": "{{workflowPaymentId}}",
+  "reservation_id": "00000000-0000-0000-0000-000000000200",
+  "paid_at": "2025-01-15T15:00:00Z",
+  "transactions": "TRX-WORKFLOW-001-UPDATED",
+  "amount": 50.00,
+  "initiator": "lotadmin",
+  "created_at": "2025-01-15T15:00:00Z",
+  "completed": "2025-01-15T15:05:00Z",
+  "hash": "00000000-0000-0000-0000-000000000200",
+  "session_id": "00000000-0000-0000-0000-000000000300",
+  "parking_lot_id": "00000000-0000-0000-0000-000000000400"
+}
+
+###
+
+### Step 4: SuperAdmin deletes the payment
+DELETE {{baseUrl}}/api/payments/delete/{{workflowPaymentId}}
+Authorization: Bearer {{superAdminToken}}
+
+###
+
+### Step 5: Verify payment is deleted (should return 404)
+GET {{baseUrl}}/api/payments/{{workflowPaymentId}}
+Authorization: Bearer {{superAdminToken}}
+
+###
+
