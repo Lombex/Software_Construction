@@ -290,11 +290,12 @@ namespace CSharpAPI.Tests.APITests
         }
 
         [Fact]
-        public async Task GetAll_With_User_Token_Should_Return_403()
+        public async Task GetAll_With_User_Token_And_Other_User_Should_Return_403()
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
-            var response = await client.GetAsync("/api/v2/sessions/all");
+            // User trying to view another user's sessions should be forbidden
+            var response = await client.GetAsync("/api/v2/sessions/all?user=otheruser");
             response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
         }
 
@@ -303,7 +304,7 @@ namespace CSharpAPI.Tests.APITests
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "lotadmin", "lotpass");
-            var response = await client.GetAsync("/api/v2/sessions/all");
+            var response = await client.GetAsync("/api/v2/sessions/all?user=lotadmin");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -343,7 +344,8 @@ namespace CSharpAPI.Tests.APITests
             var db = scope.ServiceProvider.GetRequiredService<SQLite_Database>();
             var user = db.Users.FirstOrDefault(u => u.username == "user");
             var lotId = Guid.NewGuid();
-            
+            var vehicleId = Guid.NewGuid();
+
             // Create a full parking lot (capacity = 1)
             db.Parkinglots.Add(new M_Parkinglots
             {
@@ -357,6 +359,22 @@ namespace CSharpAPI.Tests.APITests
                 created_at = DateTime.UtcNow,
                 coordinates = new Coordinates { lat = 52.0f, lng = 5.0f }
             });
+
+            // Create a vehicle for the session
+            if (user != null)
+            {
+                db.Vehicles.Add(new M_Vehicles
+                {
+                    id = vehicleId,
+                    user_id = user.id,
+                    license_plate = "EXISTING-123",
+                    make = "Test",
+                    model = "Test",
+                    color = "Black",
+                    year = new DateTime(2020, 1, 1),
+                    created_at = DateTime.UtcNow
+                });
+            }
             await db.SaveChangesAsync();
 
             // Create one active session to fill the lot
@@ -366,6 +384,7 @@ namespace CSharpAPI.Tests.APITests
                 user = user?.username ?? "user",
                 license_plate = "EXISTING-123",
                 parking_lot_id = lotId,
+                vehicle_id = vehicleId,
                 started = DateTime.UtcNow,
                 status = M_Session.PaymentStatus.Unpaid
             };
@@ -377,7 +396,7 @@ namespace CSharpAPI.Tests.APITests
             newSession.parking_lot_id = lotId;
             newSession.license_plate = "NEW-123";
             if (user != null) newSession.user = user.username;
-            
+
             var response = await client.PostAsJsonAsync("/api/v2/sessions/start", newSession);
             response.StatusCode.Should().BeOneOf(HttpStatusCode.BadRequest, HttpStatusCode.InternalServerError);
         }

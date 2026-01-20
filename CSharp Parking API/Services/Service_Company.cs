@@ -154,8 +154,9 @@ namespace CSharpAPI.Services
 
             // Get all sessions for company users in the month
             var userIds = companyUsers.Select(u => u.id).ToList();
+            var userIdStrings = userIds.Select(id => id.ToString()).ToList();
             var sessions = await DbContext.Sessions
-                .Where(s => userIds.Contains(Guid.Parse(s.user ?? "")) &&
+                .Where(s => userIdStrings.Contains(s.user ?? "") &&
                            s.started >= startOfMonth &&
                            s.started <= endOfMonth)
                 .ToListAsync();

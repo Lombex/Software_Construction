@@ -26,7 +26,7 @@ namespace CSharpAPI.Services
         public async Task<M_Payments> getByID(Guid id)
         {
             var payment = await DbContext.Payments.FirstOrDefaultAsync(x => x.id == id);
-            if (payment == null) throw new Exception("Payment has not been found!");
+            if (payment == null) throw new Exception("Payment not found");
             return payment;
         }
         public async Task CreatePayment(M_Payments model)
@@ -106,7 +106,9 @@ namespace CSharpAPI.Services
         // Refund a payment - creates a negative payment and refund billing entry
         public async Task<M_Payments> RefundPayment(Guid paymentId, string reason, Guid adminUserId)
         {
-            var originalPayment = await getByID(paymentId);
+            var originalPayment = await DbContext.Payments.FirstOrDefaultAsync(x => x.id == paymentId);
+            if (originalPayment == null)
+                throw new Exception("Payment not found.");
             
             // Check if already refunded
             var existingRefund = await DbContext.Payments

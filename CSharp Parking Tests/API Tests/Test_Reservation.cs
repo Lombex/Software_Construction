@@ -54,7 +54,7 @@ namespace CSharpAPI.Tests.APITests
         }
 
         [Fact]
-        public async Task CreateReservation_ValidData_Returns200()
+        public async Task CreateReservation_ValidData_Returns201()
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
@@ -107,7 +107,7 @@ namespace CSharpAPI.Tests.APITests
             };
 
             var response = await client.PostAsJsonAsync("/api/v2/reservations/create", newReservation);
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
 
             var createdReservation = await response.Content.ReadFromJsonAsync<M_Reservations>();
             createdReservation.Should().NotBeNull();
@@ -188,10 +188,8 @@ namespace CSharpAPI.Tests.APITests
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
 
             var (userId, lotId, vehicleId) = await SeedReservationDependenciesAsync();
-            var resId = Guid.NewGuid();
             var reservation = new M_Reservations
             {
-                id = resId,
                 user_id = userId,
                 vehicle_id = vehicleId,
                 parking_lot_id = lotId,
@@ -202,9 +200,13 @@ namespace CSharpAPI.Tests.APITests
                 cost = 10.0f
             };
             var create = await client.PostAsJsonAsync("/api/v2/reservations/create", reservation);
-            create.StatusCode.Should().Be(HttpStatusCode.OK);
+            create.StatusCode.Should().Be(HttpStatusCode.Created);
 
-            var cancel = await client.PostAsync($"/api/v2/reservations/cancel/{resId}", null);
+            // Get the ID from the created reservation
+            var createdReservation = await create.Content.ReadFromJsonAsync<M_Reservations>();
+            createdReservation.Should().NotBeNull();
+
+            var cancel = await client.PostAsync($"/api/v2/reservations/cancel/{createdReservation!.id}", null);
             cancel.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
@@ -239,7 +241,7 @@ namespace CSharpAPI.Tests.APITests
                 cost = 5.0f
             };
             var create = await client.PostAsJsonAsync("/api/v2/reservations/create", reservation);
-            create.StatusCode.Should().Be(HttpStatusCode.OK);
+            create.StatusCode.Should().Be(HttpStatusCode.Created);
 
             var response = await client.GetAsync($"/api/v2/reservations/user/{userId}?Status=Active");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -336,11 +338,13 @@ namespace CSharpAPI.Tests.APITests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
 
+            // Use empty GUIDs to trigger validation failure
             var incompleteReservation = new
             {
                 id = Guid.NewGuid(),
-                user_id = Guid.NewGuid(),
-                vehicle_id = Guid.NewGuid(),
+                user_id = Guid.Empty,
+                vehicle_id = Guid.Empty,
+                parking_lot_id = Guid.Empty,
                 start_time = DateTime.UtcNow,
                 end_time = DateTime.UtcNow.AddHours(2),
                 status = M_Reservations.Status.Active,

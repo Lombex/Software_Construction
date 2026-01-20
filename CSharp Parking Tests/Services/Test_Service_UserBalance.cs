@@ -305,7 +305,7 @@ namespace CSharpAPI.Tests.Services
             var service = new S_UserBalance(db);
             var userId = Guid.NewGuid();
 
-            await service.CreateBalance(userId, 100.0m);
+            await service.CreateBalance(userId, 0); // Create with 0 amount so no initial transaction
             var result = await service.GetTransactionHistory(userId);
             result.Should().BeEmpty();
         }

@@ -70,6 +70,11 @@ namespace CSharpAPI.Controllers
             if (dto == null) return BadRequest("Request body is required.");
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            // Validate required fields are not empty GUIDs
+            if (dto.user_id == Guid.Empty) return BadRequest("User ID is required.");
+            if (dto.parking_lot_id == Guid.Empty) return BadRequest("Parking lot ID is required.");
+            if (dto.vehicle_id == Guid.Empty) return BadRequest("Vehicle ID is required.");
+
             if (dto.start_time >= dto.end_time) return BadRequest("Invalid time range.");
 
             var reservation = new M_Reservations

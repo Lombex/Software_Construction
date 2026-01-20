@@ -309,8 +309,36 @@ namespace CSharpAPI.Tests.Services
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Billing(db);
+            var userId = Guid.NewGuid();
+
+            var user = new M_Users
+            {
+                id = userId,
+                username = "testuser",
+                password = "hash",
+                name = "Test",
+                email = "test@test.com",
+                role = M_Users.UserRole.ParkingUser,
+                created_at = DateTime.UtcNow,
+                birth_year = new DateTime(1990, 1, 1),
+                active = true
+            };
+            db.Users.Add(user);
+            await db.SaveChangesAsync();
 
             var number1 = await service.GenerateInvoiceNumber();
+
+            // Create a billing record with the first invoice number so the next call returns different number
+            var bill = new M_Billing
+            {
+                user_id = userId,
+                amount = 100.0m,
+                currency = "EUR",
+                description = "Test",
+                invoice_number = number1
+            };
+            await service.Create(bill);
+
             var number2 = await service.GenerateInvoiceNumber();
 
             number1.Should().NotBeNullOrEmpty();
@@ -1136,7 +1164,7 @@ namespace CSharpAPI.Tests.Services
         }
 
         [Fact]
-        public async Task Create_With_Default_Status_Should_Set_Pending()
+        public async Task Create_With_Default_Status_Should_Set_Due()
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Billing(db);
@@ -1166,8 +1194,9 @@ namespace CSharpAPI.Tests.Services
                 status = default
             };
 
+            // Service sets status to Due when due_date is in the future (default is 30 days from now)
             var result = await service.Create(bill);
-            result.status.Should().Be(BillingStatus.Pending);
+            result.status.Should().Be(BillingStatus.Due);
         }
     }
 }

@@ -60,6 +60,7 @@ namespace CSharpAPI.Services
             }
 
             _vehicle.license_plate = updatedVehicle.license_plate;
+            _vehicle.make = updatedVehicle.make;
             _vehicle.model = updatedVehicle.model;
             _vehicle.color = updatedVehicle.color;
             _vehicle.user_id = updatedVehicle.user_id;

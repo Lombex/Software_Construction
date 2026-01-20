@@ -22,6 +22,41 @@ namespace CSharpAPI.Tests.Services
             return db;
         }
 
+        private async Task<(Guid userId, Guid vehicleId)> SetupUserAndVehicle(SQLite_Database db)
+        {
+            var userId = Guid.NewGuid();
+            var user = new M_Users
+            {
+                id = userId,
+                username = "testuser",
+                password = "hash",
+                name = "Test User",
+                email = "test@test.com",
+                role = M_Users.UserRole.ParkingUser,
+                created_at = DateTime.UtcNow,
+                birth_year = new DateTime(1990, 1, 1),
+                active = true
+            };
+            db.Users.Add(user);
+
+            var vehicleId = Guid.NewGuid();
+            var vehicle = new M_Vehicles
+            {
+                id = vehicleId,
+                user_id = userId,
+                license_plate = "TEST-123",
+                make = "Make",
+                model = "Model",
+                color = "Red",
+                year = new DateTime(2020, 1, 1),
+                created_at = DateTime.UtcNow
+            };
+            db.Vehicles.Add(vehicle);
+
+            await db.SaveChangesAsync();
+            return (userId, vehicleId);
+        }
+
         [Fact]
         public async Task GetAllParkinglots_Should_Return_All_Parkinglots()
         {
@@ -202,13 +237,30 @@ namespace CSharpAPI.Tests.Services
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Parkinglots(db);
+            var (userId1, vehicleId1) = await SetupUserAndVehicle(db);
+
+            // Create parking lot first
             var lotId = Guid.NewGuid();
+            var lot = new M_Parkinglots
+            {
+                id = lotId,
+                name = "Test Lot",
+                location = "Test Location",
+                address = "Test Address",
+                capacity = 100,
+                reserved = 0,
+                daytarriff = 10.0f,
+                created_at = DateTime.UtcNow,
+                coordinates = new Coordinates { lat = 52.0f, lng = 5.0f }
+            };
+            db.Parkinglots.Add(lot);
+            await db.SaveChangesAsync();
 
             var reservation1 = new M_Reservations
             {
                 id = Guid.NewGuid(),
-                user_id = Guid.NewGuid(),
-                vehicle_id = Guid.NewGuid(),
+                user_id = userId1,
+                vehicle_id = vehicleId1,
                 parking_lot_id = lotId,
                 start_time = DateTime.UtcNow,
                 end_time = DateTime.UtcNow.AddHours(2),
@@ -219,11 +271,11 @@ namespace CSharpAPI.Tests.Services
             var reservation2 = new M_Reservations
             {
                 id = Guid.NewGuid(),
-                user_id = Guid.NewGuid(),
-                vehicle_id = Guid.NewGuid(),
+                user_id = userId1,
+                vehicle_id = vehicleId1,
                 parking_lot_id = lotId,
-                start_time = DateTime.UtcNow,
-                end_time = DateTime.UtcNow.AddHours(2),
+                start_time = DateTime.UtcNow.AddHours(3),
+                end_time = DateTime.UtcNow.AddHours(5),
                 status = M_Reservations.Status.Active,
                 created_at = DateTime.UtcNow,
                 cost = 25.0f

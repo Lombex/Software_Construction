@@ -101,7 +101,28 @@ namespace CSharpAPI.Tests.APITests
         public async Task GetAllUsers_With_User_Token_Should_Return_403()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
+
+            // Create a dedicated user for this test
+            using var scope = _factory.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<CSharpAPI.Database.SQLite_Database>();
+            var testUser = new M_Users
+            {
+                id = Guid.NewGuid(),
+                username = "getalltest",
+                password = Utils.HashPassword("testpass"),
+                name = "Get All Test",
+                email = "getalltest@example.com",
+                phone = "",
+                role = M_Users.UserRole.ParkingUser,
+                parking_lot_id = null,
+                created_at = DateTime.UtcNow,
+                birth_year = new DateTime(1990, 1, 1),
+                active = true
+            };
+            db.Users.Add(testUser);
+            await db.SaveChangesAsync();
+
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "getalltest", "testpass");
             var response = await client.GetAsync("/api/v2/users/all?page=0");
             response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
         }
@@ -179,7 +200,28 @@ namespace CSharpAPI.Tests.APITests
         public async Task CreateUser_With_User_Token_Should_Return_403()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
+
+            // Create a dedicated user for this test
+            using var scope = _factory.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<CSharpAPI.Database.SQLite_Database>();
+            var testUser = new M_Users
+            {
+                id = Guid.NewGuid(),
+                username = "createusertest",
+                password = Utils.HashPassword("testpass"),
+                name = "Create User Test",
+                email = "createusertest@example.com",
+                phone = "",
+                role = M_Users.UserRole.ParkingUser,
+                parking_lot_id = null,
+                created_at = DateTime.UtcNow,
+                birth_year = new DateTime(1990, 1, 1),
+                active = true
+            };
+            db.Users.Add(testUser);
+            await db.SaveChangesAsync();
+
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "createusertest", "testpass");
             var user = new
             {
                 username = "newuser2",
@@ -317,7 +359,28 @@ namespace CSharpAPI.Tests.APITests
         public async Task UpdateUser_With_User_Token_Should_Return_403()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
+
+            // Create a dedicated user for this test
+            using var scope = _factory.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<CSharpAPI.Database.SQLite_Database>();
+            var testUser = new M_Users
+            {
+                id = Guid.NewGuid(),
+                username = "updateusertest",
+                password = Utils.HashPassword("testpass"),
+                name = "Update User Test",
+                email = "updateusertest@example.com",
+                phone = "",
+                role = M_Users.UserRole.ParkingUser,
+                parking_lot_id = null,
+                created_at = DateTime.UtcNow,
+                birth_year = new DateTime(1990, 1, 1),
+                active = true
+            };
+            db.Users.Add(testUser);
+            await db.SaveChangesAsync();
+
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "updateusertest", "testpass");
             var user = new { username = "updated" };
             var response = await client.PutAsJsonAsync($"/api/v2/users/update/{Guid.NewGuid()}", user);
             response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
@@ -371,14 +434,29 @@ namespace CSharpAPI.Tests.APITests
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "superadmin", "superpass");
+
+            // Create a dedicated user for deletion testing
             using var scope = _factory.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<CSharpAPI.Database.SQLite_Database>();
-            var user = db.Users.FirstOrDefault(u => u.username == "user");
-            if (user != null)
+            var deleteTestUser = new M_Users
             {
-                var response = await client.DeleteAsync($"/api/v2/users/delete/{user.id}");
-                response.StatusCode.Should().BeOneOf(HttpStatusCode.NoContent, HttpStatusCode.BadRequest);
-            }
+                id = Guid.NewGuid(),
+                username = "deleteuser_test",
+                password = Utils.HashPassword("testpass"),
+                name = "Delete Test User",
+                email = "deletetest@example.com",
+                phone = "",
+                role = M_Users.UserRole.ParkingUser,
+                parking_lot_id = null,
+                created_at = DateTime.UtcNow,
+                birth_year = new DateTime(1990, 1, 1),
+                active = true
+            };
+            db.Users.Add(deleteTestUser);
+            await db.SaveChangesAsync();
+
+            var response = await client.DeleteAsync($"/api/v2/users/delete/{deleteTestUser.id}");
+            response.StatusCode.Should().BeOneOf(HttpStatusCode.NoContent, HttpStatusCode.BadRequest);
         }
 
         [Fact]

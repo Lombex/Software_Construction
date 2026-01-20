@@ -24,6 +24,8 @@ namespace CSharpAPI.Controllers
         [Authorize(Policy = "AdminOrAbove")] // ParkingLotAdmin or SuperAdmin can view all payments
         public async Task<IActionResult> GetAllPayments([FromQuery] int page)
         {
+            if (page < 0) return BadRequest("Page number cannot be negative.");
+
             var payments = await PaymentsService.GetAllPayments();
 
             int totalItem = payments.Count;
@@ -59,9 +61,15 @@ namespace CSharpAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPaymentByID(Guid Id)
         {
-            var payment = await PaymentsService.getByID(Id);
-            if (payment == null) return NotFound($"Payment with id {Id} not found.");
-            return Ok(payment);
+            try
+            {
+                var payment = await PaymentsService.getByID(Id);
+                return Ok(payment);
+            }
+            catch (Exception ex) when (ex.Message.Contains("not found", StringComparison.OrdinalIgnoreCase))
+            {
+                return NotFound($"Payment with id {Id} not found.");
+            }
         }
         
         [HttpPost("create")]
@@ -76,16 +84,32 @@ namespace CSharpAPI.Controllers
         [Authorize(Policy = "AdminOrAbove")] // Only admins can update payments
         public async Task<IActionResult> UpdatePayment(Guid id, [FromBody] M_Payments updatedPayment)
         {
-            await PaymentsService.UpdatePayment(id, updatedPayment);
-            return Ok("Payment updated successfully.");
+            try
+            {
+                var existing = await PaymentsService.getByID(id);
+                if (existing == null) return NotFound($"Payment with id {id} not found.");
+                await PaymentsService.UpdatePayment(id, updatedPayment);
+                return Ok("Payment updated successfully.");
+            }
+            catch (Exception ex) when (ex.Message.Contains("not found", StringComparison.OrdinalIgnoreCase))
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpDelete("delete/{id}")]
         [Authorize(Policy = "SuperAdminOnly")] // Only SuperAdmin can delete payments
         public async Task<IActionResult> DeletePayment(Guid id)
         {
-            await PaymentsService.DeletePayment(id);
-            return Ok("Payment deleted successfully.");
+            try
+            {
+                await PaymentsService.DeletePayment(id);
+                return Ok("Payment deleted successfully.");
+            }
+            catch (Exception ex) when (ex.Message.Contains("not found", StringComparison.OrdinalIgnoreCase))
+            {
+                return NotFound($"Payment with id {id} not found.");
+            }
         }
 
         // POST /api/payments/{id}/refund - Refund a payment (admin only)
@@ -155,6 +179,10 @@ namespace CSharpAPI.Controllers
             catch (InvalidOperationException ex)
             {
                 return BadRequest(ex.Message);
+            }
+            catch (Exception ex) when (ex.Message.Contains("not found", StringComparison.OrdinalIgnoreCase))
+            {
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {

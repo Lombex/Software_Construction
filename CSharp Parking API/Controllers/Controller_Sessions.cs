@@ -74,7 +74,7 @@ namespace CSharpAPI.Controllers
                 
                 // If not found in user's sessions, check if admin can access it
                 if (session == null && !IsAdminOrAbove)
-                    return Forbid("Session not found or you don't have permission to stop it.");
+                    return NotFound("Session not found or you don't have permission to stop it.");
 
                 // Users can only stop their own sessions, admins can stop any
                 if (!IsAdminOrAbove && session != null && session.user != username)

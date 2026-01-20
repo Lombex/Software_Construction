@@ -33,9 +33,28 @@ namespace CSharpAPI.Tests.APITests
         public async Task GetProfile_With_User_Viewing_Other_User_Should_Return_403()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
+
+            // Create a dedicated user for this test
             using var scope = _factory.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<SQLite_Database>();
+            var testUser = new M_Users
+            {
+                id = Guid.NewGuid(),
+                username = "profileviewtest",
+                password = Utils.HashPassword("testpass"),
+                name = "Profile View Test",
+                email = "profileviewtest@example.com",
+                phone = "",
+                role = M_Users.UserRole.ParkingUser,
+                parking_lot_id = null,
+                created_at = DateTime.UtcNow,
+                birth_year = new DateTime(1990, 1, 1),
+                active = true
+            };
+            db.Users.Add(testUser);
+            await db.SaveChangesAsync();
+
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "profileviewtest", "testpass");
             var otherUser = db.Users.FirstOrDefault(u => u.username == "superadmin");
             if (otherUser != null)
             {
@@ -81,9 +100,28 @@ namespace CSharpAPI.Tests.APITests
         public async Task UpdateProfile_With_User_Updating_Other_User_Should_Return_403()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
+
+            // Create a dedicated user for this test
             using var scope = _factory.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<SQLite_Database>();
+            var testUser = new M_Users
+            {
+                id = Guid.NewGuid(),
+                username = "updateothertest",
+                password = Utils.HashPassword("testpass"),
+                name = "Update Other Test",
+                email = "updateothertest@example.com",
+                phone = "",
+                role = M_Users.UserRole.ParkingUser,
+                parking_lot_id = null,
+                created_at = DateTime.UtcNow,
+                birth_year = new DateTime(1990, 1, 1),
+                active = true
+            };
+            db.Users.Add(testUser);
+            await db.SaveChangesAsync();
+
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "updateothertest", "testpass");
             var otherUser = db.Users.FirstOrDefault(u => u.username == "superadmin");
             if (otherUser != null)
             {
@@ -161,16 +199,32 @@ namespace CSharpAPI.Tests.APITests
         public async Task UpdateProfile_With_User_Updating_Own_Profile_Should_Return_200()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
+
+            // Create a dedicated user for this test
             using var scope = _factory.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<SQLite_Database>();
-            var user = db.Users.FirstOrDefault(u => u.username == "user");
-            if (user != null)
+            var testUser = new M_Users
             {
-                // UpdateProfile endpoint takes no body, just the ID in the route
-                var response = await client.PutAsync($"/api/v2/profile/update/{user.id}", new StringContent(""));
-                response.StatusCode.Should().Be(HttpStatusCode.OK);
-            }
+                id = Guid.NewGuid(),
+                username = "updateowntest",
+                password = Utils.HashPassword("testpass"),
+                name = "Update Own Test",
+                email = "updateowntest@example.com",
+                phone = "",
+                role = M_Users.UserRole.ParkingUser,
+                parking_lot_id = null,
+                created_at = DateTime.UtcNow,
+                birth_year = new DateTime(1990, 1, 1),
+                active = true
+            };
+            db.Users.Add(testUser);
+            await db.SaveChangesAsync();
+
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "updateowntest", "testpass");
+
+            // UpdateProfile endpoint takes no body, just the ID in the route
+            var response = await client.PutAsync($"/api/v2/profile/update/{testUser.id}", new StringContent(""));
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
         [Fact]
@@ -207,15 +261,32 @@ namespace CSharpAPI.Tests.APITests
         public async Task DeleteProfile_With_User_Deleting_Own_Profile_Should_Return_200()
         {
             var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
+
+            // Create a dedicated user for this delete test
             using var scope = _factory.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<SQLite_Database>();
-            var user = db.Users.FirstOrDefault(u => u.username == "user");
-            if (user != null)
+            var deleteTestUser = new M_Users
             {
-                var response = await client.DeleteAsync($"/api/v2/profile/delete/{user.id}");
-                response.StatusCode.Should().BeOneOf(HttpStatusCode.OK, HttpStatusCode.BadRequest);
-            }
+                id = Guid.NewGuid(),
+                username = "deleteprofileuser",
+                password = Utils.HashPassword("deletepass"),
+                name = "Delete Test User",
+                email = "deleteuser@example.com",
+                phone = "",
+                role = M_Users.UserRole.ParkingUser,
+                parking_lot_id = null,
+                created_at = DateTime.UtcNow,
+                birth_year = new DateTime(1990, 1, 1),
+                active = true
+            };
+            db.Users.Add(deleteTestUser);
+            await db.SaveChangesAsync();
+
+            // Authenticate with the new user
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "deleteprofileuser", "deletepass");
+
+            var response = await client.DeleteAsync($"/api/v2/profile/delete/{deleteTestUser.id}");
+            response.StatusCode.Should().BeOneOf(HttpStatusCode.OK, HttpStatusCode.BadRequest);
         }
 
         [Fact]

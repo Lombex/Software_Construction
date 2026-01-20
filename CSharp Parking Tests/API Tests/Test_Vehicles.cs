@@ -37,7 +37,7 @@ namespace CSharp_Parking_Tests.API_Tests
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
-            var response = await client.GetAsync("/api/vehicles/all?page=abc");
+            var response = await client.GetAsync("/api/v2/vehicles/all?page=abc");
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 

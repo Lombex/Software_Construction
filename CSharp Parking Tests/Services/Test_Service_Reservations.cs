@@ -23,18 +23,69 @@ namespace CSharpAPI.Tests.Services
             return db;
         }
 
+        private async Task<(Guid userId, Guid vehicleId, Guid parkingLotId)> SetupEntities(SQLite_Database db)
+        {
+            var userId = Guid.NewGuid();
+            var user = new M_Users
+            {
+                id = userId,
+                username = "testuser",
+                password = "hash",
+                name = "Test User",
+                email = "test@test.com",
+                role = M_Users.UserRole.ParkingUser,
+                created_at = DateTime.UtcNow,
+                birth_year = new DateTime(1990, 1, 1),
+                active = true
+            };
+            db.Users.Add(user);
+
+            var vehicleId = Guid.NewGuid();
+            var vehicle = new M_Vehicles
+            {
+                id = vehicleId,
+                user_id = userId,
+                license_plate = "TEST-123",
+                make = "Make",
+                model = "Model",
+                color = "Red",
+                year = new DateTime(2020, 1, 1),
+                created_at = DateTime.UtcNow
+            };
+            db.Vehicles.Add(vehicle);
+
+            var parkingLotId = Guid.NewGuid();
+            var parkingLot = new M_Parkinglots
+            {
+                id = parkingLotId,
+                name = "Test Lot",
+                location = "Test Location",
+                address = "Test Address",
+                capacity = 100,
+                reserved = 0,
+                daytarriff = 10.0f,
+                created_at = DateTime.UtcNow,
+                coordinates = new Coordinates { lat = 52.0f, lng = 5.0f }
+            };
+            db.Parkinglots.Add(parkingLot);
+
+            await db.SaveChangesAsync();
+            return (userId, vehicleId, parkingLotId);
+        }
+
         [Fact]
         public async Task Create_With_Valid_Reservation_Should_Create_Reservation()
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Reservations(db);
+            var (userId, vehicleId, parkingLotId) = await SetupEntities(db);
 
             var reservation = new M_Reservations
             {
                 id = Guid.NewGuid(),
-                user_id = Guid.NewGuid(),
-                vehicle_id = Guid.NewGuid(),
-                parking_lot_id = Guid.NewGuid(),
+                user_id = userId,
+                vehicle_id = vehicleId,
+                parking_lot_id = parkingLotId,
                 start_time = DateTime.UtcNow,
                 end_time = DateTime.UtcNow.AddHours(2),
                 status = Status.Active,
@@ -61,13 +112,14 @@ namespace CSharpAPI.Tests.Services
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Reservations(db);
+            var (userId, vehicleId, parkingLotId) = await SetupEntities(db);
 
             var reservation = new M_Reservations
             {
                 id = Guid.NewGuid(),
-                user_id = Guid.NewGuid(),
-                vehicle_id = Guid.NewGuid(),
-                parking_lot_id = Guid.NewGuid(),
+                user_id = userId,
+                vehicle_id = vehicleId,
+                parking_lot_id = parkingLotId,
                 start_time = DateTime.UtcNow,
                 end_time = DateTime.UtcNow.AddHours(2),
                 status = Status.Active,
@@ -97,14 +149,15 @@ namespace CSharpAPI.Tests.Services
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Reservations(db);
+            var (userId, vehicleId, parkingLotId) = await SetupEntities(db);
 
             var reservationId = Guid.NewGuid();
             var reservation = new M_Reservations
             {
                 id = reservationId,
-                user_id = Guid.NewGuid(),
-                vehicle_id = Guid.NewGuid(),
-                parking_lot_id = Guid.NewGuid(),
+                user_id = userId,
+                vehicle_id = vehicleId,
+                parking_lot_id = parkingLotId,
                 start_time = DateTime.UtcNow,
                 end_time = DateTime.UtcNow.AddHours(2),
                 status = Status.Active,
@@ -134,14 +187,14 @@ namespace CSharpAPI.Tests.Services
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Reservations(db);
-            var userId = Guid.NewGuid();
+            var (userId, vehicleId, parkingLotId) = await SetupEntities(db);
 
             var reservation1 = new M_Reservations
             {
                 id = Guid.NewGuid(),
                 user_id = userId,
-                vehicle_id = Guid.NewGuid(),
-                parking_lot_id = Guid.NewGuid(),
+                vehicle_id = vehicleId,
+                parking_lot_id = parkingLotId,
                 start_time = DateTime.UtcNow,
                 end_time = DateTime.UtcNow.AddHours(2),
                 status = Status.Active,
@@ -152,10 +205,10 @@ namespace CSharpAPI.Tests.Services
             {
                 id = Guid.NewGuid(),
                 user_id = userId,
-                vehicle_id = Guid.NewGuid(),
-                parking_lot_id = Guid.NewGuid(),
-                start_time = DateTime.UtcNow,
-                end_time = DateTime.UtcNow.AddHours(2),
+                vehicle_id = vehicleId,
+                parking_lot_id = parkingLotId,
+                start_time = DateTime.UtcNow.AddHours(3),
+                end_time = DateTime.UtcNow.AddHours(5),
                 status = Status.Active,
                 created_at = DateTime.UtcNow,
                 cost = 25.0f
@@ -172,14 +225,14 @@ namespace CSharpAPI.Tests.Services
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Reservations(db);
-            var userId = Guid.NewGuid();
+            var (userId, vehicleId, parkingLotId) = await SetupEntities(db);
 
             var activeReservation = new M_Reservations
             {
                 id = Guid.NewGuid(),
                 user_id = userId,
-                vehicle_id = Guid.NewGuid(),
-                parking_lot_id = Guid.NewGuid(),
+                vehicle_id = vehicleId,
+                parking_lot_id = parkingLotId,
                 start_time = DateTime.UtcNow,
                 end_time = DateTime.UtcNow.AddHours(2),
                 status = Status.Active,
@@ -190,8 +243,8 @@ namespace CSharpAPI.Tests.Services
             {
                 id = Guid.NewGuid(),
                 user_id = userId,
-                vehicle_id = Guid.NewGuid(),
-                parking_lot_id = Guid.NewGuid(),
+                vehicle_id = vehicleId,
+                parking_lot_id = parkingLotId,
                 start_time = DateTime.UtcNow.AddDays(-1),
                 end_time = DateTime.UtcNow.AddDays(-1).AddHours(2),
                 status = Status.Cancelled,
@@ -222,13 +275,13 @@ namespace CSharpAPI.Tests.Services
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Reservations(db);
-            var parkingLotId = Guid.NewGuid();
+            var (userId, vehicleId, parkingLotId) = await SetupEntities(db);
 
             var existingReservation = new M_Reservations
             {
                 id = Guid.NewGuid(),
-                user_id = Guid.NewGuid(),
-                vehicle_id = Guid.NewGuid(),
+                user_id = userId,
+                vehicle_id = vehicleId,
                 parking_lot_id = parkingLotId,
                 start_time = DateTime.UtcNow,
                 end_time = DateTime.UtcNow.AddHours(3),
@@ -249,13 +302,14 @@ namespace CSharpAPI.Tests.Services
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Reservations(db);
+            var (userId, vehicleId, parkingLotId) = await SetupEntities(db);
 
             var reservation1 = new M_Reservations
             {
                 id = Guid.NewGuid(),
-                user_id = Guid.NewGuid(),
-                vehicle_id = Guid.NewGuid(),
-                parking_lot_id = Guid.NewGuid(),
+                user_id = userId,
+                vehicle_id = vehicleId,
+                parking_lot_id = parkingLotId,
                 start_time = DateTime.UtcNow,
                 end_time = DateTime.UtcNow.AddHours(2),
                 status = Status.Active,
@@ -265,11 +319,11 @@ namespace CSharpAPI.Tests.Services
             var reservation2 = new M_Reservations
             {
                 id = Guid.NewGuid(),
-                user_id = Guid.NewGuid(),
-                vehicle_id = Guid.NewGuid(),
-                parking_lot_id = Guid.NewGuid(),
-                start_time = DateTime.UtcNow,
-                end_time = DateTime.UtcNow.AddHours(2),
+                user_id = userId,
+                vehicle_id = vehicleId,
+                parking_lot_id = parkingLotId,
+                start_time = DateTime.UtcNow.AddHours(3),
+                end_time = DateTime.UtcNow.AddHours(5),
                 status = Status.Active,
                 created_at = DateTime.UtcNow,
                 cost = 25.0f
@@ -286,13 +340,13 @@ namespace CSharpAPI.Tests.Services
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Reservations(db);
-            var parkingLotId = Guid.NewGuid();
+            var (userId, vehicleId, parkingLotId) = await SetupEntities(db);
 
             var existingReservation = new M_Reservations
             {
                 id = Guid.NewGuid(),
-                user_id = Guid.NewGuid(),
-                vehicle_id = Guid.NewGuid(),
+                user_id = userId,
+                vehicle_id = vehicleId,
                 parking_lot_id = parkingLotId,
                 start_time = DateTime.UtcNow,
                 end_time = DateTime.UtcNow.AddHours(2),
@@ -313,13 +367,13 @@ namespace CSharpAPI.Tests.Services
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Reservations(db);
-            var parkingLotId = Guid.NewGuid();
+            var (userId, vehicleId, parkingLotId) = await SetupEntities(db);
 
             var existingReservation = new M_Reservations
             {
                 id = Guid.NewGuid(),
-                user_id = Guid.NewGuid(),
-                vehicle_id = Guid.NewGuid(),
+                user_id = userId,
+                vehicle_id = vehicleId,
                 parking_lot_id = parkingLotId,
                 start_time = DateTime.UtcNow.AddHours(1),
                 end_time = DateTime.UtcNow.AddHours(3),
@@ -340,13 +394,13 @@ namespace CSharpAPI.Tests.Services
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Reservations(db);
-            var parkingLotId = Guid.NewGuid();
+            var (userId, vehicleId, parkingLotId) = await SetupEntities(db);
 
             var existingReservation = new M_Reservations
             {
                 id = Guid.NewGuid(),
-                user_id = Guid.NewGuid(),
-                vehicle_id = Guid.NewGuid(),
+                user_id = userId,
+                vehicle_id = vehicleId,
                 parking_lot_id = parkingLotId,
                 start_time = DateTime.UtcNow,
                 end_time = DateTime.UtcNow.AddHours(2),
@@ -367,13 +421,13 @@ namespace CSharpAPI.Tests.Services
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Reservations(db);
-            var parkingLotId = Guid.NewGuid();
+            var (userId, vehicleId, parkingLotId) = await SetupEntities(db);
 
             var cancelledReservation = new M_Reservations
             {
                 id = Guid.NewGuid(),
-                user_id = Guid.NewGuid(),
-                vehicle_id = Guid.NewGuid(),
+                user_id = userId,
+                vehicle_id = vehicleId,
                 parking_lot_id = parkingLotId,
                 start_time = DateTime.UtcNow,
                 end_time = DateTime.UtcNow.AddHours(2),

@@ -22,24 +22,48 @@ namespace CSharpAPI.Tests.Services
             return db;
         }
 
+        private async Task<(Guid userId, Guid vehicleId)> SetupUserAndVehicle(SQLite_Database db)
+        {
+            var userId = Guid.NewGuid();
+            var user = new M_Users
+            {
+                id = userId,
+                username = "testuser",
+                password = "hash",
+                name = "Test User",
+                email = "test@test.com",
+                role = M_Users.UserRole.ParkingUser,
+                created_at = DateTime.UtcNow,
+                birth_year = new DateTime(1990, 1, 1),
+                active = true
+            };
+            db.Users.Add(user);
+
+            var vehicleId = Guid.NewGuid();
+            var vehicle = new M_Vehicles
+            {
+                id = vehicleId,
+                user_id = userId,
+                license_plate = "EXIST-123",
+                make = "Make",
+                model = "Model",
+                color = "Red",
+                year = new DateTime(2020, 1, 1),
+                created_at = DateTime.UtcNow
+            };
+            db.Vehicles.Add(vehicle);
+
+            await db.SaveChangesAsync();
+            return (userId, vehicleId);
+        }
+
         [Fact]
         public async Task GetAllVehicles_Should_Return_All_Vehicles()
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Vehicles(db);
-            var userId = Guid.NewGuid();
+            var (userId, _) = await SetupUserAndVehicle(db);
 
-            var vehicle1 = new M_Vehicles
-            {
-                id = Guid.NewGuid(),
-                user_id = userId,
-                license_plate = "ABC-123",
-                make = "Make1",
-                model = "Model1",
-                color = "Red",
-                year = new DateTime(2020, 1, 1),
-                created_at = DateTime.UtcNow
-            };
             var vehicle2 = new M_Vehicles
             {
                 id = Guid.NewGuid(),
@@ -52,7 +76,7 @@ namespace CSharpAPI.Tests.Services
                 created_at = DateTime.UtcNow
             };
 
-            db.Vehicles.AddRange(vehicle1, vehicle2);
+            db.Vehicles.Add(vehicle2);
             await db.SaveChangesAsync();
 
             var result = await service.GetAllVehicles();
@@ -65,11 +89,26 @@ namespace CSharpAPI.Tests.Services
             var db = CreateInMemoryDatabase();
             var service = new S_Vehicles(db);
 
+            var userId = Guid.NewGuid();
+            var user = new M_Users
+            {
+                id = userId,
+                username = "testuser",
+                password = "hash",
+                name = "Test User",
+                email = "test@test.com",
+                role = M_Users.UserRole.ParkingUser,
+                created_at = DateTime.UtcNow,
+                birth_year = new DateTime(1990, 1, 1),
+                active = true
+            };
+            db.Users.Add(user);
+
             var vehicleId = Guid.NewGuid();
             var vehicle = new M_Vehicles
             {
                 id = vehicleId,
-                user_id = Guid.NewGuid(),
+                user_id = userId,
                 license_plate = "TEST-123",
                 make = "Make",
                 model = "Model",
@@ -90,7 +129,7 @@ namespace CSharpAPI.Tests.Services
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Vehicles(db);
-            var userId = Guid.NewGuid();
+            var (userId, _) = await SetupUserAndVehicle(db);
 
             var vehicle = new M_Vehicles
             {
@@ -115,7 +154,7 @@ namespace CSharpAPI.Tests.Services
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Vehicles(db);
-            var userId = Guid.NewGuid();
+            var (userId, _) = await SetupUserAndVehicle(db);
 
             var vehicle1 = new M_Vehicles
             {
@@ -153,11 +192,26 @@ namespace CSharpAPI.Tests.Services
             var db = CreateInMemoryDatabase();
             var service = new S_Vehicles(db);
 
+            var userId = Guid.NewGuid();
+            var user = new M_Users
+            {
+                id = userId,
+                username = "testuser",
+                password = "hash",
+                name = "Test User",
+                email = "test@test.com",
+                role = M_Users.UserRole.ParkingUser,
+                created_at = DateTime.UtcNow,
+                birth_year = new DateTime(1990, 1, 1),
+                active = true
+            };
+            db.Users.Add(user);
+
             var vehicleId = Guid.NewGuid();
             var vehicle = new M_Vehicles
             {
                 id = vehicleId,
-                user_id = Guid.NewGuid(),
+                user_id = userId,
                 license_plate = "OLD-123",
                 make = "OldMake",
                 model = "OldModel",
@@ -191,10 +245,12 @@ namespace CSharpAPI.Tests.Services
             var service = new S_Vehicles(db);
 
             var vehicleId = Guid.NewGuid();
+            var (userId, _) = await SetupUserAndVehicle(db);
+
             var vehicle = new M_Vehicles
             {
                 id = vehicleId,
-                user_id = Guid.NewGuid(),
+                user_id = userId,
                 license_plate = "DEL-123",
                 make = "Make",
                 model = "Model",
@@ -215,19 +271,8 @@ namespace CSharpAPI.Tests.Services
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Vehicles(db);
-            var userId = Guid.NewGuid();
+            var (userId, _) = await SetupUserAndVehicle(db);
 
-            var vehicle1 = new M_Vehicles
-            {
-                id = Guid.NewGuid(),
-                user_id = userId,
-                license_plate = "EXIST-123",
-                make = "Make",
-                model = "Model",
-                color = "Red",
-                year = new DateTime(2020, 1, 1),
-                created_at = DateTime.UtcNow
-            };
             var vehicle2 = new M_Vehicles
             {
                 id = Guid.NewGuid(),
@@ -239,7 +284,7 @@ namespace CSharpAPI.Tests.Services
                 year = new DateTime(2021, 1, 1),
                 created_at = DateTime.UtcNow
             };
-            db.Vehicles.AddRange(vehicle1, vehicle2);
+            db.Vehicles.Add(vehicle2);
             await db.SaveChangesAsync();
 
             var updatedVehicle = new M_Vehicles
@@ -270,7 +315,7 @@ namespace CSharpAPI.Tests.Services
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Vehicles(db);
-            var userId = Guid.NewGuid();
+            var (userId, _) = await SetupUserAndVehicle(db);
 
             var vehicle = new M_Vehicles
             {
@@ -307,7 +352,7 @@ namespace CSharpAPI.Tests.Services
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Vehicles(db);
-            var userId = Guid.NewGuid();
+            var (userId, _) = await SetupUserAndVehicle(db);
 
             var vehicle = new M_Vehicles
             {
@@ -343,7 +388,7 @@ namespace CSharpAPI.Tests.Services
         {
             var db = CreateInMemoryDatabase();
             var service = new S_Vehicles(db);
-            var userId = Guid.NewGuid();
+            var (userId, _) = await SetupUserAndVehicle(db);
 
             var vehicle = new M_Vehicles
             {
