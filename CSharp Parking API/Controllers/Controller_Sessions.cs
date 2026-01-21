@@ -23,15 +23,6 @@ namespace CSharpAPI.Controllers
             _logger = logger;
         }
 
-        private Guid? CurrentUserId
-        {
-            get
-            {
-                var idClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                return Guid.TryParse(idClaim, out var id) ? id : null;
-            }
-        }
-
         private string? CurrentUsername => User.Identity?.Name;
 
         private bool IsAdminOrAbove => User.IsInRole("SuperAdmin") || User.IsInRole("ParkingLotAdmin");

@@ -18,8 +18,6 @@ namespace CSharpAPI.Controllers
             _context = context;
         }
 
-        private bool IsAdminOrAbove => User.IsInRole("SuperAdmin") || User.IsInRole("ParkingLotAdmin");
-
         // GET: api/parkinglots
         [HttpGet]
         public async Task<IActionResult> GetAll()
