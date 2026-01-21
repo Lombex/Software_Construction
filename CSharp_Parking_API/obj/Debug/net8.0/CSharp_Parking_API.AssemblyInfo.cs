@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CSharp_Parking_API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+51ba4a3ea1a1c1e14a872e08ea5d6819ededfab8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a5db01a56345d4b7be7cb8988d7f350eac695c10")]
 [assembly: System.Reflection.AssemblyProductAttribute("CSharp_Parking_API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CSharp_Parking_API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
