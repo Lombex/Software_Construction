@@ -6,7 +6,8 @@
         <Configuration>
           <Exclude>[*.Tests]*,[*.Test]*</Exclude>
           <ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
-          <ExcludeByFile>**/Migrations/**,**/bin/**,**/obj/**,**/TestResults/**</ExcludeByFile>
+          <ExcludeByFile>**/Migrations/**,**/bin/**,**/obj/**,**/TestResults/**,**/*.generated.cs,**/*.g.cs,**/*.Designer.cs,**/ParkingContext.cs,**/Program.cs</ExcludeByFile>
+          <Include>**/CSharp Parking API/**</Include>
         </Configuration>
       </DataCollector>
     </DataCollectors>

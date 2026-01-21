@@ -50,6 +50,7 @@ jobs:
             --configuration Release \
             --no-restore \
             --verbosity normal \
+            --settings coverlet.runsettings \
             --collect:"XPlat Code Coverage" \
             --results-directory ./test-results \
             --logger "trx;LogFileName=test-results.trx" || true
@@ -70,32 +71,33 @@ jobs:
           echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
           echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
           if [ -f "coveragereport/Summary.txt" ]; then
+            # Focus on branch coverage, but show all relevant metrics
             cat coveragereport/Summary.txt | grep -E "(Line coverage|Branch coverage|Method coverage)" | sed 's/:/|/' | sed 's/$/|/' >> $GITHUB_STEP_SUMMARY
           else
             echo "| Error | Coverage report not found |" >> $GITHUB_STEP_SUMMARY
           fi
 
-      - name: Check line coverage requirement (80%)
+      - name: Check branch coverage requirement (80%)
         run: |
           if [ -f "coveragereport/Summary.txt" ]; then
-            LINE_COVERAGE=$(grep -oP '(?<=Line coverage: )\d+\.\d+' coveragereport/Summary.txt || echo "0")
+            BRANCH_COVERAGE=$(grep -oP '(?<=Branch coverage: )\d+\.\d+' coveragereport/Summary.txt || echo "0")
           else
             echo "Coverage report not found - checking for any coverage files..."
             find . -name "*.cobertura.xml" -type f
-            LINE_COVERAGE="0"
+            BRANCH_COVERAGE="0"
           fi
 
-          echo "Current line coverage: ${LINE_COVERAGE}%"
-          echo "Required line coverage: ${{ env.MIN_LINE_COVERAGE }}%"
+          echo "Current branch coverage: ${BRANCH_COVERAGE}%"
+          echo "Required branch coverage: ${{ env.MIN_BRANCH_COVERAGE }}%"
 
-          if (( $(echo "${LINE_COVERAGE} < ${{ env.MIN_LINE_COVERAGE }}" | bc -l) )); then
-            echo "LINE COVERAGE REQUIREMENT FAILED"
-            echo "Line coverage (${LINE_COVERAGE}%) is below minimum threshold of ${{ env.MIN_LINE_COVERAGE }}%"
+          if (( $(echo "${BRANCH_COVERAGE} < ${{ env.MIN_BRANCH_COVERAGE }}" | bc -l) )); then
+            echo "BRANCH COVERAGE REQUIREMENT FAILED"
+            echo "Branch coverage (${BRANCH_COVERAGE}%) is below minimum threshold of ${{ env.MIN_BRANCH_COVERAGE }}%"
             echo "Fix: Add more tests to cover conditional branches and edge cases"
             exit 1
           else
-            echo "LINE COVERAGE REQUIREMENT MET"
-            echo "Line coverage (${LINE_COVERAGE}%) exceeds ${{ env.MIN_LINE_COVERAGE }}% threshold"
+            echo "BRANCH COVERAGE REQUIREMENT MET"
+            echo "Branch coverage (${BRANCH_COVERAGE}%) meets ${{ env.MIN_BRANCH_COVERAGE }}% requirement"
           fi
 
       - name: Upload test results
