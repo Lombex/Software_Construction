@@ -1198,5 +1198,17 @@ namespace CSharpAPI.Tests.Services
             var result = await service.Create(bill);
             result.status.Should().Be(BillingStatus.Due);
         }
+
+        [Fact]
+        public void Database_OnConfiguring_When_Not_Configured_Should_Set_Sqlite_Connection()
+        {
+            // Create a database context with no options configured to test OnConfiguring
+            var options = new DbContextOptionsBuilder<SQLite_Database>().Options;
+            var db = new SQLite_Database(options);
+
+            // The OnConfiguring method should have been called and configured the database
+            // We can't easily verify the exact connection string, but we can verify the context works
+            db.Database.IsSqlite().Should().BeTrue();
+        }
     }
 }

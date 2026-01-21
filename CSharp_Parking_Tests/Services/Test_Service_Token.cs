@@ -68,8 +68,44 @@ namespace CSharpAPI.Tests.Services
                 .Build();
             var service = new TokenService(config);
 
-            Assert.Throws<InvalidOperationException>(() => 
+            Assert.Throws<InvalidOperationException>(() =>
                 service.GenerateToken("user123", "testuser", "ParkingUser", out var expiresAt));
+        }
+
+        [Fact]
+        public void GenerateToken_With_Empty_Issuer_Should_Handle_Null_Issuer()
+        {
+            var config = new Dictionary<string, string?>
+            {
+                { "Jwt:Issuer", "" }, // Empty string
+                { "Jwt:Audience", "TestAudience" },
+                { "Jwt:Key", "TestSecretKeyThatIsAtLeast32CharactersLong!" }
+            };
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(config)
+                .Build();
+            var service = new TokenService(configuration);
+
+            var token = service.GenerateToken("user123", "testuser", "ParkingUser", out var expiresAt);
+            token.Should().NotBeNullOrEmpty();
+        }
+
+        [Fact]
+        public void GenerateToken_With_Empty_Audience_Should_Handle_Null_Audience()
+        {
+            var config = new Dictionary<string, string?>
+            {
+                { "Jwt:Issuer", "TestIssuer" },
+                { "Jwt:Audience", "" }, // Empty string
+                { "Jwt:Key", "TestSecretKeyThatIsAtLeast32CharactersLong!" }
+            };
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(config)
+                .Build();
+            var service = new TokenService(configuration);
+
+            var token = service.GenerateToken("user123", "testuser", "ParkingUser", out var expiresAt);
+            token.Should().NotBeNullOrEmpty();
         }
     }
 }
