@@ -32,8 +32,11 @@ namespace CSharpAPI.Controllers
         [HttpGet()]
         public async Task<IActionResult> GetProfile([FromQuery] Guid id)
         {
+            // Check authentication first
+            if (CurrentUserId == null) return Unauthorized();
+
             // Users can only view their own profile, admins can view any
-            if (!IsAdminOrAbove && (CurrentUserId == null || id != CurrentUserId.Value)) return Forbid();
+            if (!IsAdminOrAbove && id != CurrentUserId.Value) return Forbid();
 
             var user = await _profileService.GetById(id);
             return Ok(new {
