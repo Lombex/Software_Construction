@@ -14,7 +14,7 @@ env:
   DOTNET_VERSION: '8.0.x'
   API_PROJECT_PATH: "CSharp Parking API/CSharp Parking API.csproj"
   TEST_PROJECT_PATH: "CSharp Parking Tests/CSharp Parking Tests.csproj"
-  TEST_PROJECT_DIR: "CSharp Parking Tests"
+  COVERAGE_SETTINGS_PATH: "CSharp Parking Tests/coverlet.runsettings"
   MIN_LINE_COVERAGE: 80.0
   MIN_BRANCH_COVERAGE: 80.0
   DOTNET_ROOT: /usr/share/dotnet
@@ -46,13 +46,12 @@ jobs:
 
       # Run comprehensive tests with coverage (ignore failures)
       - name: Run tests with detailed coverage
-        working-directory: ${{ env.TEST_PROJECT_DIR }}
         run: |
           dotnet test "${{ env.TEST_PROJECT_PATH }}" \
             --configuration Release \
             --no-restore \
             --verbosity normal \
-            --settings "coverlet.runsettings" \
+            --settings "${{ env.COVERAGE_SETTINGS_PATH }}" \
             --collect:"XPlat Code Coverage" \
             --results-directory ./test-results \
             --logger "trx;LogFileName=test-results.trx" || true
@@ -61,7 +60,6 @@ jobs:
         run: dotnet tool install -g dotnet-reportgenerator-globaltool
 
       - name: Generate detailed coverage report
-        working-directory: ${{ env.TEST_PROJECT_DIR }}
         run: |
           reportgenerator \
             "-reports:**/coverage.cobertura.xml" \
@@ -73,17 +71,16 @@ jobs:
           echo "## Test Coverage Report" >> $GITHUB_STEP_SUMMARY
           echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
           echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
-          if [ -f "${{ env.TEST_PROJECT_DIR }}/coveragereport/Summary.txt" ]; then
-            # Focus on branch coverage, but show all relevant metrics
-            cat "${{ env.TEST_PROJECT_DIR }}/coveragereport/Summary.txt" | grep -E "(Line coverage|Branch coverage|Method coverage)" | sed 's/:/|/' | sed 's/$/|/' >> $GITHUB_STEP_SUMMARY
+          if [ -f "coveragereport/Summary.txt" ]; then
+            cat coveragereport/Summary.txt | grep -E "(Line coverage|Branch coverage|Method coverage)" | sed 's/:/|/' | sed 's/$/|/' >> $GITHUB_STEP_SUMMARY
           else
             echo "| Error | Coverage report not found |" >> $GITHUB_STEP_SUMMARY
           fi
 
       - name: Check branch coverage requirement (80%)
         run: |
-          if [ -f "${{ env.TEST_PROJECT_DIR }}/coveragereport/Summary.txt" ]; then
-            BRANCH_COVERAGE=$(grep -oP '(?<=Branch coverage: )\d+\.\d+' "${{ env.TEST_PROJECT_DIR }}/coveragereport/Summary.txt" || echo "0")
+          if [ -f "coveragereport/Summary.txt" ]; then
+            BRANCH_COVERAGE=$(grep -oP '(?<=Branch coverage: )\d+\.\d+' coveragereport/Summary.txt || echo "0")
           else
             echo "Coverage report not found - checking for any coverage files..."
             find . -name "*.cobertura.xml" -type f
@@ -100,7 +97,7 @@ jobs:
             exit 1
           else
             echo "BRANCH COVERAGE REQUIREMENT MET"
-            echo "Branch coverage (${BRANCH_COVERAGE}%) meets ${{ env.MIN_BRANCH_COVERAGE }}% requirement"
+            echo "Branch coverage (${BRANCH_COVERAGE}%) exceeds ${{ env.MIN_BRANCH_COVERAGE }}% threshold"
           fi
 
       - name: Upload test results
@@ -108,14 +105,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-results-${{ github.run_id }}
-          path: ${{ env.TEST_PROJECT_DIR }}/test-results/
+          path: ./test-results/
 
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report-${{ github.run_id }}
-          path: ${{ env.TEST_PROJECT_DIR }}/coveragereport/
+          path: coveragereport/
 
 
   # Job 2: Security Scan
