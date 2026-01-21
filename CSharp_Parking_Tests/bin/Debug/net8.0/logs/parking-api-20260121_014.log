@@ -1,0 +1,434 @@
+2026-01-21 20:48:47.035 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "type" = 'table' AND "rootpage" IS NOT NULL;
+2026-01-21 20:48:47.142 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "BalanceTransactions" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_BalanceTransactions" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "balance_id" TEXT NULL,
+    "amount" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "type" INTEGER NOT NULL,
+    "description" TEXT NULL,
+    "payment_id" TEXT NULL,
+    "session_id" TEXT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:48:47.154 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Billing" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Billing" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "session_id" TEXT NULL,
+    "reservation_id" TEXT NULL,
+    "payment_id" TEXT NULL,
+    "amount" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "description" TEXT NULL,
+    "due_date" TEXT NOT NULL,
+    "paid" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "paid_at" TEXT NULL,
+    "invoice_number" TEXT NULL,
+    "type" INTEGER NOT NULL,
+    "status" INTEGER NOT NULL
+);
+2026-01-21 20:48:47.154 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Companies" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Companies" PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "tax_id" TEXT NULL,
+    "email" TEXT NULL,
+    "phone" TEXT NULL,
+    "address" TEXT NULL,
+    "primary_contact_user_id" TEXT NULL,
+    "active" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "monthly_billing_enabled" INTEGER NOT NULL
+);
+2026-01-21 20:48:47.155 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "CompanyUsers" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_CompanyUsers" PRIMARY KEY,
+    "company_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "role" INTEGER NOT NULL,
+    "joined_at" TEXT NOT NULL
+);
+2026-01-21 20:48:47.155 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "HotelGuests" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_HotelGuests" PRIMARY KEY,
+    "hotel_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "check_in" TEXT NOT NULL,
+    "check_out" TEXT NULL,
+    "reservation_number" TEXT NULL,
+    "discount_applied" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:48:47.159 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Hotels" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Hotels" PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "address" TEXT NULL,
+    "phone" TEXT NULL,
+    "email" TEXT NULL,
+    "discount_percentage" TEXT NOT NULL,
+    "active" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:48:47.160 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Parkinglots" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Parkinglots" PRIMARY KEY,
+    "name" TEXT NULL,
+    "location" TEXT NULL,
+    "address" TEXT NULL,
+    "capacity" INTEGER NOT NULL,
+    "reserved" INTEGER NOT NULL,
+    "daytarriff" REAL NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "coordinates_lat" REAL NULL,
+    "coordinates_lng" REAL NULL
+);
+2026-01-21 20:48:47.161 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Payments" (
+    "hash" TEXT NOT NULL CONSTRAINT "PK_Payments" PRIMARY KEY,
+    "id" TEXT NOT NULL,
+    "reservation_id" TEXT NOT NULL,
+    "paid_at" TEXT NOT NULL,
+    "transactions" TEXT NULL,
+    "amount" REAL NOT NULL,
+    "initiator" TEXT NULL,
+    "created_at" TEXT NOT NULL,
+    "completed" TEXT NOT NULL,
+    "t_data_amount" REAL NULL,
+    "t_data_date" TEXT NULL,
+    "t_data_method" TEXT NULL,
+    "t_data_issuer" TEXT NULL,
+    "t_data_bank" TEXT NULL,
+    "session_id" TEXT NOT NULL,
+    "parking_lot_id" TEXT NOT NULL
+);
+2026-01-21 20:48:47.165 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "RevokedTokens" (
+    "TokenId" TEXT NOT NULL CONSTRAINT "PK_RevokedTokens" PRIMARY KEY,
+    "UserId" TEXT NOT NULL,
+    "RevokedAt" TEXT NOT NULL,
+    "ExpiresAt" TEXT NOT NULL
+);
+2026-01-21 20:48:47.166 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "UserBalances" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_UserBalances" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "balance" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "last_updated" TEXT NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:48:47.166 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Users" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Users" PRIMARY KEY,
+    "username" TEXT NULL,
+    "password" TEXT NULL,
+    "name" TEXT NULL,
+    "email" TEXT NULL,
+    "phone" TEXT NULL,
+    "role" INTEGER NOT NULL,
+    "parking_lot_id" TEXT NULL,
+    "created_at" TEXT NOT NULL,
+    "birth_year" TEXT NOT NULL,
+    "active" INTEGER NOT NULL
+);
+2026-01-21 20:48:47.167 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Vehicles" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Vehicles" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "license_plate" TEXT NULL,
+    "make" TEXT NULL,
+    "model" TEXT NULL,
+    "color" TEXT NULL,
+    "year" TEXT NOT NULL,
+    "created_at" TEXT NOT NULL,
+    CONSTRAINT "FK_Vehicles_Users_user_id" FOREIGN KEY ("user_id") REFERENCES "Users" ("id") ON DELETE CASCADE
+);
+2026-01-21 20:48:47.171 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Reservations" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Reservations" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "parking_lot_id" TEXT NOT NULL,
+    "vehicle_id" TEXT NOT NULL,
+    "start_time" TEXT NOT NULL,
+    "end_time" TEXT NOT NULL,
+    "status" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "cost" REAL NOT NULL,
+    CONSTRAINT "FK_Reservations_Parkinglots_parking_lot_id" FOREIGN KEY ("parking_lot_id") REFERENCES "Parkinglots" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Reservations_Users_user_id" FOREIGN KEY ("user_id") REFERENCES "Users" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Reservations_Vehicles_vehicle_id" FOREIGN KEY ("vehicle_id") REFERENCES "Vehicles" ("id") ON DELETE CASCADE
+);
+2026-01-21 20:48:47.171 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Sessions" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Sessions" PRIMARY KEY,
+    "parking_lot_id" TEXT NOT NULL,
+    "vehicle_id" TEXT NOT NULL,
+    "license_plate" TEXT NULL,
+    "started" TEXT NOT NULL,
+    "stopped" TEXT NOT NULL,
+    "user" TEXT NULL,
+    "duration_minutes" INTEGER NOT NULL,
+    "cost" REAL NOT NULL,
+    "status" INTEGER NOT NULL,
+    CONSTRAINT "FK_Sessions_Parkinglots_parking_lot_id" FOREIGN KEY ("parking_lot_id") REFERENCES "Parkinglots" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Sessions_Vehicles_vehicle_id" FOREIGN KEY ("vehicle_id") REFERENCES "Vehicles" ("id") ON DELETE CASCADE
+);
+2026-01-21 20:48:47.172 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_parking_lot_id" ON "Reservations" ("parking_lot_id");
+2026-01-21 20:48:47.176 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_user_id" ON "Reservations" ("user_id");
+2026-01-21 20:48:47.176 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_vehicle_id" ON "Reservations" ("vehicle_id");
+2026-01-21 20:48:47.177 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Sessions_parking_lot_id" ON "Sessions" ("parking_lot_id");
+2026-01-21 20:48:47.177 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Sessions_vehicle_id" ON "Sessions" ("vehicle_id");
+2026-01-21 20:48:47.181 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Vehicles_user_id" ON "Vehicles" ("user_id");
+2026-01-21 20:48:47.183 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 20), @p5='?' (Size = 17), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:48:47.187 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 17), @p5='?' (Size = 19), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:48:47.187 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 16), @p5='?' (Size = 12), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:48:47.210 +01:00 [WRN] Parking lot Test Lot is full. Capacity: 1, Occupied: 1
+2026-01-21 20:48:47.297 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__request_Username_0='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:48:47.297 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__request_Username_0='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:48:47.297 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__request_Username_0='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:48:47.297 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__request_Username_0='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:48:47.297 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__request_Username_0='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:48:47.297 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__request_Username_0='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:48:47.298 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__request_Username_0='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:48:47.303 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:48:47.304 +01:00 [INF] User user logged in successfully
+2026-01-21 20:48:47.304 +01:00 [INF] User user logged in successfully
+2026-01-21 20:48:47.304 +01:00 [INF] User superadmin logged in successfully
+2026-01-21 20:48:47.304 +01:00 [INF] User user logged in successfully
+2026-01-21 20:48:47.304 +01:00 [INF] User lotadmin logged in successfully
+2026-01-21 20:48:47.303 +01:00 [INF] User superadmin logged in successfully
+2026-01-21 20:48:47.304 +01:00 [INF] User user logged in successfully
+2026-01-21 20:48:47.321 +01:00 [INF] User profile is available. Using 'C:\Users\IremP\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-01-21 20:48:47.351 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."id", "p"."address", "p"."capacity", "p"."created_at", "p"."daytarriff", "p"."location", "p"."name", "p"."reserved", "p"."coordinates_lat", "p"."coordinates_lng"
+FROM "Parkinglots" AS "p"
+WHERE "p"."id" = @__id_0
+LIMIT 1
+2026-01-21 20:48:47.370 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/gate/status?parkingLotId=00000000-0000-0000-0000-000000000000 - null null
+2026-01-21 20:48:47.371 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."id", "s"."cost", "s"."duration_minutes", "s"."license_plate", "s"."parking_lot_id", "s"."started", "s"."status", "s"."stopped", "s"."user", "s"."vehicle_id"
+FROM "Sessions" AS "s"
+2026-01-21 20:48:47.411 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Gate.GetGateStatus (CSharp_Parking_API)'
+2026-01-21 20:48:47.417 +01:00 [INF] Route matched with {action = "GetGateStatus", controller = "C_Gate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult GetGateStatus(System.Guid) on controller CSharpAPI.Controllers.C_Gate (CSharp_Parking_API).
+2026-01-21 20:48:47.417 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__parkingLotId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "r"."id", "r"."cost", "r"."created_at", "r"."end_time", "r"."parking_lot_id", "r"."start_time", "r"."status", "r"."user_id", "r"."vehicle_id"
+FROM "Reservations" AS "r"
+WHERE "r"."parking_lot_id" = @__parkingLotId_0
+2026-01-21 20:48:47.465 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."id", "v"."color", "v"."created_at", "v"."license_plate", "v"."make", "v"."model", "v"."user_id", "v"."year"
+FROM "Vehicles" AS "v"
+2026-01-21 20:48:47.471 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."id", "s"."cost", "s"."duration_minutes", "s"."license_plate", "s"."parking_lot_id", "s"."started", "s"."status", "s"."stopped", "s"."user", "s"."vehicle_id"
+FROM "Sessions" AS "s"
+2026-01-21 20:48:47.502 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType8`3[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:48:47.512 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "h"."id", "h"."check_in", "h"."check_out", "h"."created_at", "h"."discount_applied", "h"."hotel_id", "h"."reservation_number", "h"."user_id"
+FROM "HotelGuests" AS "h"
+WHERE "h"."user_id" = @__userId_0 AND "h"."check_out" IS NULL
+LIMIT 1
+2026-01-21 20:48:47.517 +01:00 [INF] Session "7a0bd414-d20c-44c3-94ce-1c523a415d58" started for license plate TEST-123 at parking lot "fe9f3219-77a1-4346-b44e-322f5d288f16"
+2026-01-21 20:48:47.517 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:48:47.518 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p5='?' (DbType = Guid), @p0='?' (DbType = Decimal), @p1='?' (DbType = DateTime), @p2='?' (Size = 3), @p3='?' (DbType = DateTime), @p4='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "UserBalances" SET "balance" = @p0, "created_at" = @p1, "currency" = @p2, "last_updated" = @p3, "user_id" = @p4
+WHERE "id" = @p5
+RETURNING 1;
+2026-01-21 20:48:47.519 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:48:47.524 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Decimal), @p2='?' (DbType = Guid), @p3='?' (DbType = DateTime), @p4='?' (Size = 3), @p5='?' (Size = 27), @p6='?' (DbType = Guid), @p7='?' (DbType = Guid), @p8='?' (DbType = Int32), @p9='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "BalanceTransactions" ("id", "amount", "balance_id", "created_at", "currency", "description", "payment_id", "session_id", "type", "user_id")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+2026-01-21 20:48:47.544 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__session_vehicle_id_1='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."id", "s"."cost", "s"."duration_minutes", "s"."license_plate", "s"."parking_lot_id", "s"."started", "s"."status", "s"."stopped", "s"."user", "s"."vehicle_id"
+FROM "Sessions" AS "s"
+WHERE "s"."vehicle_id" = @__session_vehicle_id_1 AND "s"."vehicle_id" <> '00000000-0000-0000-0000-000000000000'
+2026-01-21 20:48:47.590 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__session_parking_lot_id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."id", "p"."address", "p"."capacity", "p"."created_at", "p"."daytarriff", "p"."location", "p"."name", "p"."reserved", "p"."coordinates_lat", "p"."coordinates_lng"
+FROM "Parkinglots" AS "p"
+WHERE "p"."id" = @__session_parking_lot_id_0
+LIMIT 1
+2026-01-21 20:48:47.595 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Gate.GetGateStatus (CSharp_Parking_API) in 165.3309ms
+2026-01-21 20:48:47.596 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Gate.GetGateStatus (CSharp_Parking_API)'
+2026-01-21 20:48:47.610 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__session_parking_lot_id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "Sessions" AS "s"
+WHERE "s"."parking_lot_id" = @__session_parking_lot_id_0 AND ("s"."stopped" = '0001-01-01 00:00:00' OR "s"."stopped" > rtrim(rtrim(strftime('%Y-%m-%d %H:%M:%f', 'now'), '0'), '.'))
+2026-01-21 20:48:47.621 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/gate/status?parkingLotId=00000000-0000-0000-0000-000000000000 - 200 null application/json; charset=utf-8 239.8861ms
+2026-01-21 20:48:47.622 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__session_parking_lot_id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "Reservations" AS "r"
+WHERE "r"."parking_lot_id" = @__session_parking_lot_id_0 AND "r"."status" = 0 AND "r"."start_time" <= rtrim(rtrim(strftime('%Y-%m-%d %H:%M:%f', 'now'), '0'), '.') AND "r"."end_time" > rtrim(rtrim(strftime('%Y-%m-%d %H:%M:%f', 'now'), '0'), '.')
+2026-01-21 20:48:47.781 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/gate/close - application/json; charset=utf-8 52
+2026-01-21 20:48:47.796 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Gate.CloseGate (CSharp_Parking_API)'
+2026-01-21 20:48:47.799 +01:00 [INF] Route matched with {action = "CloseGate", controller = "C_Gate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult CloseGate(CSharpAPI.Controllers.CloseGateRequest) on controller CSharpAPI.Controllers.C_Gate (CSharp_Parking_API).
+2026-01-21 20:48:47.821 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Single), @p2='?' (DbType = Int32), @p3='?', @p4='?' (DbType = Guid), @p5='?' (DbType = DateTime), @p6='?' (DbType = Int32), @p7='?' (DbType = DateTime), @p8='?' (Size = 36), @p9='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Sessions" ("id", "cost", "duration_minutes", "license_plate", "parking_lot_id", "started", "status", "stopped", "user", "vehicle_id")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+2026-01-21 20:48:47.827 +01:00 [INF] Gate closed for session "1a8ca0f1-ea59-429f-b742-4563a34a121d"
+2026-01-21 20:48:47.828 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType6`4[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:48:47.922 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Gate.CloseGate (CSharp_Parking_API) in 109.8077ms
+2026-01-21 20:48:47.922 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Gate.CloseGate (CSharp_Parking_API)'
+2026-01-21 20:48:47.922 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__session_id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."id", "s"."cost", "s"."duration_minutes", "s"."license_plate", "s"."parking_lot_id", "s"."started", "s"."status", "s"."stopped", "s"."user", "s"."vehicle_id", "p"."id", "p"."address", "p"."capacity", "p"."created_at", "p"."daytarriff", "p"."location", "p"."name", "p"."reserved", "p"."coordinates_lat", "p"."coordinates_lng", "v"."id", "v"."color", "v"."created_at", "v"."license_plate", "v"."make", "v"."model", "v"."user_id", "v"."year", "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Sessions" AS "s"
+INNER JOIN "Parkinglots" AS "p" ON "s"."parking_lot_id" = "p"."id"
+INNER JOIN "Vehicles" AS "v" ON "s"."vehicle_id" = "v"."id"
+INNER JOIN "Users" AS "u" ON "v"."user_id" = "u"."id"
+WHERE "s"."id" = @__session_id_0
+LIMIT 1
+2026-01-21 20:48:47.922 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/gate/close - 200 null application/json; charset=utf-8 141.2728ms
+2026-01-21 20:48:47.923 +01:00 [INF] Session "97260d88-f36d-45fb-8ebd-cf6c9b28a13e" started for license plate null at parking lot "cf046d84-c535-4b27-ba74-fd378891c80d"
+2026-01-21 20:48:47.926 +01:00 [INF] NFC payment successful. User "41ddfab4-371e-4bc6-87ea-ecc919778caa", Amount: 10.0, Session: "97260d88-f36d-45fb-8ebd-cf6c9b28a13e"
+2026-01-21 20:48:47.928 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType9`5[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:48:47.978 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/gate/open - application/json; charset=utf-8 106
+2026-01-21 20:48:47.985 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Gate.OpenGate (CSharp_Parking_API)'
+2026-01-21 20:48:47.987 +01:00 [INF] Route matched with {action = "OpenGate", controller = "C_Gate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult OpenGate(CSharpAPI.Controllers.OpenGateRequest) on controller CSharpAPI.Controllers.C_Gate (CSharp_Parking_API).
+2026-01-21 20:48:48.003 +01:00 [INF] Gate opened for session "d8c3aa9e-47d5-44fd-8550-61bdbe6d740f" at parking lot "670ab39c-ae4a-4eb7-ba67-90f01dd21bfe"
+2026-01-21 20:48:48.003 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType6`4[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:48:48.014 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Gate.OpenGate (CSharp_Parking_API) in 26.305ms
+2026-01-21 20:48:48.014 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Gate.OpenGate (CSharp_Parking_API)'
+2026-01-21 20:48:48.014 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/gate/open - 200 null application/json; charset=utf-8 36.4963ms
+2026-01-21 20:48:48.043 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:48:48.145 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/gate/status?parkingLotId=08b5191a-0827-49be-aed8-824b920e81a7 - null null
+2026-01-21 20:48:48.145 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Gate.GetGateStatus (CSharp_Parking_API)'
+2026-01-21 20:48:48.146 +01:00 [INF] Route matched with {action = "GetGateStatus", controller = "C_Gate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult GetGateStatus(System.Guid) on controller CSharpAPI.Controllers.C_Gate (CSharp_Parking_API).
+2026-01-21 20:48:48.147 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType8`3[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:48:48.162 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Gate.GetGateStatus (CSharp_Parking_API) in 16.5797ms
+2026-01-21 20:48:48.163 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Gate.GetGateStatus (CSharp_Parking_API)'
+2026-01-21 20:48:48.163 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/gate/status?parkingLotId=08b5191a-0827-49be-aed8-824b920e81a7 - 200 null application/json; charset=utf-8 17.79ms
+2026-01-21 20:48:48.252 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/gate/status?parkingLotId=12ce5cb1-f0ad-4640-89c8-cef2e7f57e6a - null null
+2026-01-21 20:48:48.252 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Gate.GetGateStatus (CSharp_Parking_API)'
+2026-01-21 20:48:48.252 +01:00 [INF] Route matched with {action = "GetGateStatus", controller = "C_Gate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult GetGateStatus(System.Guid) on controller CSharpAPI.Controllers.C_Gate (CSharp_Parking_API).
+2026-01-21 20:48:48.252 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType8`3[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:48:48.281 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Gate.GetGateStatus (CSharp_Parking_API) in 28.5578ms
+2026-01-21 20:48:48.281 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Gate.GetGateStatus (CSharp_Parking_API)'
+2026-01-21 20:48:48.282 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/gate/status?parkingLotId=12ce5cb1-f0ad-4640-89c8-cef2e7f57e6a - 200 null application/json; charset=utf-8 29.725ms
+2026-01-21 20:48:48.308 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/gate/open - application/json; charset=utf-8 106
+2026-01-21 20:48:48.309 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Gate.OpenGate (CSharp_Parking_API)'
+2026-01-21 20:48:48.309 +01:00 [INF] Route matched with {action = "OpenGate", controller = "C_Gate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult OpenGate(CSharpAPI.Controllers.OpenGateRequest) on controller CSharpAPI.Controllers.C_Gate (CSharp_Parking_API).
+2026-01-21 20:48:48.314 +01:00 [INF] Gate opened for session "238150af-c6d2-4893-b3cf-4b9d4b3872e1" at parking lot "fd8244db-9e0c-476d-840d-515dce3f6556"
+2026-01-21 20:48:48.314 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType6`4[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:48:48.318 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Gate.OpenGate (CSharp_Parking_API) in 8.8925ms
+2026-01-21 20:48:48.322 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Gate.OpenGate (CSharp_Parking_API)'
+2026-01-21 20:48:48.322 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/gate/open - 200 null application/json; charset=utf-8 13.6125ms
+2026-01-21 20:48:48.340 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType10`4[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:48:48.355 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/gate/close - application/json; charset=utf-8 52
+2026-01-21 20:48:48.356 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Gate.CloseGate (CSharp_Parking_API)'
+2026-01-21 20:48:48.356 +01:00 [INF] Route matched with {action = "CloseGate", controller = "C_Gate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult CloseGate(CSharpAPI.Controllers.CloseGateRequest) on controller CSharpAPI.Controllers.C_Gate (CSharp_Parking_API).
+2026-01-21 20:48:48.356 +01:00 [INF] Gate closed for session "227adbca-26c8-4b33-9b70-07695cd3c748"
+2026-01-21 20:48:48.356 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType6`4[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:48:48.372 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Gate.CloseGate (CSharp_Parking_API) in 16.4399ms
+2026-01-21 20:48:48.372 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Gate.CloseGate (CSharp_Parking_API)'
+2026-01-21 20:48:48.372 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/gate/close - 200 null application/json; charset=utf-8 20.9507ms
+2026-01-21 20:48:48.471 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/gate/open - application/json; charset=utf-8 4
+2026-01-21 20:48:48.472 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Gate.OpenGate (CSharp_Parking_API)'
+2026-01-21 20:48:48.472 +01:00 [INF] Route matched with {action = "OpenGate", controller = "C_Gate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult OpenGate(CSharpAPI.Controllers.OpenGateRequest) on controller CSharpAPI.Controllers.C_Gate (CSharp_Parking_API).
+2026-01-21 20:48:48.472 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:48:48.474 +01:00 [WRN] Parking lot "03c40893-3de2-4d59-8b3b-2ead6adcfa80" is full
+2026-01-21 20:48:48.474 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType7`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:48:48.547 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Gate.OpenGate (CSharp_Parking_API) in 74.6178ms
+2026-01-21 20:48:48.554 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Gate.OpenGate (CSharp_Parking_API)'
+2026-01-21 20:48:48.554 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/gate/open - 400 null application/problem+json; charset=utf-8 83.0795ms
+2026-01-21 20:48:48.595 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/gate/close - application/json; charset=utf-8 4
+2026-01-21 20:48:48.600 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Gate.CloseGate (CSharp_Parking_API)'
+2026-01-21 20:48:48.608 +01:00 [INF] Route matched with {action = "CloseGate", controller = "C_Gate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult CloseGate(CSharpAPI.Controllers.CloseGateRequest) on controller CSharpAPI.Controllers.C_Gate (CSharp_Parking_API).
+2026-01-21 20:48:48.609 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:48:48.610 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType7`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:48:48.640 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Gate.CloseGate (CSharp_Parking_API) in 31.6082ms
+2026-01-21 20:48:48.642 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Gate.CloseGate (CSharp_Parking_API)'
+2026-01-21 20:48:48.642 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/gate/close - 400 null application/problem+json; charset=utf-8 46.4169ms
+2026-01-21 20:48:48.709 +01:00 [ERR] Error processing NFC payment
+System.Exception: Parking lot has not been found!
+   at CSharpAPI.Services.S_Parkinglots.GetById(Guid id) in C:\Users\IremP\OneDrive\college\Github\Software_Construction\CSharp_Parking_API\Services\Service_Parkinglots.cs:line 35
+   at CSharpAPI.Controllers.C_NFC.VerifyAndPay(NFCVerifyRequest request) in C:\Users\IremP\OneDrive\college\Github\Software_Construction\CSharp_Parking_API\Controllers\Controller_NFC.cs:line 60
+2026-01-21 20:48:48.734 +01:00 [INF] Executing ObjectResult, writing value of type '<>f__AnonymousType7`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:48:48.823 +01:00 [WRN] Insufficient balance for user "41ddfab4-371e-4bc6-87ea-ecc919778caa". Required: 1000.0
+2026-01-21 20:48:48.823 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType7`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:48:48.958 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 20), @p4='?' (Size = 17), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:48:48.976 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 16), @p4='?' (Size = 12), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:48:48.978 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType10`4[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:48:49.073 +01:00 [WRN] Insufficient balance for user "efaaf127-b21e-476a-894a-86d302150c5b". Required: 10.0
+2026-01-21 20:48:49.074 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType7`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:48:49.178 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 16), @p4='?' (Size = 12), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:48:49.245 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 17), @p4='?' (Size = 19), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:48:49.253 +01:00 [WRN] Insufficient balance for user "41ddfab4-371e-4bc6-87ea-ecc919778caa". Required: 100.0
+2026-01-21 20:48:49.253 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType7`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:48:49.354 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 17), @p4='?' (Size = 19), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:48:49.454 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 16), @p4='?' (Size = 12), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:48:49.531 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 16), @p4='?' (Size = 12), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;

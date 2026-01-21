@@ -1,0 +1,448 @@
+2026-01-21 20:44:04.442 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:44:04.537 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:44:04.538 +01:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-01-21 20:44:04.544 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "type" = 'table' AND "rootpage" IS NOT NULL;
+2026-01-21 20:44:04.629 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[@__request_Username_0='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:44:04.629 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[@__request_Username_0='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:44:04.629 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__request_Username_0='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:44:04.629 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[@__request_Username_0='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:44:04.629 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__request_Username_0='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:44:04.629 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[@__request_Username_0='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:44:04.629 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__request_Username_0='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:44:04.629 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__request_Username_0='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:44:04.629 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__request_Username_0='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:44:04.630 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "BalanceTransactions" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_BalanceTransactions" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "balance_id" TEXT NULL,
+    "amount" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "type" INTEGER NOT NULL,
+    "description" TEXT NULL,
+    "payment_id" TEXT NULL,
+    "session_id" TEXT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:44:04.631 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Billing" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Billing" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "session_id" TEXT NULL,
+    "reservation_id" TEXT NULL,
+    "payment_id" TEXT NULL,
+    "amount" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "description" TEXT NULL,
+    "due_date" TEXT NOT NULL,
+    "paid" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "paid_at" TEXT NULL,
+    "invoice_number" TEXT NULL,
+    "type" INTEGER NOT NULL,
+    "status" INTEGER NOT NULL
+);
+2026-01-21 20:44:04.632 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Companies" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Companies" PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "tax_id" TEXT NULL,
+    "email" TEXT NULL,
+    "phone" TEXT NULL,
+    "address" TEXT NULL,
+    "primary_contact_user_id" TEXT NULL,
+    "active" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "monthly_billing_enabled" INTEGER NOT NULL
+);
+2026-01-21 20:44:04.633 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "CompanyUsers" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_CompanyUsers" PRIMARY KEY,
+    "company_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "role" INTEGER NOT NULL,
+    "joined_at" TEXT NOT NULL
+);
+2026-01-21 20:44:04.634 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "HotelGuests" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_HotelGuests" PRIMARY KEY,
+    "hotel_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "check_in" TEXT NOT NULL,
+    "check_out" TEXT NULL,
+    "reservation_number" TEXT NULL,
+    "discount_applied" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:44:04.640 +01:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Hotels" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Hotels" PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "address" TEXT NULL,
+    "phone" TEXT NULL,
+    "email" TEXT NULL,
+    "discount_percentage" TEXT NOT NULL,
+    "active" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:44:04.641 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Parkinglots" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Parkinglots" PRIMARY KEY,
+    "name" TEXT NULL,
+    "location" TEXT NULL,
+    "address" TEXT NULL,
+    "capacity" INTEGER NOT NULL,
+    "reserved" INTEGER NOT NULL,
+    "daytarriff" REAL NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "coordinates_lat" REAL NULL,
+    "coordinates_lng" REAL NULL
+);
+2026-01-21 20:44:04.642 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Payments" (
+    "hash" TEXT NOT NULL CONSTRAINT "PK_Payments" PRIMARY KEY,
+    "id" TEXT NOT NULL,
+    "reservation_id" TEXT NOT NULL,
+    "paid_at" TEXT NOT NULL,
+    "transactions" TEXT NULL,
+    "amount" REAL NOT NULL,
+    "initiator" TEXT NULL,
+    "created_at" TEXT NOT NULL,
+    "completed" TEXT NOT NULL,
+    "t_data_amount" REAL NULL,
+    "t_data_date" TEXT NULL,
+    "t_data_method" TEXT NULL,
+    "t_data_issuer" TEXT NULL,
+    "t_data_bank" TEXT NULL,
+    "session_id" TEXT NOT NULL,
+    "parking_lot_id" TEXT NOT NULL
+);
+2026-01-21 20:44:04.643 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "RevokedTokens" (
+    "TokenId" TEXT NOT NULL CONSTRAINT "PK_RevokedTokens" PRIMARY KEY,
+    "UserId" TEXT NOT NULL,
+    "RevokedAt" TEXT NOT NULL,
+    "ExpiresAt" TEXT NOT NULL
+);
+2026-01-21 20:44:04.644 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "UserBalances" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_UserBalances" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "balance" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "last_updated" TEXT NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:44:04.644 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Users" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Users" PRIMARY KEY,
+    "username" TEXT NULL,
+    "password" TEXT NULL,
+    "name" TEXT NULL,
+    "email" TEXT NULL,
+    "phone" TEXT NULL,
+    "role" INTEGER NOT NULL,
+    "parking_lot_id" TEXT NULL,
+    "created_at" TEXT NOT NULL,
+    "birth_year" TEXT NOT NULL,
+    "active" INTEGER NOT NULL
+);
+2026-01-21 20:44:04.646 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Vehicles" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Vehicles" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "license_plate" TEXT NULL,
+    "make" TEXT NULL,
+    "model" TEXT NULL,
+    "color" TEXT NULL,
+    "year" TEXT NOT NULL,
+    "created_at" TEXT NOT NULL,
+    CONSTRAINT "FK_Vehicles_Users_user_id" FOREIGN KEY ("user_id") REFERENCES "Users" ("id") ON DELETE CASCADE
+);
+2026-01-21 20:44:04.651 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Reservations" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Reservations" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "parking_lot_id" TEXT NOT NULL,
+    "vehicle_id" TEXT NOT NULL,
+    "start_time" TEXT NOT NULL,
+    "end_time" TEXT NOT NULL,
+    "status" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "cost" REAL NOT NULL,
+    CONSTRAINT "FK_Reservations_Parkinglots_parking_lot_id" FOREIGN KEY ("parking_lot_id") REFERENCES "Parkinglots" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Reservations_Users_user_id" FOREIGN KEY ("user_id") REFERENCES "Users" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Reservations_Vehicles_vehicle_id" FOREIGN KEY ("vehicle_id") REFERENCES "Vehicles" ("id") ON DELETE CASCADE
+);
+2026-01-21 20:44:04.652 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Sessions" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Sessions" PRIMARY KEY,
+    "parking_lot_id" TEXT NOT NULL,
+    "vehicle_id" TEXT NOT NULL,
+    "license_plate" TEXT NULL,
+    "started" TEXT NOT NULL,
+    "stopped" TEXT NOT NULL,
+    "user" TEXT NULL,
+    "duration_minutes" INTEGER NOT NULL,
+    "cost" REAL NOT NULL,
+    "status" INTEGER NOT NULL,
+    CONSTRAINT "FK_Sessions_Parkinglots_parking_lot_id" FOREIGN KEY ("parking_lot_id") REFERENCES "Parkinglots" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Sessions_Vehicles_vehicle_id" FOREIGN KEY ("vehicle_id") REFERENCES "Vehicles" ("id") ON DELETE CASCADE
+);
+2026-01-21 20:44:04.653 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_parking_lot_id" ON "Reservations" ("parking_lot_id");
+2026-01-21 20:44:04.654 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_user_id" ON "Reservations" ("user_id");
+2026-01-21 20:44:04.654 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_vehicle_id" ON "Reservations" ("vehicle_id");
+2026-01-21 20:44:04.655 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Sessions_parking_lot_id" ON "Sessions" ("parking_lot_id");
+2026-01-21 20:44:04.660 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Sessions_vehicle_id" ON "Sessions" ("vehicle_id");
+2026-01-21 20:44:04.661 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Vehicles_user_id" ON "Vehicles" ("user_id");
+2026-01-21 20:44:04.663 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 20), @p5='?' (Size = 17), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:44:04.664 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 16), @p5='?' (Size = 12), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:44:04.669 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 17), @p5='?' (Size = 19), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:44:04.743 +01:00 [INF] User user logged in successfully
+2026-01-21 20:44:04.743 +01:00 [INF] User superadmin logged in successfully
+2026-01-21 20:44:04.743 +01:00 [INF] User superadmin logged in successfully
+2026-01-21 20:44:04.743 +01:00 [INF] User superadmin logged in successfully
+2026-01-21 20:44:04.743 +01:00 [INF] User lotadmin logged in successfully
+2026-01-21 20:44:04.743 +01:00 [INF] User user logged in successfully
+2026-01-21 20:44:04.743 +01:00 [INF] User user logged in successfully
+2026-01-21 20:44:04.743 +01:00 [INF] User lotadmin logged in successfully
+2026-01-21 20:44:04.743 +01:00 [INF] User lotadmin logged in successfully
+2026-01-21 20:44:04.820 +01:00 [INF] User profile is available. Using 'C:\Users\IremP\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-01-21 20:44:04.838 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:04.860 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:04.866 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:04.870 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__request_Username_0='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:44:04.871 +01:00 [INF] User user logged in successfully
+2026-01-21 20:44:06.674 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 20), @p4='?' (Size = 17), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:44:06.697 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 20), @p4='?' (Size = 17), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:44:06.725 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 16), @p4='?' (Size = 12), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:44:06.760 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 17), @p4='?' (Size = 19), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:44:06.840 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 17), @p4='?' (Size = 19), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:44:06.857 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 20), @p4='?' (Size = 17), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:44:06.886 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 16), @p4='?' (Size = 12), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:44:06.948 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 16), @p4='?' (Size = 12), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:44:06.956 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 16), @p4='?' (Size = 12), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:44:06.956 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 2090.4167ms
+2026-01-21 20:44:06.957 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:06.957 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 2118.9801ms
+2026-01-21 20:44:06.992 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost/api/v2/profile/change-password/fe4ebc19-7727-4cac-832d-ec27abbdf0ab - application/json; charset=utf-8 13
+2026-01-21 20:44:07.007 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 17), @p4='?' (Size = 19), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:44:07.007 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Profile.ChangePassword (CSharp_Parking_API)'
+2026-01-21 20:44:07.013 +01:00 [INF] Route matched with {action = "ChangePassword", controller = "C_Profile"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ChangePassword(System.Guid, System.String) on controller CSharpAPI.Controllers.C_Profile (CSharp_Parking_API).
+2026-01-21 20:44:07.040 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Profile.ChangePassword (CSharp_Parking_API) in 26.7675ms
+2026-01-21 20:44:07.045 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Profile.ChangePassword (CSharp_Parking_API)'
+2026-01-21 20:44:07.045 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost/api/v2/profile/change-password/fe4ebc19-7727-4cac-832d-ec27abbdf0ab - 403 null null 52.6559ms
+2026-01-21 20:44:07.070 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 56
+2026-01-21 20:44:07.075 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:07.076 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:08.823 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 1746.9171ms
+2026-01-21 20:44:08.823 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:08.823 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 1752.9543ms
+2026-01-21 20:44:08.843 +01:00 [INF] Request starting HTTP/1.1 DELETE http://localhost/api/v2/profile/delete/a67dc45f-e9c0-43fd-88ae-d5f3d7ec0dba - null null
+2026-01-21 20:44:08.852 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Profile.DeleteProfile (CSharp_Parking_API)'
+2026-01-21 20:44:08.858 +01:00 [INF] Route matched with {action = "DeleteProfile", controller = "C_Profile"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] DeleteProfile(System.Guid) on controller CSharpAPI.Controllers.C_Profile (CSharp_Parking_API).
+2026-01-21 20:44:08.881 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Profile.DeleteProfile (CSharp_Parking_API) in 23.2339ms
+2026-01-21 20:44:08.882 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Profile.DeleteProfile (CSharp_Parking_API)'
+2026-01-21 20:44:08.882 +01:00 [INF] Request finished HTTP/1.1 DELETE http://localhost/api/v2/profile/delete/a67dc45f-e9c0-43fd-88ae-d5f3d7ec0dba - 200 null application/json; charset=utf-8 39.031ms
+2026-01-21 20:44:08.896 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost/api/v2/profile/update/bc847534-a754-446a-a022-98395c845316 - null null
+2026-01-21 20:44:08.900 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost/api/v2/profile/update/bc847534-a754-446a-a022-98395c845316 - 401 null null 4.7051ms
+2026-01-21 20:44:08.927 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:08.927 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:08.933 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:10.112 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 1179.2066ms
+2026-01-21 20:44:10.112 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:10.112 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 1185.9527ms
+2026-01-21 20:44:10.120 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost/api/v2/profile/change-password/5dbd3958-314b-4ff9-b9e5-32c30a01503a - application/json; charset=utf-8 17
+2026-01-21 20:44:10.122 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Profile.ChangePassword (CSharp_Parking_API)'
+2026-01-21 20:44:10.122 +01:00 [INF] Route matched with {action = "ChangePassword", controller = "C_Profile"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ChangePassword(System.Guid, System.String) on controller CSharpAPI.Controllers.C_Profile (CSharp_Parking_API).
+2026-01-21 20:44:10.128 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Profile.ChangePassword (CSharp_Parking_API) in 5.2574ms
+2026-01-21 20:44:10.128 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Profile.ChangePassword (CSharp_Parking_API)'
+2026-01-21 20:44:10.128 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost/api/v2/profile/change-password/5dbd3958-314b-4ff9-b9e5-32c30a01503a - 200 null application/json; charset=utf-8 8.2293ms
+2026-01-21 20:44:10.140 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:44:10.140 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:10.140 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:11.213 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 1072.8137ms
+2026-01-21 20:44:11.213 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:11.213 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 1073.712ms
+2026-01-21 20:44:11.217 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/profile?id=5dbd3958-314b-4ff9-b9e5-32c30a01503a - null null
+2026-01-21 20:44:11.220 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Profile.GetProfile (CSharp_Parking_API)'
+2026-01-21 20:44:11.225 +01:00 [INF] Route matched with {action = "GetProfile", controller = "C_Profile"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProfile(System.Guid) on controller CSharpAPI.Controllers.C_Profile (CSharp_Parking_API).
+2026-01-21 20:44:11.231 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Profile.GetProfile (CSharp_Parking_API) in 5.8735ms
+2026-01-21 20:44:11.231 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Profile.GetProfile (CSharp_Parking_API)'
+2026-01-21 20:44:11.231 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/profile?id=5dbd3958-314b-4ff9-b9e5-32c30a01503a - 200 null application/json; charset=utf-8 14.1178ms
+2026-01-21 20:44:11.237 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:11.237 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:11.237 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:11.243 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 5.0036ms
+2026-01-21 20:44:11.243 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:11.243 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 401 null application/problem+json; charset=utf-8 6.1268ms
+2026-01-21 20:44:11.261 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:11.262 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:11.262 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:11.264 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 2.4748ms
+2026-01-21 20:44:11.264 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:11.265 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 401 null application/problem+json; charset=utf-8 3.2397ms
+2026-01-21 20:44:11.269 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:44:11.270 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:11.270 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:12.263 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 992.4963ms
+2026-01-21 20:44:12.263 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:12.263 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 993.5694ms
+2026-01-21 20:44:12.266 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost/api/v2/profile/update/5dbd3958-314b-4ff9-b9e5-32c30a01503a - text/plain; charset=utf-8 0
+2026-01-21 20:44:12.268 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Profile.UpdateProfile (CSharp_Parking_API)'
+2026-01-21 20:44:12.278 +01:00 [INF] Route matched with {action = "UpdateProfile", controller = "C_Profile"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] UpdateProfile(System.Guid) on controller CSharpAPI.Controllers.C_Profile (CSharp_Parking_API).
+2026-01-21 20:44:12.282 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Profile.UpdateProfile (CSharp_Parking_API) in 3.5905ms
+2026-01-21 20:44:12.282 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Profile.UpdateProfile (CSharp_Parking_API)'
+2026-01-21 20:44:12.282 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost/api/v2/profile/update/5dbd3958-314b-4ff9-b9e5-32c30a01503a - 200 null application/json; charset=utf-8 15.8732ms
+2026-01-21 20:44:12.285 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/profile/8d3ce15a-05ef-4aa2-b614-1376fb47f513 - null null
+2026-01-21 20:44:12.287 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/profile/8d3ce15a-05ef-4aa2-b614-1376fb47f513 - 401 null null 1.6701ms
+2026-01-21 20:44:12.296 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 50
+2026-01-21 20:44:12.296 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:12.297 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:16.240 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 3942.7776ms
+2026-01-21 20:44:16.240 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:16.240 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 3943.5684ms
+2026-01-21 20:44:16.241 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost/api/v2/profile/update/dc6f8846-2c4a-4ced-88e1-9bf3be6b3b00 - text/plain; charset=utf-8 0
+2026-01-21 20:44:16.243 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Profile.UpdateProfile (CSharp_Parking_API)'
+2026-01-21 20:44:16.243 +01:00 [INF] Route matched with {action = "UpdateProfile", controller = "C_Profile"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] UpdateProfile(System.Guid) on controller CSharpAPI.Controllers.C_Profile (CSharp_Parking_API).
+2026-01-21 20:44:16.245 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Profile.UpdateProfile (CSharp_Parking_API) in 1.6264ms
+2026-01-21 20:44:16.245 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Profile.UpdateProfile (CSharp_Parking_API)'
+2026-01-21 20:44:16.245 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost/api/v2/profile/update/dc6f8846-2c4a-4ced-88e1-9bf3be6b3b00 - 200 null application/json; charset=utf-8 3.9473ms
+2026-01-21 20:44:16.249 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 52
+2026-01-21 20:44:16.249 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:16.249 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:16.606 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 356.6453ms
+2026-01-21 20:44:16.606 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:16.606 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 357.5491ms
+2026-01-21 20:44:16.609 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost/api/v2/profile/update/fe4ebc19-7727-4cac-832d-ec27abbdf0ab - null null
+2026-01-21 20:44:16.610 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Profile.UpdateProfile (CSharp_Parking_API)'
+2026-01-21 20:44:16.610 +01:00 [INF] Route matched with {action = "UpdateProfile", controller = "C_Profile"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] UpdateProfile(System.Guid) on controller CSharpAPI.Controllers.C_Profile (CSharp_Parking_API).
+2026-01-21 20:44:16.611 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Profile.UpdateProfile (CSharp_Parking_API) in 0.5049ms
+2026-01-21 20:44:16.611 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Profile.UpdateProfile (CSharp_Parking_API)'
+2026-01-21 20:44:16.611 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost/api/v2/profile/update/fe4ebc19-7727-4cac-832d-ec27abbdf0ab - 403 null null 2.7401ms
+2026-01-21 20:44:16.614 +01:00 [INF] Request starting HTTP/1.1 DELETE http://localhost/api/v2/profile/delete/8466a031-ba7b-4444-aa45-7f47e9bece0b - null null
+2026-01-21 20:44:16.614 +01:00 [INF] Request finished HTTP/1.1 DELETE http://localhost/api/v2/profile/delete/8466a031-ba7b-4444-aa45-7f47e9bece0b - 401 null null 0.7048ms
+2026-01-21 20:44:16.617 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:16.618 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:16.618 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:16.621 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 3.0086ms
+2026-01-21 20:44:16.621 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:16.621 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 401 null application/problem+json; charset=utf-8 3.7504ms
+2026-01-21 20:44:16.625 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost/api/v2/profile/change-password/38f8fd08-4225-427c-b168-2084394249b7 - application/json; charset=utf-8 13
+2026-01-21 20:44:16.626 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost/api/v2/profile/change-password/38f8fd08-4225-427c-b168-2084394249b7 - 401 null null 1.1469ms
+2026-01-21 20:44:16.631 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 52
+2026-01-21 20:44:16.631 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:16.631 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:16.981 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 349.857ms
+2026-01-21 20:44:16.981 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:16.981 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 350.5621ms
+2026-01-21 20:44:16.990 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/profile?id=fe4ebc19-7727-4cac-832d-ec27abbdf0ab - null null
+2026-01-21 20:44:16.992 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Profile.GetProfile (CSharp_Parking_API)'
+2026-01-21 20:44:16.992 +01:00 [INF] Route matched with {action = "GetProfile", controller = "C_Profile"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProfile(System.Guid) on controller CSharpAPI.Controllers.C_Profile (CSharp_Parking_API).
+2026-01-21 20:44:16.992 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Profile.GetProfile (CSharp_Parking_API) in 0.4396ms
+2026-01-21 20:44:16.992 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Profile.GetProfile (CSharp_Parking_API)'
+2026-01-21 20:44:16.993 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/profile?id=fe4ebc19-7727-4cac-832d-ec27abbdf0ab - 403 null null 2.139ms
+2026-01-21 20:44:16.996 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/profile?id=5dbd3958-314b-4ff9-b9e5-32c30a01503a - null null
+2026-01-21 20:44:16.997 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/profile?id=5dbd3958-314b-4ff9-b9e5-32c30a01503a - 401 null null 0.774ms
+2026-01-21 20:44:20.143 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:44:21.180 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 20:44:21.183 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:44:22.828 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:44:23.133 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 20:44:23.460 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)

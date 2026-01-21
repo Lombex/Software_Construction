@@ -1,0 +1,334 @@
+2026-01-21 20:45:06.012 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "type" = 'table' AND "rootpage" IS NOT NULL;
+2026-01-21 20:45:06.195 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "BalanceTransactions" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_BalanceTransactions" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "balance_id" TEXT NULL,
+    "amount" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "type" INTEGER NOT NULL,
+    "description" TEXT NULL,
+    "payment_id" TEXT NULL,
+    "session_id" TEXT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:45:06.241 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Billing" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Billing" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "session_id" TEXT NULL,
+    "reservation_id" TEXT NULL,
+    "payment_id" TEXT NULL,
+    "amount" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "description" TEXT NULL,
+    "due_date" TEXT NOT NULL,
+    "paid" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "paid_at" TEXT NULL,
+    "invoice_number" TEXT NULL,
+    "type" INTEGER NOT NULL,
+    "status" INTEGER NOT NULL
+);
+2026-01-21 20:45:06.241 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Companies" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Companies" PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "tax_id" TEXT NULL,
+    "email" TEXT NULL,
+    "phone" TEXT NULL,
+    "address" TEXT NULL,
+    "primary_contact_user_id" TEXT NULL,
+    "active" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "monthly_billing_enabled" INTEGER NOT NULL
+);
+2026-01-21 20:45:06.241 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "CompanyUsers" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_CompanyUsers" PRIMARY KEY,
+    "company_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "role" INTEGER NOT NULL,
+    "joined_at" TEXT NOT NULL
+);
+2026-01-21 20:45:06.242 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "HotelGuests" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_HotelGuests" PRIMARY KEY,
+    "hotel_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "check_in" TEXT NOT NULL,
+    "check_out" TEXT NULL,
+    "reservation_number" TEXT NULL,
+    "discount_applied" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:45:06.242 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Hotels" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Hotels" PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "address" TEXT NULL,
+    "phone" TEXT NULL,
+    "email" TEXT NULL,
+    "discount_percentage" TEXT NOT NULL,
+    "active" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:45:06.242 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Parkinglots" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Parkinglots" PRIMARY KEY,
+    "name" TEXT NULL,
+    "location" TEXT NULL,
+    "address" TEXT NULL,
+    "capacity" INTEGER NOT NULL,
+    "reserved" INTEGER NOT NULL,
+    "daytarriff" REAL NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "coordinates_lat" REAL NULL,
+    "coordinates_lng" REAL NULL
+);
+2026-01-21 20:45:06.242 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Payments" (
+    "hash" TEXT NOT NULL CONSTRAINT "PK_Payments" PRIMARY KEY,
+    "id" TEXT NOT NULL,
+    "reservation_id" TEXT NOT NULL,
+    "paid_at" TEXT NOT NULL,
+    "transactions" TEXT NULL,
+    "amount" REAL NOT NULL,
+    "initiator" TEXT NULL,
+    "created_at" TEXT NOT NULL,
+    "completed" TEXT NOT NULL,
+    "t_data_amount" REAL NULL,
+    "t_data_date" TEXT NULL,
+    "t_data_method" TEXT NULL,
+    "t_data_issuer" TEXT NULL,
+    "t_data_bank" TEXT NULL,
+    "session_id" TEXT NOT NULL,
+    "parking_lot_id" TEXT NOT NULL
+);
+2026-01-21 20:45:06.243 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "RevokedTokens" (
+    "TokenId" TEXT NOT NULL CONSTRAINT "PK_RevokedTokens" PRIMARY KEY,
+    "UserId" TEXT NOT NULL,
+    "RevokedAt" TEXT NOT NULL,
+    "ExpiresAt" TEXT NOT NULL
+);
+2026-01-21 20:45:06.247 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "UserBalances" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_UserBalances" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "balance" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "last_updated" TEXT NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:45:06.248 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Users" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Users" PRIMARY KEY,
+    "username" TEXT NULL,
+    "password" TEXT NULL,
+    "name" TEXT NULL,
+    "email" TEXT NULL,
+    "phone" TEXT NULL,
+    "role" INTEGER NOT NULL,
+    "parking_lot_id" TEXT NULL,
+    "created_at" TEXT NOT NULL,
+    "birth_year" TEXT NOT NULL,
+    "active" INTEGER NOT NULL
+);
+2026-01-21 20:45:06.249 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Vehicles" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Vehicles" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "license_plate" TEXT NULL,
+    "make" TEXT NULL,
+    "model" TEXT NULL,
+    "color" TEXT NULL,
+    "year" TEXT NOT NULL,
+    "created_at" TEXT NOT NULL,
+    CONSTRAINT "FK_Vehicles_Users_user_id" FOREIGN KEY ("user_id") REFERENCES "Users" ("id") ON DELETE CASCADE
+);
+2026-01-21 20:45:06.249 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Reservations" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Reservations" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "parking_lot_id" TEXT NOT NULL,
+    "vehicle_id" TEXT NOT NULL,
+    "start_time" TEXT NOT NULL,
+    "end_time" TEXT NOT NULL,
+    "status" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "cost" REAL NOT NULL,
+    CONSTRAINT "FK_Reservations_Parkinglots_parking_lot_id" FOREIGN KEY ("parking_lot_id") REFERENCES "Parkinglots" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Reservations_Users_user_id" FOREIGN KEY ("user_id") REFERENCES "Users" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Reservations_Vehicles_vehicle_id" FOREIGN KEY ("vehicle_id") REFERENCES "Vehicles" ("id") ON DELETE CASCADE
+);
+2026-01-21 20:45:06.249 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Sessions" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Sessions" PRIMARY KEY,
+    "parking_lot_id" TEXT NOT NULL,
+    "vehicle_id" TEXT NOT NULL,
+    "license_plate" TEXT NULL,
+    "started" TEXT NOT NULL,
+    "stopped" TEXT NOT NULL,
+    "user" TEXT NULL,
+    "duration_minutes" INTEGER NOT NULL,
+    "cost" REAL NOT NULL,
+    "status" INTEGER NOT NULL,
+    CONSTRAINT "FK_Sessions_Parkinglots_parking_lot_id" FOREIGN KEY ("parking_lot_id") REFERENCES "Parkinglots" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Sessions_Vehicles_vehicle_id" FOREIGN KEY ("vehicle_id") REFERENCES "Vehicles" ("id") ON DELETE CASCADE
+);
+2026-01-21 20:45:06.255 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_parking_lot_id" ON "Reservations" ("parking_lot_id");
+2026-01-21 20:45:06.255 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_user_id" ON "Reservations" ("user_id");
+2026-01-21 20:45:06.255 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_vehicle_id" ON "Reservations" ("vehicle_id");
+2026-01-21 20:45:06.256 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Sessions_parking_lot_id" ON "Sessions" ("parking_lot_id");
+2026-01-21 20:45:06.256 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Sessions_vehicle_id" ON "Sessions" ("vehicle_id");
+2026-01-21 20:45:06.257 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Vehicles_user_id" ON "Vehicles" ("user_id");
+2026-01-21 20:45:06.262 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 17), @p5='?' (Size = 19), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:45:06.262 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 16), @p5='?' (Size = 12), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:45:06.263 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 20), @p5='?' (Size = 17), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:45:06.416 +01:00 [INF] User profile is available. Using 'C:\Users\IremP\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-01-21 20:45:06.550 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:08.291 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 1740.5067ms
+2026-01-21 20:45:08.337 +01:00 [INF] Route matched with {action = "CreateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateUser(CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:10.043 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.CreateUser (CSharp_Parking_API) in 1705.1244ms
+2026-01-21 20:45:10.060 +01:00 [INF] Route matched with {action = "GetUserByID", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetUserByID(System.Guid) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:10.062 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.GetUserByID (CSharp_Parking_API) in 1.9043ms
+2026-01-21 20:45:10.073 +01:00 [INF] Route matched with {action = "UpdateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] UpdateUser(System.Guid, CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:10.082 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.UpdateUser (CSharp_Parking_API) in 8.3886ms
+2026-01-21 20:45:10.085 +01:00 [INF] Route matched with {action = "GetUserByID", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetUserByID(System.Guid) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:10.086 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.GetUserByID (CSharp_Parking_API) in 1.4465ms
+2026-01-21 20:45:10.093 +01:00 [INF] Route matched with {action = "DeleteUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] DeleteUser(System.Guid) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:10.098 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.DeleteUser (CSharp_Parking_API) in 4.1504ms
+2026-01-21 20:45:10.101 +01:00 [INF] Route matched with {action = "GetUserByID", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetUserByID(System.Guid) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:10.103 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.GetUserByID (CSharp_Parking_API) in 1.6955ms
+2026-01-21 20:45:10.107 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:11.054 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 946.5608ms
+2026-01-21 20:45:11.063 +01:00 [INF] Route matched with {action = "GetAllUsers", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllUsers(Int32) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:11.087 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.GetAllUsers (CSharp_Parking_API) in 24.2044ms
+2026-01-21 20:45:11.090 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:12.074 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 983.5691ms
+2026-01-21 20:45:12.078 +01:00 [INF] Route matched with {action = "DeleteUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] DeleteUser(System.Guid) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:12.080 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.DeleteUser (CSharp_Parking_API) in 1.402ms
+2026-01-21 20:45:12.093 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:13.072 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 978.9167ms
+2026-01-21 20:45:13.077 +01:00 [INF] Route matched with {action = "GetUserByID", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetUserByID(System.Guid) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:13.079 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.GetUserByID (CSharp_Parking_API) in 1.332ms
+2026-01-21 20:45:13.082 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:16.682 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 3599.2977ms
+2026-01-21 20:45:16.690 +01:00 [INF] Route matched with {action = "CreateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateUser(CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:16.690 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.CreateUser (CSharp_Parking_API) in 0.5843ms
+2026-01-21 20:45:16.693 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:17.510 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 816.4597ms
+2026-01-21 20:45:17.513 +01:00 [INF] Route matched with {action = "GetAllUsers", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllUsers(Int32) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:17.514 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.GetAllUsers (CSharp_Parking_API) in 0.8236ms
+2026-01-21 20:45:17.517 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:17.861 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 344.3485ms
+2026-01-21 20:45:17.866 +01:00 [INF] Route matched with {action = "CreateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateUser(CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:17.867 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.CreateUser (CSharp_Parking_API) in 0.8211ms
+2026-01-21 20:45:17.871 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:18.232 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 361.1546ms
+2026-01-21 20:45:18.242 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:18.582 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 339.4237ms
+2026-01-21 20:45:18.585 +01:00 [INF] Route matched with {action = "DeleteUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] DeleteUser(System.Guid) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:18.586 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.DeleteUser (CSharp_Parking_API) in 0.9946ms
+2026-01-21 20:45:18.597 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:18.938 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 340.8634ms
+2026-01-21 20:45:18.951 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:19.271 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 319.4306ms
+2026-01-21 20:45:19.274 +01:00 [INF] Route matched with {action = "CreateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateUser(CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:19.275 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.CreateUser (CSharp_Parking_API) in 0.3921ms
+2026-01-21 20:45:19.278 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:19.618 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 340.5711ms
+2026-01-21 20:45:19.633 +01:00 [INF] Route matched with {action = "CreateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateUser(CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:19.634 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.CreateUser (CSharp_Parking_API) in 0.6154ms
+2026-01-21 20:45:19.639 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:19.981 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 342.0176ms
+2026-01-21 20:45:19.988 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:20.332 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 344.0207ms
+2026-01-21 20:45:20.338 +01:00 [INF] Route matched with {action = "UpdateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] UpdateUser(System.Guid, CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:20.339 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.UpdateUser (CSharp_Parking_API) in 1.0059ms
+2026-01-21 20:45:20.348 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:20.684 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 336.1863ms
+2026-01-21 20:45:20.688 +01:00 [INF] Route matched with {action = "CreateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateUser(CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:21.027 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.CreateUser (CSharp_Parking_API) in 338.3434ms
+2026-01-21 20:45:21.030 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:21.369 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 339.0121ms
+2026-01-21 20:45:21.373 +01:00 [INF] Route matched with {action = "UpdateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] UpdateUser(System.Guid, CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:21.375 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.UpdateUser (CSharp_Parking_API) in 2.0883ms
+2026-01-21 20:45:21.386 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:21.736 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 350.1118ms
+2026-01-21 20:45:21.742 +01:00 [INF] Route matched with {action = "UpdateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] UpdateUser(System.Guid, CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:21.744 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.UpdateUser (CSharp_Parking_API) in 2.3602ms
+2026-01-21 20:45:21.747 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:22.109 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 361.4705ms
+2026-01-21 20:45:22.111 +01:00 [INF] Route matched with {action = "GetAllUsers", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllUsers(Int32) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:22.112 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.GetAllUsers (CSharp_Parking_API) in 0.7113ms
+2026-01-21 20:45:22.115 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:22.441 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 326.3241ms
+2026-01-21 20:45:22.443 +01:00 [INF] Route matched with {action = "CreateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateUser(CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:22.743 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.CreateUser (CSharp_Parking_API) in 300.0332ms
+2026-01-21 20:45:22.746 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:23.071 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 325.4357ms
+2026-01-21 20:45:23.073 +01:00 [INF] Route matched with {action = "GetAllUsers", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllUsers(Int32) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:23.074 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.GetAllUsers (CSharp_Parking_API) in 0.5921ms
+2026-01-21 20:45:23.077 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:23.388 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 311.6795ms
+2026-01-21 20:45:23.392 +01:00 [INF] Route matched with {action = "CreateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateUser(CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:23.392 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.CreateUser (CSharp_Parking_API) in 0.2451ms
+2026-01-21 20:45:23.394 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:23.696 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 301.6311ms
+2026-01-21 20:45:23.699 +01:00 [INF] Route matched with {action = "CreateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateUser(CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:23.699 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.CreateUser (CSharp_Parking_API) in 0.2658ms
+2026-01-21 20:45:23.705 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:24.014 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 308.8146ms
+2026-01-21 20:45:24.017 +01:00 [INF] Route matched with {action = "CreateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateUser(CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:24.018 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.CreateUser (CSharp_Parking_API) in 1.0687ms
+2026-01-21 20:45:24.024 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:24.342 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 318.3164ms
+2026-01-21 20:45:24.344 +01:00 [INF] Route matched with {action = "UpdateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] UpdateUser(System.Guid, CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:24.345 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.UpdateUser (CSharp_Parking_API) in 0.7365ms
+2026-01-21 20:45:24.348 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:24.635 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 286.931ms
+2026-01-21 20:45:24.641 +01:00 [INF] Route matched with {action = "CreateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateUser(CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:24.641 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.CreateUser (CSharp_Parking_API) in 0.2222ms
+2026-01-21 20:45:24.643 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:24.921 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 277.3057ms
+2026-01-21 20:45:24.923 +01:00 [INF] Route matched with {action = "GetUserByID", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetUserByID(System.Guid) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:24.924 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.GetUserByID (CSharp_Parking_API) in 0.8082ms
+2026-01-21 20:45:24.928 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:25.220 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 291.7026ms
+2026-01-21 20:45:25.229 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:25.500 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 270.6104ms
+2026-01-21 20:45:25.504 +01:00 [INF] Route matched with {action = "UpdateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] UpdateUser(System.Guid, CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:25.504 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.UpdateUser (CSharp_Parking_API) in 0.2972ms
+2026-01-21 20:45:25.506 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:25.754 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 247.8664ms
+2026-01-21 20:45:25.756 +01:00 [INF] Route matched with {action = "GetAllUsers", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllUsers(Int32) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:25.757 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.GetAllUsers (CSharp_Parking_API) in 0.5397ms
+2026-01-21 20:45:25.759 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:26.025 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 265.6874ms
+2026-01-21 20:45:26.027 +01:00 [INF] Route matched with {action = "CreateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateUser(CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:26.028 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.CreateUser (CSharp_Parking_API) in 0.2861ms
+2026-01-21 20:45:26.031 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:26.302 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 271.2888ms
+2026-01-21 20:45:26.307 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:26.553 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 245.6854ms
+2026-01-21 20:45:26.556 +01:00 [INF] Route matched with {action = "DeleteUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] DeleteUser(System.Guid) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:26.557 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.DeleteUser (CSharp_Parking_API) in 1.3553ms
+2026-01-21 20:45:26.560 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:45:26.799 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 239.6912ms
+2026-01-21 20:45:26.804 +01:00 [INF] Route matched with {action = "CreateUser", controller = "C_Users"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateUser(CSharpAPI.Models.M_Users) on controller CSharpAPI.Controllers.C_Users (CSharp_Parking_API).
+2026-01-21 20:45:26.805 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Users.CreateUser (CSharp_Parking_API) in 0.1828ms

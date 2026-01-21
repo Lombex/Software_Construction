@@ -5982,11 +5982,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\IremP\\OneDrive\\college\\Github\\Software_Construction\\CSharp Parking API\\CSharp Parking API.csproj",
-      "projectName": "CSharp Parking API",
-      "projectPath": "C:\\Users\\IremP\\OneDrive\\college\\Github\\Software_Construction\\CSharp Parking API\\CSharp Parking API.csproj",
+      "projectUniqueName": "C:\\Users\\IremP\\OneDrive\\college\\Github\\Software_Construction\\CSharp_Parking_API\\CSharp_Parking_API.csproj",
+      "projectName": "CSharp_Parking_API",
+      "projectPath": "C:\\Users\\IremP\\OneDrive\\college\\Github\\Software_Construction\\CSharp_Parking_API\\CSharp_Parking_API.csproj",
       "packagesPath": "C:\\Users\\IremP\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\IremP\\OneDrive\\college\\Github\\Software_Construction\\CSharp Parking API\\obj\\",
+      "outputPath": "C:\\Users\\IremP\\OneDrive\\college\\Github\\Software_Construction\\CSharp_Parking_API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\IremP\\AppData\\Roaming\\NuGet\\NuGet.Config"

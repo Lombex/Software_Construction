@@ -1,0 +1,1146 @@
+2026-01-21 20:45:07.697 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:07.705 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "type" = 'table' AND "rootpage" IS NOT NULL;
+2026-01-21 20:45:07.761 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__request_Username_0='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:45:07.771 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__tokenHash_0='?' (Size = 44)], CommandType='"Text"', CommandTimeout='30']
+SELECT "r"."TokenId", "r"."ExpiresAt", "r"."RevokedAt", "r"."UserId"
+FROM "RevokedTokens" AS "r"
+WHERE "r"."TokenId" = @__tokenHash_0
+LIMIT 1
+2026-01-21 20:45:07.812 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:07.814 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__user_0='?' (Size = 4), @__status_1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."id", "s"."cost", "s"."duration_minutes", "s"."license_plate", "s"."parking_lot_id", "s"."started", "s"."status", "s"."stopped", "s"."user", "s"."vehicle_id"
+FROM "Sessions" AS "s"
+WHERE "s"."user" = @__user_0 AND "s"."status" = @__status_1
+2026-01-21 20:45:07.814 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_Session, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:07.821 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:07.833 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "BalanceTransactions" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_BalanceTransactions" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "balance_id" TEXT NULL,
+    "amount" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "type" INTEGER NOT NULL,
+    "description" TEXT NULL,
+    "payment_id" TEXT NULL,
+    "session_id" TEXT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:45:07.834 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Billing" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Billing" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "session_id" TEXT NULL,
+    "reservation_id" TEXT NULL,
+    "payment_id" TEXT NULL,
+    "amount" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "description" TEXT NULL,
+    "due_date" TEXT NOT NULL,
+    "paid" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "paid_at" TEXT NULL,
+    "invoice_number" TEXT NULL,
+    "type" INTEGER NOT NULL,
+    "status" INTEGER NOT NULL
+);
+2026-01-21 20:45:07.835 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Companies" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Companies" PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "tax_id" TEXT NULL,
+    "email" TEXT NULL,
+    "phone" TEXT NULL,
+    "address" TEXT NULL,
+    "primary_contact_user_id" TEXT NULL,
+    "active" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "monthly_billing_enabled" INTEGER NOT NULL
+);
+2026-01-21 20:45:07.835 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "CompanyUsers" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_CompanyUsers" PRIMARY KEY,
+    "company_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "role" INTEGER NOT NULL,
+    "joined_at" TEXT NOT NULL
+);
+2026-01-21 20:45:07.836 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "HotelGuests" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_HotelGuests" PRIMARY KEY,
+    "hotel_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "check_in" TEXT NOT NULL,
+    "check_out" TEXT NULL,
+    "reservation_number" TEXT NULL,
+    "discount_applied" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:45:07.841 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Hotels" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Hotels" PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "address" TEXT NULL,
+    "phone" TEXT NULL,
+    "email" TEXT NULL,
+    "discount_percentage" TEXT NOT NULL,
+    "active" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:45:07.841 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Parkinglots" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Parkinglots" PRIMARY KEY,
+    "name" TEXT NULL,
+    "location" TEXT NULL,
+    "address" TEXT NULL,
+    "capacity" INTEGER NOT NULL,
+    "reserved" INTEGER NOT NULL,
+    "daytarriff" REAL NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "coordinates_lat" REAL NULL,
+    "coordinates_lng" REAL NULL
+);
+2026-01-21 20:45:07.842 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Payments" (
+    "hash" TEXT NOT NULL CONSTRAINT "PK_Payments" PRIMARY KEY,
+    "id" TEXT NOT NULL,
+    "reservation_id" TEXT NOT NULL,
+    "paid_at" TEXT NOT NULL,
+    "transactions" TEXT NULL,
+    "amount" REAL NOT NULL,
+    "initiator" TEXT NULL,
+    "created_at" TEXT NOT NULL,
+    "completed" TEXT NOT NULL,
+    "t_data_amount" REAL NULL,
+    "t_data_date" TEXT NULL,
+    "t_data_method" TEXT NULL,
+    "t_data_issuer" TEXT NULL,
+    "t_data_bank" TEXT NULL,
+    "session_id" TEXT NOT NULL,
+    "parking_lot_id" TEXT NOT NULL
+);
+2026-01-21 20:45:07.842 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "RevokedTokens" (
+    "TokenId" TEXT NOT NULL CONSTRAINT "PK_RevokedTokens" PRIMARY KEY,
+    "UserId" TEXT NOT NULL,
+    "RevokedAt" TEXT NOT NULL,
+    "ExpiresAt" TEXT NOT NULL
+);
+2026-01-21 20:45:07.842 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "UserBalances" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_UserBalances" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "balance" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "last_updated" TEXT NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:45:07.842 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Users" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Users" PRIMARY KEY,
+    "username" TEXT NULL,
+    "password" TEXT NULL,
+    "name" TEXT NULL,
+    "email" TEXT NULL,
+    "phone" TEXT NULL,
+    "role" INTEGER NOT NULL,
+    "parking_lot_id" TEXT NULL,
+    "created_at" TEXT NOT NULL,
+    "birth_year" TEXT NOT NULL,
+    "active" INTEGER NOT NULL
+);
+2026-01-21 20:45:07.843 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Vehicles" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Vehicles" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "license_plate" TEXT NULL,
+    "make" TEXT NULL,
+    "model" TEXT NULL,
+    "color" TEXT NULL,
+    "year" TEXT NOT NULL,
+    "created_at" TEXT NOT NULL,
+    CONSTRAINT "FK_Vehicles_Users_user_id" FOREIGN KEY ("user_id") REFERENCES "Users" ("id") ON DELETE CASCADE
+);
+2026-01-21 20:45:07.843 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Reservations" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Reservations" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "parking_lot_id" TEXT NOT NULL,
+    "vehicle_id" TEXT NOT NULL,
+    "start_time" TEXT NOT NULL,
+    "end_time" TEXT NOT NULL,
+    "status" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "cost" REAL NOT NULL,
+    CONSTRAINT "FK_Reservations_Parkinglots_parking_lot_id" FOREIGN KEY ("parking_lot_id") REFERENCES "Parkinglots" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Reservations_Users_user_id" FOREIGN KEY ("user_id") REFERENCES "Users" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Reservations_Vehicles_vehicle_id" FOREIGN KEY ("vehicle_id") REFERENCES "Vehicles" ("id") ON DELETE CASCADE
+);
+2026-01-21 20:45:07.843 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Sessions" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Sessions" PRIMARY KEY,
+    "parking_lot_id" TEXT NOT NULL,
+    "vehicle_id" TEXT NOT NULL,
+    "license_plate" TEXT NULL,
+    "started" TEXT NOT NULL,
+    "stopped" TEXT NOT NULL,
+    "user" TEXT NULL,
+    "duration_minutes" INTEGER NOT NULL,
+    "cost" REAL NOT NULL,
+    "status" INTEGER NOT NULL,
+    CONSTRAINT "FK_Sessions_Parkinglots_parking_lot_id" FOREIGN KEY ("parking_lot_id") REFERENCES "Parkinglots" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Sessions_Vehicles_vehicle_id" FOREIGN KEY ("vehicle_id") REFERENCES "Vehicles" ("id") ON DELETE CASCADE
+);
+2026-01-21 20:45:07.843 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_parking_lot_id" ON "Reservations" ("parking_lot_id");
+2026-01-21 20:45:07.843 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_user_id" ON "Reservations" ("user_id");
+2026-01-21 20:45:07.843 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_vehicle_id" ON "Reservations" ("vehicle_id");
+2026-01-21 20:45:07.844 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Sessions_parking_lot_id" ON "Sessions" ("parking_lot_id");
+2026-01-21 20:45:07.844 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Sessions_vehicle_id" ON "Sessions" ("vehicle_id");
+2026-01-21 20:45:07.844 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Vehicles_user_id" ON "Vehicles" ("user_id");
+2026-01-21 20:45:07.845 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 16), @p5='?' (Size = 12), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:45:07.845 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 20), @p5='?' (Size = 17), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:45:07.846 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 17), @p5='?' (Size = 19), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:45:07.866 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__tokenHash_0='?' (Size = 44)], CommandType='"Text"', CommandTimeout='30']
+SELECT "r"."TokenId", "r"."ExpiresAt", "r"."RevokedAt", "r"."UserId"
+FROM "RevokedTokens" AS "r"
+WHERE "r"."TokenId" = @__tokenHash_0
+LIMIT 1
+2026-01-21 20:45:07.868 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = 'superadmin'
+LIMIT 1
+2026-01-21 20:45:07.882 +01:00 [WRN] Attempted to start session for license plate TEST-123 but active session already exists
+2026-01-21 20:45:07.889 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__tokenHash_0='?' (Size = 44)], CommandType='"Text"', CommandTimeout='30']
+SELECT "r"."TokenId", "r"."ExpiresAt", "r"."RevokedAt", "r"."UserId"
+FROM "RevokedTokens" AS "r"
+WHERE "r"."TokenId" = @__tokenHash_0
+LIMIT 1
+2026-01-21 20:45:07.898 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:45:07.899 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:45:07.905 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:07.911 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:07.914 +01:00 [INF] Executing ForbidResult with authentication schemes ([]).
+2026-01-21 20:45:07.922 +01:00 [INF] AuthenticationScheme: Bearer was forbidden.
+2026-01-21 20:45:07.936 +01:00 [INF] User profile is available. Using 'C:\Users\IremP\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-01-21 20:45:07.946 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Decimal), @p2='?' (DbType = DateTime), @p3='?' (Size = 3), @p4='?' (DbType = DateTime), @p5='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "UserBalances" ("id", "balance", "created_at", "currency", "last_updated", "user_id")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5);
+2026-01-21 20:45:07.946 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_UserBalance'.
+2026-01-21 20:45:07.946 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__tokenHash_0='?' (Size = 44)], CommandType='"Text"', CommandTimeout='30']
+SELECT "r"."TokenId", "r"."ExpiresAt", "r"."RevokedAt", "r"."UserId"
+FROM "RevokedTokens" AS "r"
+WHERE "r"."TokenId" = @__tokenHash_0
+LIMIT 1
+2026-01-21 20:45:07.962 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = 'user'
+LIMIT 1
+2026-01-21 20:45:07.964 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = 'user'
+LIMIT 1
+2026-01-21 20:45:07.965 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__tokenHash_0='?' (Size = 44)], CommandType='"Text"', CommandTimeout='30']
+SELECT "r"."TokenId", "r"."ExpiresAt", "r"."RevokedAt", "r"."UserId"
+FROM "RevokedTokens" AS "r"
+WHERE "r"."TokenId" = @__tokenHash_0
+LIMIT 1
+2026-01-21 20:45:07.966 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:45:07.966 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Decimal), @p2='?' (DbType = DateTime), @p3='?' (Size = 3), @p4='?' (DbType = DateTime), @p5='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "UserBalances" ("id", "balance", "created_at", "currency", "last_updated", "user_id")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5);
+2026-01-21 20:45:07.975 +01:00 [INF] Executed DbCommand (9ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 22), @p5='?' (Size = 16), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 17)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:45:07.981 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:45:07.981 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:07.983 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__request_Username_0='?' (Size = 17)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:45:07.983 +01:00 [INF] User deleteprofileuser logged in successfully
+2026-01-21 20:45:07.997 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."id", "v"."color", "v"."created_at", "v"."license_plate", "v"."make", "v"."model", "v"."user_id", "v"."year"
+FROM "Vehicles" AS "v"
+WHERE "v"."id" = @__id_0
+LIMIT 1
+2026-01-21 20:45:08.004 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:08.005 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__tokenHash_0='?' (Size = 44)], CommandType='"Text"', CommandTimeout='30']
+SELECT "r"."TokenId", "r"."ExpiresAt", "r"."RevokedAt", "r"."UserId"
+FROM "RevokedTokens" AS "r"
+WHERE "r"."TokenId" = @__tokenHash_0
+LIMIT 1
+2026-01-21 20:45:08.015 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "c"."id", "c"."active", "c"."address", "c"."created_at", "c"."email", "c"."monthly_billing_enabled", "c"."name", "c"."phone", "c"."primary_contact_user_id", "c"."tax_id"
+FROM "Companies" AS "c"
+WHERE "c"."id" = @__p_0
+LIMIT 1
+2026-01-21 20:45:08.016 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 20:45:08.039 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__tokenHash_0='?' (Size = 44)], CommandType='"Text"', CommandTimeout='30']
+SELECT "r"."TokenId", "r"."ExpiresAt", "r"."RevokedAt", "r"."UserId"
+FROM "RevokedTokens" AS "r"
+WHERE "r"."TokenId" = @__tokenHash_0
+LIMIT 1
+2026-01-21 20:45:08.064 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__request_Username_0='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:45:08.064 +01:00 [INF] User superadmin logged in successfully
+2026-01-21 20:45:08.059 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:45:08.066 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p5='?' (DbType = Guid), @p0='?' (DbType = Decimal), @p1='?' (DbType = DateTime), @p2='?' (Size = 3), @p3='?' (DbType = DateTime), @p4='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "UserBalances" SET "balance" = @p0, "created_at" = @p1, "currency" = @p2, "last_updated" = @p3, "user_id" = @p4
+WHERE "id" = @p5
+RETURNING 1;
+2026-01-21 20:45:08.066 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:45:08.077 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Decimal), @p2='?' (DbType = Guid), @p3='?' (DbType = DateTime), @p4='?' (Size = 3), @p5='?' (Size = 12), @p6='?' (DbType = Guid), @p7='?' (DbType = Guid), @p8='?' (DbType = Int32), @p9='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "BalanceTransactions" ("id", "amount", "balance_id", "created_at", "currency", "description", "payment_id", "session_id", "type", "user_id")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+2026-01-21 20:45:08.077 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Decimal), @p2='?' (DbType = Guid), @p3='?' (DbType = DateTime), @p4='?' (Size = 3), @p5='?' (Size = 15), @p6='?' (DbType = Guid), @p7='?' (DbType = Guid), @p8='?' (DbType = Int32), @p9='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "BalanceTransactions" ("id", "amount", "balance_id", "created_at", "currency", "description", "payment_id", "session_id", "type", "user_id")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+2026-01-21 20:45:08.078 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_UserBalance'.
+2026-01-21 20:45:08.078 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "h"."id", "h"."active", "h"."address", "h"."created_at", "h"."discount_percentage", "h"."email", "h"."name", "h"."phone"
+FROM "Hotels" AS "h"
+WHERE "h"."id" = @__id_0 AND "h"."active"
+LIMIT 1
+2026-01-21 20:45:08.078 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 20:45:08.081 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__tokenHash_0='?' (Size = 44)], CommandType='"Text"', CommandTimeout='30']
+SELECT "r"."TokenId", "r"."ExpiresAt", "r"."RevokedAt", "r"."UserId"
+FROM "RevokedTokens" AS "r"
+WHERE "r"."TokenId" = @__tokenHash_0
+LIMIT 1
+2026-01-21 20:45:08.098 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__request_Username_0='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:45:08.108 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:45:08.119 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 4), @p2='?' (DbType = Int32), @p3='?' (DbType = DateTime), @p4='?' (DbType = Single), @p5='?' (Size = 4), @p6='?' (Size = 8), @p7='?' (DbType = Int32), @p8='?' (DbType = Single), @p9='?' (DbType = Single)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Parkinglots" ("id", "address", "capacity", "created_at", "daytarriff", "location", "name", "reserved", "coordinates_lat", "coordinates_lng")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+2026-01-21 20:45:08.124 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_UserBalance'.
+2026-01-21 20:45:08.125 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 3), @p2='?' (DbType = DateTime), @p3='?' (Size = 7), @p4='?' (Size = 4), @p5='?' (Size = 5), @p6='?' (DbType = Guid), @p7='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Vehicles" ("id", "color", "created_at", "license_plate", "make", "model", "user_id", "year")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7);
+2026-01-21 20:45:08.125 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 4), @p2='?' (DbType = Int32), @p3='?' (DbType = DateTime), @p4='?' (DbType = Single), @p5='?' (Size = 4), @p6='?' (Size = 8), @p7='?' (DbType = Int32), @p8='?' (DbType = Single), @p9='?' (DbType = Single)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Parkinglots" ("id", "address", "capacity", "created_at", "daytarriff", "location", "name", "reserved", "coordinates_lat", "coordinates_lng")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+2026-01-21 20:45:08.126 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 3), @p2='?' (DbType = DateTime), @p3='?' (Size = 8), @p4='?' (Size = 4), @p5='?' (Size = 5), @p6='?' (DbType = Guid), @p7='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Vehicles" ("id", "color", "created_at", "license_plate", "make", "model", "user_id", "year")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7);
+2026-01-21 20:45:08.135 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/nfc/verify-and-pay - application/json; charset=utf-8 142
+2026-01-21 20:45:08.137 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:45:08.138 +01:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-01-21 20:45:08.147 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API)'
+2026-01-21 20:45:08.161 +01:00 [INF] Route matched with {action = "VerifyAndPay", controller = "C_NFC"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] VerifyAndPay(CSharpAPI.Controllers.NFCVerifyRequest) on controller CSharpAPI.Controllers.C_NFC (CSharp_Parking_API).
+2026-01-21 20:45:08.180 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:45:08.195 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."id", "v"."color", "v"."created_at", "v"."license_plate", "v"."make", "v"."model", "v"."user_id", "v"."year"
+FROM "Vehicles" AS "v"
+2026-01-21 20:45:08.195 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__request_Username_0='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:45:08.197 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:45:08.218 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."id", "p"."address", "p"."capacity", "p"."created_at", "p"."daytarriff", "p"."location", "p"."name", "p"."reserved", "p"."coordinates_lat", "p"."coordinates_lng"
+FROM "Parkinglots" AS "p"
+WHERE "p"."id" = @__id_0
+LIMIT 1
+2026-01-21 20:45:08.227 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__session_license_plate_0='?' (Size = 8), @__session_vehicle_id_1='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."id", "s"."cost", "s"."duration_minutes", "s"."license_plate", "s"."parking_lot_id", "s"."started", "s"."status", "s"."stopped", "s"."user", "s"."vehicle_id"
+FROM "Sessions" AS "s"
+WHERE ("s"."license_plate" IS NOT NULL AND "s"."license_plate" = @__session_license_plate_0) OR ("s"."vehicle_id" = @__session_vehicle_id_1 AND "s"."vehicle_id" <> '00000000-0000-0000-0000-000000000000')
+2026-01-21 20:45:08.232 +01:00 [INF] Executed DbCommand (4ms) [Parameters=[@__request_Username_0='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:45:08.236 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."id", "s"."cost", "s"."duration_minutes", "s"."license_plate", "s"."parking_lot_id", "s"."started", "s"."status", "s"."stopped", "s"."user", "s"."vehicle_id"
+FROM "Sessions" AS "s"
+2026-01-21 20:45:08.245 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__session_parking_lot_id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."id", "p"."address", "p"."capacity", "p"."created_at", "p"."daytarriff", "p"."location", "p"."name", "p"."reserved", "p"."coordinates_lat", "p"."coordinates_lng"
+FROM "Parkinglots" AS "p"
+WHERE "p"."id" = @__session_parking_lot_id_0
+LIMIT 1
+2026-01-21 20:45:08.254 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__session_parking_lot_id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "Sessions" AS "s"
+WHERE "s"."parking_lot_id" = @__session_parking_lot_id_0 AND ("s"."stopped" = '0001-01-01 00:00:00' OR "s"."stopped" > rtrim(rtrim(strftime('%Y-%m-%d %H:%M:%f', 'now'), '0'), '.'))
+2026-01-21 20:45:08.257 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:08.258 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__parkingLotId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "r"."id", "r"."cost", "r"."created_at", "r"."end_time", "r"."parking_lot_id", "r"."start_time", "r"."status", "r"."user_id", "r"."vehicle_id"
+FROM "Reservations" AS "r"
+WHERE "r"."parking_lot_id" = @__parkingLotId_0
+2026-01-21 20:45:08.257 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__session_parking_lot_id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "Reservations" AS "r"
+WHERE "r"."parking_lot_id" = @__session_parking_lot_id_0 AND "r"."status" = 0 AND "r"."start_time" <= rtrim(rtrim(strftime('%Y-%m-%d %H:%M:%f', 'now'), '0'), '.') AND "r"."end_time" > rtrim(rtrim(strftime('%Y-%m-%d %H:%M:%f', 'now'), '0'), '.')
+2026-01-21 20:45:08.258 +01:00 [WRN] Parking lot Test Lot is full. Capacity: 1, Occupied: 1
+2026-01-21 20:45:08.263 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."id", "v"."color", "v"."created_at", "v"."license_plate", "v"."make", "v"."model", "v"."user_id", "v"."year"
+FROM "Vehicles" AS "v"
+2026-01-21 20:45:08.264 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."id", "s"."cost", "s"."duration_minutes", "s"."license_plate", "s"."parking_lot_id", "s"."started", "s"."status", "s"."stopped", "s"."user", "s"."vehicle_id"
+FROM "Sessions" AS "s"
+2026-01-21 20:45:08.277 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "h"."id", "h"."check_in", "h"."check_out", "h"."created_at", "h"."discount_applied", "h"."hotel_id", "h"."reservation_number", "h"."user_id"
+FROM "HotelGuests" AS "h"
+WHERE "h"."user_id" = @__userId_0 AND "h"."check_out" IS NULL
+LIMIT 1
+2026-01-21 20:45:08.277 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:45:08.278 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p5='?' (DbType = Guid), @p0='?' (DbType = Decimal), @p1='?' (DbType = DateTime), @p2='?' (Size = 3), @p3='?' (DbType = DateTime), @p4='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "UserBalances" SET "balance" = @p0, "created_at" = @p1, "currency" = @p2, "last_updated" = @p3, "user_id" = @p4
+WHERE "id" = @p5
+RETURNING 1;
+2026-01-21 20:45:08.279 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:45:08.279 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Decimal), @p2='?' (DbType = Guid), @p3='?' (DbType = DateTime), @p4='?' (Size = 3), @p5='?' (Size = 27), @p6='?' (DbType = Guid), @p7='?' (DbType = Guid), @p8='?' (DbType = Int32), @p9='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "BalanceTransactions" ("id", "amount", "balance_id", "created_at", "currency", "description", "payment_id", "session_id", "type", "user_id")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+2026-01-21 20:45:08.280 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__session_vehicle_id_1='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."id", "s"."cost", "s"."duration_minutes", "s"."license_plate", "s"."parking_lot_id", "s"."started", "s"."status", "s"."stopped", "s"."user", "s"."vehicle_id"
+FROM "Sessions" AS "s"
+WHERE "s"."vehicle_id" = @__session_vehicle_id_1 AND "s"."vehicle_id" <> '00000000-0000-0000-0000-000000000000'
+2026-01-21 20:45:08.291 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__session_parking_lot_id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."id", "p"."address", "p"."capacity", "p"."created_at", "p"."daytarriff", "p"."location", "p"."name", "p"."reserved", "p"."coordinates_lat", "p"."coordinates_lng"
+FROM "Parkinglots" AS "p"
+WHERE "p"."id" = @__session_parking_lot_id_0
+LIMIT 1
+2026-01-21 20:45:08.292 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__session_parking_lot_id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "Sessions" AS "s"
+WHERE "s"."parking_lot_id" = @__session_parking_lot_id_0 AND ("s"."stopped" = '0001-01-01 00:00:00' OR "s"."stopped" > rtrim(rtrim(strftime('%Y-%m-%d %H:%M:%f', 'now'), '0'), '.'))
+2026-01-21 20:45:08.293 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__session_parking_lot_id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "Reservations" AS "r"
+WHERE "r"."parking_lot_id" = @__session_parking_lot_id_0 AND "r"."status" = 0 AND "r"."start_time" <= rtrim(rtrim(strftime('%Y-%m-%d %H:%M:%f', 'now'), '0'), '.') AND "r"."end_time" > rtrim(rtrim(strftime('%Y-%m-%d %H:%M:%f', 'now'), '0'), '.')
+2026-01-21 20:45:08.329 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__tokenHash_0='?' (Size = 44)], CommandType='"Text"', CommandTimeout='30']
+SELECT "r"."TokenId", "r"."ExpiresAt", "r"."RevokedAt", "r"."UserId"
+FROM "RevokedTokens" AS "r"
+WHERE "r"."TokenId" = @__tokenHash_0
+LIMIT 1
+2026-01-21 20:45:08.334 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Single), @p2='?' (DbType = Int32), @p3='?' (Size = 8), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTime), @p6='?' (DbType = Int32), @p7='?' (DbType = DateTime), @p8='?' (Size = 36), @p9='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Sessions" ("id", "cost", "duration_minutes", "license_plate", "parking_lot_id", "started", "status", "stopped", "user", "vehicle_id")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+2026-01-21 20:45:08.334 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Single), @p2='?' (DbType = Int32), @p3='?', @p4='?' (DbType = Guid), @p5='?' (DbType = DateTime), @p6='?' (DbType = Int32), @p7='?' (DbType = DateTime), @p8='?' (Size = 36), @p9='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Sessions" ("id", "cost", "duration_minutes", "license_plate", "parking_lot_id", "started", "status", "stopped", "user", "vehicle_id")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+2026-01-21 20:45:08.438 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:08.438 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__session_id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."id", "s"."cost", "s"."duration_minutes", "s"."license_plate", "s"."parking_lot_id", "s"."started", "s"."status", "s"."stopped", "s"."user", "s"."vehicle_id", "p"."id", "p"."address", "p"."capacity", "p"."created_at", "p"."daytarriff", "p"."location", "p"."name", "p"."reserved", "p"."coordinates_lat", "p"."coordinates_lng", "v"."id", "v"."color", "v"."created_at", "v"."license_plate", "v"."make", "v"."model", "v"."user_id", "v"."year", "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Sessions" AS "s"
+INNER JOIN "Parkinglots" AS "p" ON "s"."parking_lot_id" = "p"."id"
+INNER JOIN "Vehicles" AS "v" ON "s"."vehicle_id" = "v"."id"
+INNER JOIN "Users" AS "u" ON "v"."user_id" = "u"."id"
+WHERE "s"."id" = @__session_id_0
+LIMIT 1
+2026-01-21 20:45:08.439 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[@__session_id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."id", "s"."cost", "s"."duration_minutes", "s"."license_plate", "s"."parking_lot_id", "s"."started", "s"."status", "s"."stopped", "s"."user", "s"."vehicle_id", "p"."id", "p"."address", "p"."capacity", "p"."created_at", "p"."daytarriff", "p"."location", "p"."name", "p"."reserved", "p"."coordinates_lat", "p"."coordinates_lng", "v"."id", "v"."color", "v"."created_at", "v"."license_plate", "v"."make", "v"."model", "v"."user_id", "v"."year", "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Sessions" AS "s"
+INNER JOIN "Parkinglots" AS "p" ON "s"."parking_lot_id" = "p"."id"
+INNER JOIN "Vehicles" AS "v" ON "s"."vehicle_id" = "v"."id"
+INNER JOIN "Users" AS "u" ON "v"."user_id" = "u"."id"
+WHERE "s"."id" = @__session_id_0
+LIMIT 1
+2026-01-21 20:45:08.444 +01:00 [INF] Session "e90fb296-ff49-4b2f-915f-50d6f38cb00c" started for license plate AUTO-123 at parking lot "4bc29793-0241-4a4d-b8d4-0fb6cc95e85b"
+2026-01-21 20:45:08.440 +01:00 [INF] Session "5c52561f-1ce0-4f97-b9aa-e6d329cd8ada" started for license plate TEST-123 at parking lot "7a68e76f-348b-4d28-846e-788b1e7ac421"
+2026-01-21 20:45:08.444 +01:00 [INF] Session "bbdb75ce-d567-4926-9db9-3ca9aa36d9e5" started for license plate null at parking lot "31d7480d-da54-4902-b46d-65d9770ab424"
+2026-01-21 20:45:08.444 +01:00 [INF] Gate opened for session "e90fb296-ff49-4b2f-915f-50d6f38cb00c" at parking lot "4bc29793-0241-4a4d-b8d4-0fb6cc95e85b"
+2026-01-21 20:45:08.444 +01:00 [INF] NFC payment successful. User "2af4083f-1789-4c91-a889-6a98a7f33951", Amount: 10.0, Session: "bbdb75ce-d567-4926-9db9-3ca9aa36d9e5"
+2026-01-21 20:45:08.445 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType18`4[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[CSharpAPI.Models.M_Session, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:08.446 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType9`5[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:08.454 +01:00 [INF] Executed action CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API) in 293.2001ms
+2026-01-21 20:45:08.454 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API)'
+2026-01-21 20:45:08.455 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/nfc/verify-and-pay - 200 null application/json; charset=utf-8 320.1577ms
+2026-01-21 20:45:08.471 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/nfc/verify-and-pay - application/json; charset=utf-8 4
+2026-01-21 20:45:08.479 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API)'
+2026-01-21 20:45:08.479 +01:00 [INF] Route matched with {action = "VerifyAndPay", controller = "C_NFC"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] VerifyAndPay(CSharpAPI.Controllers.NFCVerifyRequest) on controller CSharpAPI.Controllers.C_NFC (CSharp_Parking_API).
+2026-01-21 20:45:08.480 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__tokenHash_0='?' (Size = 44)], CommandType='"Text"', CommandTimeout='30']
+SELECT "r"."TokenId", "r"."ExpiresAt", "r"."RevokedAt", "r"."UserId"
+FROM "RevokedTokens" AS "r"
+WHERE "r"."TokenId" = @__tokenHash_0
+LIMIT 1
+2026-01-21 20:45:08.481 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 20:45:08.481 +01:00 [INF] AuthenticationScheme: Bearer was forbidden.
+2026-01-21 20:45:08.496 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:08.524 +01:00 [INF] Executed action CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API) in 44.6162ms
+2026-01-21 20:45:08.524 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API)'
+2026-01-21 20:45:08.524 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/nfc/verify-and-pay - 400 null application/problem+json; charset=utf-8 53.0353ms
+2026-01-21 20:45:08.540 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__request_Username_0='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:45:08.545 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__request_Username_0='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:45:08.546 +01:00 [INF] User user logged in successfully
+2026-01-21 20:45:08.587 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/nfc/verify - application/json; charset=utf-8 71
+2026-01-21 20:45:08.594 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_NFC.VerifyCard (CSharp_Parking_API)'
+2026-01-21 20:45:08.602 +01:00 [INF] Route matched with {action = "VerifyCard", controller = "C_NFC"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] VerifyCard(CSharpAPI.Controllers.NFCVerifyCardRequest) on controller CSharpAPI.Controllers.C_NFC (CSharp_Parking_API).
+2026-01-21 20:45:08.613 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:45:08.614 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:45:08.648 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType10`4[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:08.679 +01:00 [INF] Executed action CSharpAPI.Controllers.C_NFC.VerifyCard (CSharp_Parking_API) in 76.4512ms
+2026-01-21 20:45:08.679 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_NFC.VerifyCard (CSharp_Parking_API)'
+2026-01-21 20:45:08.679 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/nfc/verify - 200 null application/json; charset=utf-8 91.6866ms
+2026-01-21 20:45:08.728 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = 'user'
+LIMIT 1
+2026-01-21 20:45:08.733 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:45:08.735 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 4), @p2='?' (DbType = Int32), @p3='?' (DbType = DateTime), @p4='?' (DbType = Single), @p5='?' (Size = 4), @p6='?' (Size = 8), @p7='?' (DbType = Int32), @p8='?' (DbType = Single), @p9='?' (DbType = Single)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Parkinglots" ("id", "address", "capacity", "created_at", "daytarriff", "location", "name", "reserved", "coordinates_lat", "coordinates_lng")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+2026-01-21 20:45:08.735 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 3), @p2='?' (DbType = DateTime), @p3='?' (Size = 8), @p4='?' (Size = 4), @p5='?' (Size = 5), @p6='?' (DbType = Guid), @p7='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Vehicles" ("id", "color", "created_at", "license_plate", "make", "model", "user_id", "year")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7);
+2026-01-21 20:45:08.735 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Single), @p2='?' (DbType = Int32), @p3='?' (Size = 9), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTime), @p6='?' (DbType = Int32), @p7='?' (DbType = DateTime), @p8='?' (Size = 36), @p9='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Sessions" ("id", "cost", "duration_minutes", "license_plate", "parking_lot_id", "started", "status", "stopped", "user", "vehicle_id")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+2026-01-21 20:45:08.736 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/nfc/verify-and-pay - application/json; charset=utf-8 143
+2026-01-21 20:45:08.740 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API)'
+2026-01-21 20:45:08.740 +01:00 [INF] Route matched with {action = "VerifyAndPay", controller = "C_NFC"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] VerifyAndPay(CSharpAPI.Controllers.NFCVerifyRequest) on controller CSharpAPI.Controllers.C_NFC (CSharp_Parking_API).
+2026-01-21 20:45:08.742 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:45:08.743 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."id", "p"."address", "p"."capacity", "p"."created_at", "p"."daytarriff", "p"."location", "p"."name", "p"."reserved", "p"."coordinates_lat", "p"."coordinates_lng"
+FROM "Parkinglots" AS "p"
+WHERE "p"."id" = @__id_0
+LIMIT 1
+2026-01-21 20:45:08.743 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."id", "s"."cost", "s"."duration_minutes", "s"."license_plate", "s"."parking_lot_id", "s"."started", "s"."status", "s"."stopped", "s"."user", "s"."vehicle_id"
+FROM "Sessions" AS "s"
+2026-01-21 20:45:08.756 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__parkingLotId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "r"."id", "r"."cost", "r"."created_at", "r"."end_time", "r"."parking_lot_id", "r"."start_time", "r"."status", "r"."user_id", "r"."vehicle_id"
+FROM "Reservations" AS "r"
+WHERE "r"."parking_lot_id" = @__parkingLotId_0
+2026-01-21 20:45:08.757 +01:00 [WRN] Parking lot "4ecc28fc-8c84-4e3e-afba-405d8dcc99bf" is full
+2026-01-21 20:45:08.757 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType7`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:08.808 +01:00 [INF] Executed action CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API) in 65.8393ms
+2026-01-21 20:45:08.809 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API)'
+2026-01-21 20:45:08.809 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/nfc/verify-and-pay - 400 null application/json; charset=utf-8 72.8083ms
+2026-01-21 20:45:08.954 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/nfc/verify-and-pay - application/json; charset=utf-8 145
+2026-01-21 20:45:08.955 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API)'
+2026-01-21 20:45:08.955 +01:00 [INF] Route matched with {action = "VerifyAndPay", controller = "C_NFC"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] VerifyAndPay(CSharpAPI.Controllers.NFCVerifyRequest) on controller CSharpAPI.Controllers.C_NFC (CSharp_Parking_API).
+2026-01-21 20:45:08.978 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType7`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:08.995 +01:00 [INF] Executed action CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API) in 39.724ms
+2026-01-21 20:45:08.995 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API)'
+2026-01-21 20:45:08.995 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/nfc/verify-and-pay - 400 null application/json; charset=utf-8 40.6982ms
+2026-01-21 20:45:09.061 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/nfc/verify-and-pay - application/json; charset=utf-8 143
+2026-01-21 20:45:09.062 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API)'
+2026-01-21 20:45:09.063 +01:00 [INF] Route matched with {action = "VerifyAndPay", controller = "C_NFC"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] VerifyAndPay(CSharpAPI.Controllers.NFCVerifyRequest) on controller CSharpAPI.Controllers.C_NFC (CSharp_Parking_API).
+2026-01-21 20:45:09.076 +01:00 [ERR] Error processing NFC payment
+System.Exception: Parking lot has not been found!
+   at CSharpAPI.Services.S_Parkinglots.GetById(Guid id) in C:\Users\IremP\OneDrive\college\Github\Software_Construction\CSharp_Parking_API\Services\Service_Parkinglots.cs:line 35
+   at CSharpAPI.Controllers.C_NFC.VerifyAndPay(NFCVerifyRequest request) in C:\Users\IremP\OneDrive\college\Github\Software_Construction\CSharp_Parking_API\Controllers\Controller_NFC.cs:line 60
+2026-01-21 20:45:09.096 +01:00 [INF] Executing ObjectResult, writing value of type '<>f__AnonymousType7`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:09.131 +01:00 [INF] Executed action CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API) in 68.8948ms
+2026-01-21 20:45:09.132 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API)'
+2026-01-21 20:45:09.132 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/nfc/verify-and-pay - 500 null application/json; charset=utf-8 70.327ms
+2026-01-21 20:45:09.317 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/nfc/verify-and-pay - application/json; charset=utf-8 145
+2026-01-21 20:45:09.318 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API)'
+2026-01-21 20:45:09.318 +01:00 [INF] Route matched with {action = "VerifyAndPay", controller = "C_NFC"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] VerifyAndPay(CSharpAPI.Controllers.NFCVerifyRequest) on controller CSharpAPI.Controllers.C_NFC (CSharp_Parking_API).
+2026-01-21 20:45:09.320 +01:00 [WRN] Insufficient balance for user "2af4083f-1789-4c91-a889-6a98a7f33951". Required: 1000.0
+2026-01-21 20:45:09.320 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType7`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:09.325 +01:00 [INF] Executed action CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API) in 6.2156ms
+2026-01-21 20:45:09.325 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API)'
+2026-01-21 20:45:09.325 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/nfc/verify-and-pay - 400 null application/json; charset=utf-8 7.4786ms
+2026-01-21 20:45:09.383 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/nfc/verify - application/json; charset=utf-8 71
+2026-01-21 20:45:09.383 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_NFC.VerifyCard (CSharp_Parking_API)'
+2026-01-21 20:45:09.383 +01:00 [INF] Route matched with {action = "VerifyCard", controller = "C_NFC"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] VerifyCard(CSharpAPI.Controllers.NFCVerifyCardRequest) on controller CSharpAPI.Controllers.C_NFC (CSharp_Parking_API).
+2026-01-21 20:45:09.389 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType10`4[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:09.390 +01:00 [INF] Executed action CSharpAPI.Controllers.C_NFC.VerifyCard (CSharp_Parking_API) in 7.2428ms
+2026-01-21 20:45:09.391 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_NFC.VerifyCard (CSharp_Parking_API)'
+2026-01-21 20:45:09.391 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/nfc/verify - 200 null application/json; charset=utf-8 8.0546ms
+2026-01-21 20:45:09.504 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/nfc/verify-and-pay - application/json; charset=utf-8 143
+2026-01-21 20:45:09.505 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API)'
+2026-01-21 20:45:09.505 +01:00 [INF] Route matched with {action = "VerifyAndPay", controller = "C_NFC"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] VerifyAndPay(CSharpAPI.Controllers.NFCVerifyRequest) on controller CSharpAPI.Controllers.C_NFC (CSharp_Parking_API).
+2026-01-21 20:45:09.507 +01:00 [WRN] Insufficient balance for user "60971d05-7531-49b1-b241-6afb5c434a91". Required: 10.0
+2026-01-21 20:45:09.507 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType7`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:09.522 +01:00 [INF] Executed action CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API) in 16.9422ms
+2026-01-21 20:45:09.522 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API)'
+2026-01-21 20:45:09.522 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/nfc/verify-and-pay - 400 null application/json; charset=utf-8 17.8213ms
+2026-01-21 20:45:09.711 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/nfc/verify-and-pay - application/json; charset=utf-8 145
+2026-01-21 20:45:09.712 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API)'
+2026-01-21 20:45:09.712 +01:00 [INF] Route matched with {action = "VerifyAndPay", controller = "C_NFC"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] VerifyAndPay(CSharpAPI.Controllers.NFCVerifyRequest) on controller CSharpAPI.Controllers.C_NFC (CSharp_Parking_API).
+2026-01-21 20:45:09.714 +01:00 [WRN] Insufficient balance for user "2af4083f-1789-4c91-a889-6a98a7f33951". Required: 100.0
+2026-01-21 20:45:09.714 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType7`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:09.754 +01:00 [INF] Executed action CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API) in 41.5181ms
+2026-01-21 20:45:09.754 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_NFC.VerifyAndPay (CSharp_Parking_API)'
+2026-01-21 20:45:09.754 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/nfc/verify-and-pay - 400 null application/json; charset=utf-8 42.4699ms
+2026-01-21 20:45:09.754 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 17), @p4='?' (Size = 19), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:45:09.754 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:09.767 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:09.774 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 22), @p4='?' (Size = 16), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 17)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:45:09.778 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:09.802 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType15`1[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:09.808 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:09.928 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:09.947 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:09.950 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:09.958 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_UserBalance'.
+2026-01-21 20:45:10.021 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 13), @p5='?' (Size = 9), @p6='?' (DbType = Guid), @p7='?' (Size = 60), @p8='?' (Size = 10), @p9='?' (DbType = Int32), @p10='?' (Size = 9)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:45:10.022 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Users'.
+2026-01-21 20:45:10.043 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:10.062 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_Users'.
+2026-01-21 20:45:10.068 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:10.068 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 16), @p4='?' (Size = 12), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:45:10.069 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:10.077 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:45:10.086 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_Users'.
+2026-01-21 20:45:10.102 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:10.108 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:10.128 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_Session, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:10.739 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:10.749 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_Users'.
+2026-01-21 20:45:10.807 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:10.825 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:10.895 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:10.903 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:10.988 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:11.000 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:11.032 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:11.046 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:11.046 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:11.050 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:45:11.053 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:11.065 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_HotelGuest, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:11.081 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType21`5[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.IEnumerable`1[[<>f__AnonymousType20`10[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[CSharpAPI.Models.M_Users+UserRole, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:11.186 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:11.211 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:11.740 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:11.753 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType14`10[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[CSharpAPI.Models.M_Users+UserRole, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.Nullable`1[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:11.776 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 20:45:11.787 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 20:45:11.803 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:11.814 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType23`5[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.IEnumerable`1[[<>f__AnonymousType22`8[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:11.926 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:11.940 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 20:45:11.991 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:12.038 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:12.045 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_UserBalance'.
+2026-01-21 20:45:12.057 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:12.059 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:12.080 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:12.087 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:12.087 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 20:45:12.091 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:12.112 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:12.284 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:12.309 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_Session'.
+2026-01-21 20:45:12.855 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:12.868 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_Users'.
+2026-01-21 20:45:12.885 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:12.893 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:12.902 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_Vehicles'.
+2026-01-21 20:45:12.982 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:13.013 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:13.059 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:13.063 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_UserBalance'.
+2026-01-21 20:45:13.071 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:13.079 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_Users'.
+2026-01-21 20:45:13.083 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:13.083 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:13.096 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Hotel'.
+2026-01-21 20:45:13.108 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType12`5[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.IEnumerable`1[[<>f__AnonymousType11`10[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Single, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[CSharpAPI.Models.T_Data, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:13.115 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_Hotel'.
+2026-01-21 20:45:13.117 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:45:13.296 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:13.313 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:13.316 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:15.052 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:15.482 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:15.489 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_Users'.
+2026-01-21 20:45:15.951 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:15.967 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:16.481 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:16.487 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Hotel'.
+2026-01-21 20:45:16.532 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:16.681 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_UserBalance'.
+2026-01-21 20:45:16.681 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:16.690 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:16.700 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_BalanceTransaction, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:16.987 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.000 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:17.004 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:45:17.220 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.233 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:17.402 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.408 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:17.413 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:17.449 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.459 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:17.466 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 20:45:17.470 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.472 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:17.478 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 20:45:17.500 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.506 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 20:45:17.509 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.514 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:17.523 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.526 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.528 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_BalanceTransaction, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:17.531 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType12`5[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.IEnumerable`1[[<>f__AnonymousType11`10[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Single, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[CSharpAPI.Models.T_Data, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.532 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:17.536 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:17.589 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.777 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.846 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.848 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.853 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.858 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 20:45:17.860 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.861 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Hotel'.
+2026-01-21 20:45:17.861 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:17.867 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:17.890 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.895 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.934 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:17.934 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType4`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.945 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_Payments'.
+2026-01-21 20:45:17.975 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:17.979 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:18.178 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.184 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:18.187 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:18.218 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.230 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.231 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.238 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 20:45:18.243 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_Users, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:18.244 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_HotelGuest'.
+2026-01-21 20:45:18.296 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.297 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.303 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:18.304 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType4`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.310 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:18.310 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:18.315 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.335 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:18.339 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:18.348 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:18.358 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:18.536 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.542 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType23`5[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.IEnumerable`1[[<>f__AnonymousType22`8[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.581 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.584 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.586 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:18.587 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.597 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_Users, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:18.598 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:45:18.601 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:45:18.651 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.656 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.657 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType12`5[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.IEnumerable`1[[<>f__AnonymousType11`10[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Single, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[CSharpAPI.Models.T_Data, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.660 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:18.663 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:45:18.701 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.708 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:18.894 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.908 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:18.932 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.935 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.938 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.942 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 20:45:18.955 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_Hotel, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:18.972 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType2`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.988 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:18.992 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:19.008 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:19.014 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_UserBalance'.
+2026-01-21 20:45:19.042 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:19.048 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:19.242 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:19.270 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:19.275 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:19.297 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:19.302 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Hotel'.
+2026-01-21 20:45:19.306 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_Hotel'.
+2026-01-21 20:45:19.315 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:19.320 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 20:45:19.330 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:19.343 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:19.351 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:19.359 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_UserBalance'.
+2026-01-21 20:45:19.387 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:19.397 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_Session'.
+2026-01-21 20:45:19.597 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:19.602 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:19.618 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:19.633 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:19.657 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:19.668 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:19.670 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 20:45:19.682 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_Company, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:19.685 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:19.690 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:45:19.692 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:19.709 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:19.713 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:19.736 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:19.745 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectIPartitionIterator`2[[CSharpAPI.Models.M_Session, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[<>f__AnonymousType19`9[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Single, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[CSharpAPI.Models.M_Session+PaymentStatus, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:19.755 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:19.958 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:19.963 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:19.980 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:19.985 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 20:45:20.019 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.023 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_HotelGuest'.
+2026-01-21 20:45:20.032 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.035 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:20.040 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.047 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Company'.
+2026-01-21 20:45:20.075 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.078 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:45:20.110 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.114 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:20.304 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.312 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:20.331 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.339 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:20.362 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.364 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:45:20.380 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.387 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.389 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:20.391 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Company'.
+2026-01-21 20:45:20.410 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.418 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_BalanceTransaction, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:20.448 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.453 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Linq.Enumerable+SelectIPartitionIterator`2[[CSharpAPI.Models.M_Session, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[<>f__AnonymousType19`9[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Single, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[CSharpAPI.Models.M_Session+PaymentStatus, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:20.653 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.674 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:20.684 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.700 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.706 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 20:45:20.709 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:45:20.726 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.732 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.746 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_Vehicles, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:20.752 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:20.756 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.760 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:20.792 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:20.798 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:21.026 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Users'.
+2026-01-21 20:45:21.027 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.031 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:21.054 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.058 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_HotelGuest, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:21.099 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.100 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.102 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.107 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:21.109 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_UserBalance'.
+2026-01-21 20:45:21.111 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:21.112 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:21.149 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.153 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_Session, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:21.369 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.373 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.377 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 20:45:21.379 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Vehicles'.
+2026-01-21 20:45:21.381 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 20:45:21.411 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.415 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 20:45:21.449 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.453 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.455 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Company'.
+2026-01-21 20:45:21.458 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:21.459 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.463 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:21.506 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.510 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_Session, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:21.717 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.725 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:21.735 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.743 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:21.773 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.777 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 20:45:21.805 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.809 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_Company, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:21.812 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.817 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:21.820 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.821 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:21.825 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_BalanceTransaction, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:21.863 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:21.866 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_Session, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:21.870 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:22.063 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:22.073 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType23`5[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.IEnumerable`1[[<>f__AnonymousType22`8[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:22.108 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:22.112 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType21`5[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.IEnumerable`1[[<>f__AnonymousType20`10[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[CSharpAPI.Models.M_Users+UserRole, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:22.132 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:22.136 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 20:45:22.139 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:45:22.142 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 20:45:22.158 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:22.175 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:22.179 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:22.186 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:22.190 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType4`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:22.386 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:22.391 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:22.441 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:22.468 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:22.471 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 20:45:22.485 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:22.493 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_Vehicles, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:22.511 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:22.530 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType13`3[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[CSharpAPI.Models.M_Payments, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[CSharpAPI.Models.M_Billing, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:22.537 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 20:45:22.695 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:22.698 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:22.743 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Users'.
+2026-01-21 20:45:22.776 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:22.782 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_Hotel, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 20:45:22.796 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:22.800 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:22.850 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:22.860 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType12`5[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.IEnumerable`1[[<>f__AnonymousType11`10[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Single, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[CSharpAPI.Models.T_Data, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:23.024 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:23.028 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_Vehicles'.
+2026-01-21 20:45:23.071 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:23.074 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:23.101 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:23.105 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 20:45:23.121 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:23.126 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:23.173 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:23.176 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:23.342 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:23.346 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:23.349 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:23.388 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:23.392 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:23.401 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:23.405 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 20:45:23.440 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:23.443 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Company'.
+2026-01-21 20:45:23.446 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_Company'.
+2026-01-21 20:45:23.483 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:23.488 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:23.663 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:23.695 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:23.699 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:23.702 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-21 20:45:23.711 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:23.715 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Hotel'.
+2026-01-21 20:45:23.764 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:23.803 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:23.806 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:23.980 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:23.984 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:23.987 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:45:24.014 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:24.018 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:24.021 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 20:45:24.072 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:24.075 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 20:45:24.122 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:24.125 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:24.296 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:24.299 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType23`5[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.IEnumerable`1[[<>f__AnonymousType22`8[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:24.342 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:24.345 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:24.398 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:24.403 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Company'.
+2026-01-21 20:45:24.405 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_Company'.
+2026-01-21 20:45:24.452 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:24.456 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:24.593 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:24.634 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:24.641 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:24.738 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:24.742 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:45:24.873 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:24.876 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:45:24.920 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:24.924 +01:00 [INF] Executing NotFoundObjectResult, writing value of type 'System.String'.
+2026-01-21 20:45:25.029 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:25.032 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 20:45:25.166 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:25.170 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:25.219 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:25.222 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 20:45:25.332 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:25.336 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType12`5[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.IEnumerable`1[[<>f__AnonymousType11`10[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Single, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[CSharpAPI.Models.T_Data, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:25.454 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:25.457 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:25.500 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:25.504 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:25.754 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:25.757 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType21`5[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Collections.Generic.IEnumerable`1[[<>f__AnonymousType20`10[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[CSharpAPI.Models.M_Users+UserRole, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:26.024 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:26.027 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:45:26.302 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:26.305 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 20:45:26.553 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:26.799 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:45:26.805 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.

@@ -1,0 +1,653 @@
+2026-01-21 20:48:48.042 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "type" = 'table' AND "rootpage" IS NOT NULL;
+2026-01-21 20:48:48.158 +01:00 [ERR] Parking lot "a44f6638-577b-49ed-b865-81fe34258e83" not found when starting session
+2026-01-21 20:48:48.236 +01:00 [INF] Executed DbCommand (18ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "BalanceTransactions" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_BalanceTransactions" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "balance_id" TEXT NULL,
+    "amount" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "type" INTEGER NOT NULL,
+    "description" TEXT NULL,
+    "payment_id" TEXT NULL,
+    "session_id" TEXT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:48:48.243 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Billing" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Billing" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "session_id" TEXT NULL,
+    "reservation_id" TEXT NULL,
+    "payment_id" TEXT NULL,
+    "amount" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "description" TEXT NULL,
+    "due_date" TEXT NOT NULL,
+    "paid" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "paid_at" TEXT NULL,
+    "invoice_number" TEXT NULL,
+    "type" INTEGER NOT NULL,
+    "status" INTEGER NOT NULL
+);
+2026-01-21 20:48:48.243 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Companies" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Companies" PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "tax_id" TEXT NULL,
+    "email" TEXT NULL,
+    "phone" TEXT NULL,
+    "address" TEXT NULL,
+    "primary_contact_user_id" TEXT NULL,
+    "active" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "monthly_billing_enabled" INTEGER NOT NULL
+);
+2026-01-21 20:48:48.243 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "CompanyUsers" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_CompanyUsers" PRIMARY KEY,
+    "company_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "role" INTEGER NOT NULL,
+    "joined_at" TEXT NOT NULL
+);
+2026-01-21 20:48:48.243 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "HotelGuests" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_HotelGuests" PRIMARY KEY,
+    "hotel_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "check_in" TEXT NOT NULL,
+    "check_out" TEXT NULL,
+    "reservation_number" TEXT NULL,
+    "discount_applied" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:48:48.244 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Hotels" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Hotels" PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "address" TEXT NULL,
+    "phone" TEXT NULL,
+    "email" TEXT NULL,
+    "discount_percentage" TEXT NOT NULL,
+    "active" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:48:48.244 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Parkinglots" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Parkinglots" PRIMARY KEY,
+    "name" TEXT NULL,
+    "location" TEXT NULL,
+    "address" TEXT NULL,
+    "capacity" INTEGER NOT NULL,
+    "reserved" INTEGER NOT NULL,
+    "daytarriff" REAL NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "coordinates_lat" REAL NULL,
+    "coordinates_lng" REAL NULL
+);
+2026-01-21 20:48:48.244 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Payments" (
+    "hash" TEXT NOT NULL CONSTRAINT "PK_Payments" PRIMARY KEY,
+    "id" TEXT NOT NULL,
+    "reservation_id" TEXT NOT NULL,
+    "paid_at" TEXT NOT NULL,
+    "transactions" TEXT NULL,
+    "amount" REAL NOT NULL,
+    "initiator" TEXT NULL,
+    "created_at" TEXT NOT NULL,
+    "completed" TEXT NOT NULL,
+    "t_data_amount" REAL NULL,
+    "t_data_date" TEXT NULL,
+    "t_data_method" TEXT NULL,
+    "t_data_issuer" TEXT NULL,
+    "t_data_bank" TEXT NULL,
+    "session_id" TEXT NOT NULL,
+    "parking_lot_id" TEXT NOT NULL
+);
+2026-01-21 20:48:48.244 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "RevokedTokens" (
+    "TokenId" TEXT NOT NULL CONSTRAINT "PK_RevokedTokens" PRIMARY KEY,
+    "UserId" TEXT NOT NULL,
+    "RevokedAt" TEXT NOT NULL,
+    "ExpiresAt" TEXT NOT NULL
+);
+2026-01-21 20:48:48.244 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "UserBalances" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_UserBalances" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "balance" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "last_updated" TEXT NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:48:48.250 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Users" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Users" PRIMARY KEY,
+    "username" TEXT NULL,
+    "password" TEXT NULL,
+    "name" TEXT NULL,
+    "email" TEXT NULL,
+    "phone" TEXT NULL,
+    "role" INTEGER NOT NULL,
+    "parking_lot_id" TEXT NULL,
+    "created_at" TEXT NOT NULL,
+    "birth_year" TEXT NOT NULL,
+    "active" INTEGER NOT NULL
+);
+2026-01-21 20:48:48.251 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Vehicles" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Vehicles" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "license_plate" TEXT NULL,
+    "make" TEXT NULL,
+    "model" TEXT NULL,
+    "color" TEXT NULL,
+    "year" TEXT NOT NULL,
+    "created_at" TEXT NOT NULL,
+    CONSTRAINT "FK_Vehicles_Users_user_id" FOREIGN KEY ("user_id") REFERENCES "Users" ("id") ON DELETE CASCADE
+);
+2026-01-21 20:48:48.251 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Reservations" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Reservations" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "parking_lot_id" TEXT NOT NULL,
+    "vehicle_id" TEXT NOT NULL,
+    "start_time" TEXT NOT NULL,
+    "end_time" TEXT NOT NULL,
+    "status" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "cost" REAL NOT NULL,
+    CONSTRAINT "FK_Reservations_Parkinglots_parking_lot_id" FOREIGN KEY ("parking_lot_id") REFERENCES "Parkinglots" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Reservations_Users_user_id" FOREIGN KEY ("user_id") REFERENCES "Users" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Reservations_Vehicles_vehicle_id" FOREIGN KEY ("vehicle_id") REFERENCES "Vehicles" ("id") ON DELETE CASCADE
+);
+2026-01-21 20:48:48.252 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Sessions" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Sessions" PRIMARY KEY,
+    "parking_lot_id" TEXT NOT NULL,
+    "vehicle_id" TEXT NOT NULL,
+    "license_plate" TEXT NULL,
+    "started" TEXT NOT NULL,
+    "stopped" TEXT NOT NULL,
+    "user" TEXT NULL,
+    "duration_minutes" INTEGER NOT NULL,
+    "cost" REAL NOT NULL,
+    "status" INTEGER NOT NULL,
+    CONSTRAINT "FK_Sessions_Parkinglots_parking_lot_id" FOREIGN KEY ("parking_lot_id") REFERENCES "Parkinglots" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Sessions_Vehicles_vehicle_id" FOREIGN KEY ("vehicle_id") REFERENCES "Vehicles" ("id") ON DELETE CASCADE
+);
+2026-01-21 20:48:48.252 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_parking_lot_id" ON "Reservations" ("parking_lot_id");
+2026-01-21 20:48:48.252 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_user_id" ON "Reservations" ("user_id");
+2026-01-21 20:48:48.252 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_vehicle_id" ON "Reservations" ("vehicle_id");
+2026-01-21 20:48:48.253 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Sessions_parking_lot_id" ON "Sessions" ("parking_lot_id");
+2026-01-21 20:48:48.253 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Sessions_vehicle_id" ON "Sessions" ("vehicle_id");
+2026-01-21 20:48:48.258 +01:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Vehicles_user_id" ON "Vehicles" ("user_id");
+2026-01-21 20:48:48.259 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 17), @p5='?' (Size = 19), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:48:48.260 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 20), @p5='?' (Size = 17), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:48:48.260 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 16), @p5='?' (Size = 12), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:48:48.335 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:48:48.339 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:48:48.369 +01:00 [INF] User profile is available. Using 'C:\Users\IremP\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-01-21 20:48:48.432 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = 'user'
+LIMIT 1
+2026-01-21 20:48:48.434 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:48:48.435 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 4), @p2='?' (DbType = Int32), @p3='?' (DbType = DateTime), @p4='?' (DbType = Single), @p5='?' (Size = 4), @p6='?' (Size = 8), @p7='?' (DbType = Int32), @p8='?' (DbType = Single), @p9='?' (DbType = Single)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Parkinglots" ("id", "address", "capacity", "created_at", "daytarriff", "location", "name", "reserved", "coordinates_lat", "coordinates_lng")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+2026-01-21 20:48:48.436 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 3), @p2='?' (DbType = DateTime), @p3='?' (Size = 8), @p4='?' (Size = 4), @p5='?' (Size = 5), @p6='?' (DbType = Guid), @p7='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Vehicles" ("id", "color", "created_at", "license_plate", "make", "model", "user_id", "year")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7);
+2026-01-21 20:48:48.436 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Single), @p2='?' (DbType = Int32), @p3='?' (Size = 9), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTime), @p6='?' (DbType = Int32), @p7='?' (DbType = DateTime), @p8='?' (Size = 36), @p9='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Sessions" ("id", "cost", "duration_minutes", "license_plate", "parking_lot_id", "started", "status", "stopped", "user", "vehicle_id")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+2026-01-21 20:48:48.471 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:48:48.472 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."id", "p"."address", "p"."capacity", "p"."created_at", "p"."daytarriff", "p"."location", "p"."name", "p"."reserved", "p"."coordinates_lat", "p"."coordinates_lng"
+FROM "Parkinglots" AS "p"
+WHERE "p"."id" = @__id_0
+LIMIT 1
+2026-01-21 20:48:48.473 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."id", "s"."cost", "s"."duration_minutes", "s"."license_plate", "s"."parking_lot_id", "s"."started", "s"."status", "s"."stopped", "s"."user", "s"."vehicle_id"
+FROM "Sessions" AS "s"
+2026-01-21 20:48:48.474 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__parkingLotId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "r"."id", "r"."cost", "r"."created_at", "r"."end_time", "r"."parking_lot_id", "r"."start_time", "r"."status", "r"."user_id", "r"."vehicle_id"
+FROM "Reservations" AS "r"
+WHERE "r"."parking_lot_id" = @__parkingLotId_0
+2026-01-21 20:48:48.485 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/company - application/json; charset=utf-8 234
+2026-01-21 20:48:48.549 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:48:48.557 +01:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-01-21 20:48:48.579 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/company - 401 null null 94.0287ms
+2026-01-21 20:48:48.588 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = 'user'
+LIMIT 1
+2026-01-21 20:48:48.589 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:48:48.594 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 4), @p2='?' (DbType = Int32), @p3='?' (DbType = DateTime), @p4='?' (DbType = Single), @p5='?' (Size = 4), @p6='?' (Size = 8), @p7='?' (DbType = Int32), @p8='?' (DbType = Single), @p9='?' (DbType = Single)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Parkinglots" ("id", "address", "capacity", "created_at", "daytarriff", "location", "name", "reserved", "coordinates_lat", "coordinates_lng")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+2026-01-21 20:48:48.595 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 3), @p2='?' (DbType = DateTime), @p3='?' (Size = 10), @p4='?' (Size = 4), @p5='?' (Size = 5), @p6='?' (DbType = Guid), @p7='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Vehicles" ("id", "color", "created_at", "license_plate", "make", "model", "user_id", "year")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7);
+2026-01-21 20:48:48.595 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Single), @p2='?' (DbType = Int32), @p3='?' (Size = 10), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTime), @p6='?' (DbType = Int32), @p7='?' (DbType = DateTime), @p8='?' (Size = 36), @p9='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Sessions" ("id", "cost", "duration_minutes", "license_plate", "parking_lot_id", "started", "status", "stopped", "user", "vehicle_id")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9);
+2026-01-21 20:48:48.601 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."balance", "u"."created_at", "u"."currency", "u"."last_updated", "u"."user_id"
+FROM "UserBalances" AS "u"
+WHERE "u"."user_id" = @__userId_0
+LIMIT 1
+2026-01-21 20:48:48.602 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."id", "p"."address", "p"."capacity", "p"."created_at", "p"."daytarriff", "p"."location", "p"."name", "p"."reserved", "p"."coordinates_lat", "p"."coordinates_lng"
+FROM "Parkinglots" AS "p"
+WHERE "p"."id" = @__id_0
+LIMIT 1
+2026-01-21 20:48:48.603 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."id", "s"."cost", "s"."duration_minutes", "s"."license_plate", "s"."parking_lot_id", "s"."started", "s"."status", "s"."stopped", "s"."user", "s"."vehicle_id"
+FROM "Sessions" AS "s"
+2026-01-21 20:48:48.604 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__parkingLotId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "r"."id", "r"."cost", "r"."created_at", "r"."end_time", "r"."parking_lot_id", "r"."start_time", "r"."status", "r"."user_id", "r"."vehicle_id"
+FROM "Reservations" AS "r"
+WHERE "r"."parking_lot_id" = @__parkingLotId_0
+2026-01-21 20:48:48.608 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "v"."id", "v"."color", "v"."created_at", "v"."license_plate", "v"."make", "v"."model", "v"."user_id", "v"."year"
+FROM "Vehicles" AS "v"
+2026-01-21 20:48:48.609 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."id", "s"."cost", "s"."duration_minutes", "s"."license_plate", "s"."parking_lot_id", "s"."started", "s"."status", "s"."stopped", "s"."user", "s"."vehicle_id"
+FROM "Sessions" AS "s"
+2026-01-21 20:48:48.616 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost/api/v2/company/f3182da5-a931-4f40-be86-7923e4b344a5 - application/json; charset=utf-8 229
+2026-01-21 20:48:48.643 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:48:48.650 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost/api/v2/company/f3182da5-a931-4f40-be86-7923e4b344a5 - 401 null null 33.2437ms
+2026-01-21 20:48:48.689 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:48.694 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:48.716 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:50.200 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 1483.9322ms
+2026-01-21 20:48:50.200 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:50.200 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 1511.4513ms
+2026-01-21 20:48:50.224 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost/api/v2/company/bc5cc926-4902-426c-96a1-09d76e4c3cca - application/json; charset=utf-8 229
+2026-01-21 20:48:50.228 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.Update (CSharp_Parking_API)'
+2026-01-21 20:48:50.238 +01:00 [INF] Route matched with {action = "Update", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Update(System.Guid, CSharpAPI.Models.M_Company) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:50.277 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.Update (CSharp_Parking_API) in 39.0529ms
+2026-01-21 20:48:50.278 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.Update (CSharp_Parking_API)'
+2026-01-21 20:48:50.278 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost/api/v2/company/bc5cc926-4902-426c-96a1-09d76e4c3cca - 404 null application/problem+json; charset=utf-8 54.0217ms
+2026-01-21 20:48:50.311 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:50.313 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:50.314 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:50.740 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 426.59ms
+2026-01-21 20:48:50.741 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:50.741 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 429.778ms
+2026-01-21 20:48:50.750 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/company/d142cde7-8400-4324-aff5-8821fae93a6d/billing/monthly - application/json; charset=utf-8 40
+2026-01-21 20:48:50.754 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.GenerateMonthlyBundle (CSharp_Parking_API)'
+2026-01-21 20:48:50.762 +01:00 [INF] Route matched with {action = "GenerateMonthlyBundle", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GenerateMonthlyBundle(System.Guid, CSharpAPI.Controllers.GenerateBundleRequest) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:50.781 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.GenerateMonthlyBundle (CSharp_Parking_API) in 18.8794ms
+2026-01-21 20:48:50.781 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.GenerateMonthlyBundle (CSharp_Parking_API)'
+2026-01-21 20:48:50.782 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/company/d142cde7-8400-4324-aff5-8821fae93a6d/billing/monthly - 400 null text/plain; charset=utf-8 31.2638ms
+2026-01-21 20:48:50.797 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:50.798 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:50.799 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:51.152 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 352.7645ms
+2026-01-21 20:48:51.152 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:51.152 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 354.5015ms
+2026-01-21 20:48:51.154 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/company/dd5e6b66-9d48-4171-a5a4-12b4dfc73bb7/billing/monthly - application/json; charset=utf-8 40
+2026-01-21 20:48:51.156 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.GenerateMonthlyBundle (CSharp_Parking_API)'
+2026-01-21 20:48:51.157 +01:00 [INF] Route matched with {action = "GenerateMonthlyBundle", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GenerateMonthlyBundle(System.Guid, CSharpAPI.Controllers.GenerateBundleRequest) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:51.160 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.GenerateMonthlyBundle (CSharp_Parking_API) in 2.6807ms
+2026-01-21 20:48:51.160 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.GenerateMonthlyBundle (CSharp_Parking_API)'
+2026-01-21 20:48:51.160 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/company/dd5e6b66-9d48-4171-a5a4-12b4dfc73bb7/billing/monthly - 400 null text/plain; charset=utf-8 5.8476ms
+2026-01-21 20:48:51.163 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 48
+2026-01-21 20:48:51.164 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:51.164 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:51.499 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 335.2192ms
+2026-01-21 20:48:51.499 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:51.500 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 336.4616ms
+2026-01-21 20:48:51.501 +01:00 [INF] Request starting HTTP/1.1 DELETE http://localhost/api/v2/company/9b39be76-dbf7-4b0f-8d70-39d9f5071945 - null null
+2026-01-21 20:48:51.503 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.Delete (CSharp_Parking_API)'
+2026-01-21 20:48:51.506 +01:00 [INF] Route matched with {action = "Delete", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Delete(System.Guid) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:51.508 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.Delete (CSharp_Parking_API) in 1.905ms
+2026-01-21 20:48:51.508 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.Delete (CSharp_Parking_API)'
+2026-01-21 20:48:51.508 +01:00 [INF] Request finished HTTP/1.1 DELETE http://localhost/api/v2/company/9b39be76-dbf7-4b0f-8d70-39d9f5071945 - 404 null application/problem+json; charset=utf-8 7.3677ms
+2026-01-21 20:48:51.511 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:51.511 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:51.511 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:51.855 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 343.1305ms
+2026-01-21 20:48:51.855 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:51.855 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 343.8247ms
+2026-01-21 20:48:51.879 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/company/82d28fed-1184-481b-8374-029e60eab30f/billing/monthly - application/json; charset=utf-8 40
+2026-01-21 20:48:51.881 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.GenerateMonthlyBundle (CSharp_Parking_API)'
+2026-01-21 20:48:51.882 +01:00 [INF] Route matched with {action = "GenerateMonthlyBundle", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GenerateMonthlyBundle(System.Guid, CSharpAPI.Controllers.GenerateBundleRequest) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:51.883 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.GenerateMonthlyBundle (CSharp_Parking_API) in 1.3271ms
+2026-01-21 20:48:51.883 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.GenerateMonthlyBundle (CSharp_Parking_API)'
+2026-01-21 20:48:51.883 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/company/82d28fed-1184-481b-8374-029e60eab30f/billing/monthly - 400 null text/plain; charset=utf-8 4.2962ms
+2026-01-21 20:48:51.886 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:51.886 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:51.886 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:52.227 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 340.1996ms
+2026-01-21 20:48:52.227 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:52.227 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 341.1435ms
+2026-01-21 20:48:52.230 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/company/0ecc4e12-071d-4a7a-b795-736229adc0a0/users - application/json; charset=utf-8 67
+2026-01-21 20:48:52.233 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.AddUserToCompany (CSharp_Parking_API)'
+2026-01-21 20:48:52.237 +01:00 [INF] Route matched with {action = "AddUserToCompany", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] AddUserToCompany(System.Guid, CSharpAPI.Controllers.AddUserToCompanyRequest) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:52.247 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.AddUserToCompany (CSharp_Parking_API) in 10.1369ms
+2026-01-21 20:48:52.248 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.AddUserToCompany (CSharp_Parking_API)'
+2026-01-21 20:48:52.248 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/company/0ecc4e12-071d-4a7a-b795-736229adc0a0/users - 400 null application/problem+json; charset=utf-8 17.4678ms
+2026-01-21 20:48:52.251 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 48
+2026-01-21 20:48:52.251 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:52.251 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:52.581 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 329.911ms
+2026-01-21 20:48:52.581 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:52.581 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 330.6768ms
+2026-01-21 20:48:52.583 +01:00 [INF] Request starting HTTP/1.1 DELETE http://localhost/api/v2/company/2ad7cdc0-a411-49ca-81aa-7c1f5a81e688 - null null
+2026-01-21 20:48:52.585 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.Delete (CSharp_Parking_API)'
+2026-01-21 20:48:52.585 +01:00 [INF] Route matched with {action = "Delete", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Delete(System.Guid) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:52.586 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.Delete (CSharp_Parking_API) in 0.9299ms
+2026-01-21 20:48:52.586 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.Delete (CSharp_Parking_API)'
+2026-01-21 20:48:52.586 +01:00 [INF] Request finished HTTP/1.1 DELETE http://localhost/api/v2/company/2ad7cdc0-a411-49ca-81aa-7c1f5a81e688 - 404 null application/problem+json; charset=utf-8 2.8958ms
+2026-01-21 20:48:52.588 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:52.588 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:52.589 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:52.930 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 340.8267ms
+2026-01-21 20:48:52.930 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:52.930 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 341.5957ms
+2026-01-21 20:48:52.932 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/company/159641a2-97ee-4191-95b0-ab16e0eef14a - null null
+2026-01-21 20:48:52.934 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.GetById (CSharp_Parking_API)'
+2026-01-21 20:48:52.937 +01:00 [INF] Route matched with {action = "GetById", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetById(System.Guid) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:52.939 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.GetById (CSharp_Parking_API) in 1.907ms
+2026-01-21 20:48:52.939 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.GetById (CSharp_Parking_API)'
+2026-01-21 20:48:52.939 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/company/159641a2-97ee-4191-95b0-ab16e0eef14a - 404 null application/problem+json; charset=utf-8 7.1983ms
+2026-01-21 20:48:52.941 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:52.942 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:52.942 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:53.276 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 333.966ms
+2026-01-21 20:48:53.276 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:53.276 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 334.7414ms
+2026-01-21 20:48:53.277 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/company/470823e4-7ade-41e4-98cb-dfab9b20e2d9/users - null null
+2026-01-21 20:48:53.279 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.GetCompanyUsers (CSharp_Parking_API)'
+2026-01-21 20:48:53.283 +01:00 [INF] Route matched with {action = "GetCompanyUsers", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetCompanyUsers(System.Guid) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:53.296 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.GetCompanyUsers (CSharp_Parking_API) in 12.3388ms
+2026-01-21 20:48:53.296 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.GetCompanyUsers (CSharp_Parking_API)'
+2026-01-21 20:48:53.296 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/company/470823e4-7ade-41e4-98cb-dfab9b20e2d9/users - 200 null application/json; charset=utf-8 18.5719ms
+2026-01-21 20:48:53.299 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:53.299 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:53.299 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:53.621 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 322.1836ms
+2026-01-21 20:48:53.621 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:53.622 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 323.0082ms
+2026-01-21 20:48:53.623 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/company/31e01553-0660-48d5-be31-78fda33509c5/users - null null
+2026-01-21 20:48:53.631 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.GetCompanyUsers (CSharp_Parking_API)'
+2026-01-21 20:48:53.631 +01:00 [INF] Route matched with {action = "GetCompanyUsers", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetCompanyUsers(System.Guid) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:53.633 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.GetCompanyUsers (CSharp_Parking_API) in 2.2437ms
+2026-01-21 20:48:53.634 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.GetCompanyUsers (CSharp_Parking_API)'
+2026-01-21 20:48:53.634 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/company/31e01553-0660-48d5-be31-78fda33509c5/users - 200 null application/json; charset=utf-8 10.8812ms
+2026-01-21 20:48:53.636 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:53.637 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:53.637 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:53.951 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 314.3355ms
+2026-01-21 20:48:53.951 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:53.951 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 315.0887ms
+2026-01-21 20:48:53.957 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/company/b9e6487f-33d6-4ce2-ac18-08008f7fb320/users - application/json; charset=utf-8 58
+2026-01-21 20:48:53.959 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.AddUserToCompany (CSharp_Parking_API)'
+2026-01-21 20:48:53.959 +01:00 [INF] Route matched with {action = "AddUserToCompany", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] AddUserToCompany(System.Guid, CSharpAPI.Controllers.AddUserToCompanyRequest) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:53.986 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.AddUserToCompany (CSharp_Parking_API) in 26.5912ms
+2026-01-21 20:48:53.986 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.AddUserToCompany (CSharp_Parking_API)'
+2026-01-21 20:48:53.986 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/company/b9e6487f-33d6-4ce2-ac18-08008f7fb320/users - 200 null application/json; charset=utf-8 29.513ms
+2026-01-21 20:48:53.989 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:53.989 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:53.989 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:54.306 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 316.9728ms
+2026-01-21 20:48:54.306 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:54.307 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 317.6914ms
+2026-01-21 20:48:54.308 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/company/12030ffa-a14c-47aa-9dfe-f43c8871ea48 - null null
+2026-01-21 20:48:54.310 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.GetById (CSharp_Parking_API)'
+2026-01-21 20:48:54.310 +01:00 [INF] Route matched with {action = "GetById", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetById(System.Guid) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:54.311 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.GetById (CSharp_Parking_API) in 1.0446ms
+2026-01-21 20:48:54.311 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.GetById (CSharp_Parking_API)'
+2026-01-21 20:48:54.311 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/company/12030ffa-a14c-47aa-9dfe-f43c8871ea48 - 404 null application/problem+json; charset=utf-8 3.3669ms
+2026-01-21 20:48:54.314 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:54.315 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:54.315 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:54.633 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 317.7326ms
+2026-01-21 20:48:54.633 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:54.633 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 318.6648ms
+2026-01-21 20:48:54.634 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/company - null null
+2026-01-21 20:48:54.636 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.GetAll (CSharp_Parking_API)'
+2026-01-21 20:48:54.640 +01:00 [INF] Route matched with {action = "GetAll", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll() on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:54.648 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.GetAll (CSharp_Parking_API) in 8.5186ms
+2026-01-21 20:48:54.649 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.GetAll (CSharp_Parking_API)'
+2026-01-21 20:48:54.649 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/company - 200 null application/json; charset=utf-8 14.5539ms
+2026-01-21 20:48:54.651 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 48
+2026-01-21 20:48:54.651 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:54.652 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:54.961 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 309.7896ms
+2026-01-21 20:48:54.961 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:54.962 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 310.4081ms
+2026-01-21 20:48:54.963 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/company - application/json; charset=utf-8 243
+2026-01-21 20:48:54.965 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.Create (CSharp_Parking_API)'
+2026-01-21 20:48:54.969 +01:00 [INF] Route matched with {action = "Create", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Create(CSharpAPI.Models.M_Company) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:54.973 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.Create (CSharp_Parking_API) in 3.7292ms
+2026-01-21 20:48:54.973 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.Create (CSharp_Parking_API)'
+2026-01-21 20:48:54.973 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/company - 201 null application/json; charset=utf-8 9.7821ms
+2026-01-21 20:48:54.973 +01:00 [INF] Request starting HTTP/1.1 DELETE http://localhost/api/v2/company/53f2a29a-3d13-4aec-a5e0-26e1ebfe153a - null null
+2026-01-21 20:48:54.975 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.Delete (CSharp_Parking_API)'
+2026-01-21 20:48:54.975 +01:00 [INF] Route matched with {action = "Delete", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Delete(System.Guid) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:54.977 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.Delete (CSharp_Parking_API) in 1.8472ms
+2026-01-21 20:48:54.977 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.Delete (CSharp_Parking_API)'
+2026-01-21 20:48:54.977 +01:00 [INF] Request finished HTTP/1.1 DELETE http://localhost/api/v2/company/53f2a29a-3d13-4aec-a5e0-26e1ebfe153a - 204 null null 3.8326ms
+2026-01-21 20:48:54.979 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:54.980 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:54.980 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:55.305 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 325.0817ms
+2026-01-21 20:48:55.305 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:55.305 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 325.9525ms
+2026-01-21 20:48:55.306 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/company - application/json; charset=utf-8 234
+2026-01-21 20:48:55.308 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.Create (CSharp_Parking_API)'
+2026-01-21 20:48:55.308 +01:00 [INF] Route matched with {action = "Create", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Create(CSharpAPI.Models.M_Company) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:55.310 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.Create (CSharp_Parking_API) in 1.511ms
+2026-01-21 20:48:55.310 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.Create (CSharp_Parking_API)'
+2026-01-21 20:48:55.310 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/company - 201 null application/json; charset=utf-8 3.7589ms
+2026-01-21 20:48:55.313 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:55.313 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:55.313 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:55.649 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 335.7296ms
+2026-01-21 20:48:55.649 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:55.649 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 336.8469ms
+2026-01-21 20:48:55.653 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/company/24d9c93b-ac19-4ffd-b430-08a72ba61d34/vehicles - null null
+2026-01-21 20:48:55.655 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.GetCompanyVehicles (CSharp_Parking_API)'
+2026-01-21 20:48:55.658 +01:00 [INF] Route matched with {action = "GetCompanyVehicles", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetCompanyVehicles(System.Guid) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:55.668 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.GetCompanyVehicles (CSharp_Parking_API) in 9.3939ms
+2026-01-21 20:48:55.668 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.GetCompanyVehicles (CSharp_Parking_API)'
+2026-01-21 20:48:55.668 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/company/24d9c93b-ac19-4ffd-b430-08a72ba61d34/vehicles - 200 null application/json; charset=utf-8 15.1533ms
+2026-01-21 20:48:55.670 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:48:55.671 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:55.671 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:56.015 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 344.5882ms
+2026-01-21 20:48:56.016 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:56.016 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 345.6922ms
+2026-01-21 20:48:56.018 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/company - application/json; charset=utf-8 234
+2026-01-21 20:48:56.021 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:48:56.021 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/company - 403 null null 3.1946ms
+2026-01-21 20:48:56.024 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:56.025 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:56.025 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:56.362 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 337.0948ms
+2026-01-21 20:48:56.362 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:56.363 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 338.603ms
+2026-01-21 20:48:56.365 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/company - application/json; charset=utf-8 243
+2026-01-21 20:48:56.366 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.Create (CSharp_Parking_API)'
+2026-01-21 20:48:56.367 +01:00 [INF] Route matched with {action = "Create", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Create(CSharpAPI.Models.M_Company) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:56.368 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.Create (CSharp_Parking_API) in 1.4878ms
+2026-01-21 20:48:56.369 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.Create (CSharp_Parking_API)'
+2026-01-21 20:48:56.369 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/company - 201 null application/json; charset=utf-8 4.0799ms
+2026-01-21 20:48:56.371 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:56.371 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:56.371 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:56.700 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 329.3651ms
+2026-01-21 20:48:56.701 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:56.701 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 330.1638ms
+2026-01-21 20:48:56.702 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/company - null null
+2026-01-21 20:48:56.704 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.GetAll (CSharp_Parking_API)'
+2026-01-21 20:48:56.704 +01:00 [INF] Route matched with {action = "GetAll", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAll() on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:56.706 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.GetAll (CSharp_Parking_API) in 1.2153ms
+2026-01-21 20:48:56.706 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.GetAll (CSharp_Parking_API)'
+2026-01-21 20:48:56.706 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/company - 200 null application/json; charset=utf-8 3.7543ms
+2026-01-21 20:48:56.709 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:56.709 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:56.709 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:57.022 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 312.5119ms
+2026-01-21 20:48:57.022 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:57.022 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 313.2576ms
+2026-01-21 20:48:57.023 +01:00 [INF] Request starting HTTP/1.1 DELETE http://localhost/api/v2/company/1e139770-2dbb-4b2c-a780-b18ed33dac43 - null null
+2026-01-21 20:48:57.025 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 20:48:57.026 +01:00 [INF] Request finished HTTP/1.1 DELETE http://localhost/api/v2/company/1e139770-2dbb-4b2c-a780-b18ed33dac43 - 403 null null 2.1538ms
+2026-01-21 20:48:57.028 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/company/80ecfb9a-8391-4274-adc8-8edc9d31a04a - null null
+2026-01-21 20:48:57.028 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:48:57.029 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/company/80ecfb9a-8391-4274-adc8-8edc9d31a04a - 401 null null 0.8908ms
+2026-01-21 20:48:57.032 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:57.032 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:57.033 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:57.339 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 305.7014ms
+2026-01-21 20:48:57.339 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:57.339 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 306.8711ms
+2026-01-21 20:48:57.340 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/company/639d73cc-1222-44ef-90c4-e28836bdaae9/vehicles - null null
+2026-01-21 20:48:57.341 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.GetCompanyVehicles (CSharp_Parking_API)'
+2026-01-21 20:48:57.342 +01:00 [INF] Route matched with {action = "GetCompanyVehicles", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetCompanyVehicles(System.Guid) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:57.344 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.GetCompanyVehicles (CSharp_Parking_API) in 1.8886ms
+2026-01-21 20:48:57.344 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.GetCompanyVehicles (CSharp_Parking_API)'
+2026-01-21 20:48:57.344 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/company/639d73cc-1222-44ef-90c4-e28836bdaae9/vehicles - 200 null application/json; charset=utf-8 3.8104ms
+2026-01-21 20:48:57.346 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:57.347 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:57.347 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:57.662 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 315.2983ms
+2026-01-21 20:48:57.662 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:57.662 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 316.1842ms
+2026-01-21 20:48:57.664 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/company - application/json; charset=utf-8 4
+2026-01-21 20:48:57.666 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.Create (CSharp_Parking_API)'
+2026-01-21 20:48:57.666 +01:00 [INF] Route matched with {action = "Create", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Create(CSharpAPI.Models.M_Company) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:57.666 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.Create (CSharp_Parking_API) in 0.4888ms
+2026-01-21 20:48:57.667 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.Create (CSharp_Parking_API)'
+2026-01-21 20:48:57.667 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/company - 400 null application/problem+json; charset=utf-8 2.5793ms
+2026-01-21 20:48:57.669 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:57.669 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:57.669 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:57.975 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 305.1527ms
+2026-01-21 20:48:57.975 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:57.975 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 306.0004ms
+2026-01-21 20:48:57.980 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/company/d8800247-65dd-4515-a771-e07edb9ed22d/users - application/json; charset=utf-8 67
+2026-01-21 20:48:57.982 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.AddUserToCompany (CSharp_Parking_API)'
+2026-01-21 20:48:57.982 +01:00 [INF] Route matched with {action = "AddUserToCompany", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] AddUserToCompany(System.Guid, CSharpAPI.Controllers.AddUserToCompanyRequest) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:57.983 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.AddUserToCompany (CSharp_Parking_API) in 0.8915ms
+2026-01-21 20:48:57.983 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.AddUserToCompany (CSharp_Parking_API)'
+2026-01-21 20:48:57.983 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/company/d8800247-65dd-4515-a771-e07edb9ed22d/users - 400 null application/problem+json; charset=utf-8 3.6366ms
+2026-01-21 20:48:57.986 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:57.986 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:57.986 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:58.281 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 294.3215ms
+2026-01-21 20:48:58.281 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:58.281 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 295.1223ms
+2026-01-21 20:48:58.283 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/company - application/json; charset=utf-8 243
+2026-01-21 20:48:58.285 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.Create (CSharp_Parking_API)'
+2026-01-21 20:48:58.285 +01:00 [INF] Route matched with {action = "Create", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Create(CSharpAPI.Models.M_Company) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:58.286 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.Create (CSharp_Parking_API) in 1.2678ms
+2026-01-21 20:48:58.286 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.Create (CSharp_Parking_API)'
+2026-01-21 20:48:58.286 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/company - 201 null application/json; charset=utf-8 3.2913ms
+2026-01-21 20:48:58.287 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost/api/v2/company/63da4578-a957-4427-a9da-11f1709077af - application/json; charset=utf-8 245
+2026-01-21 20:48:58.288 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.Update (CSharp_Parking_API)'
+2026-01-21 20:48:58.289 +01:00 [INF] Route matched with {action = "Update", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Update(System.Guid, CSharpAPI.Models.M_Company) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:58.290 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.Update (CSharp_Parking_API) in 1.8766ms
+2026-01-21 20:48:58.291 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.Update (CSharp_Parking_API)'
+2026-01-21 20:48:58.291 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost/api/v2/company/63da4578-a957-4427-a9da-11f1709077af - 200 null application/json; charset=utf-8 3.7805ms
+2026-01-21 20:48:58.293 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:48:58.293 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:58.293 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:58.590 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 297.0055ms
+2026-01-21 20:48:58.591 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:58.591 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 297.7327ms
+2026-01-21 20:48:58.592 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/company - null null
+2026-01-21 20:48:58.594 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:48:58.594 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/company - 403 null null 2.0967ms
+2026-01-21 20:48:58.596 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:58.597 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:58.597 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:58.870 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 273.4152ms
+2026-01-21 20:48:58.870 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:58.871 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 274.33ms
+2026-01-21 20:48:58.872 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost/api/v2/company/5b4dc690-6cff-49ef-a16f-7ae2d470987d - application/json; charset=utf-8 229
+2026-01-21 20:48:58.874 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.Update (CSharp_Parking_API)'
+2026-01-21 20:48:58.874 +01:00 [INF] Route matched with {action = "Update", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Update(System.Guid, CSharpAPI.Models.M_Company) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:58.875 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.Update (CSharp_Parking_API) in 0.9368ms
+2026-01-21 20:48:58.875 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.Update (CSharp_Parking_API)'
+2026-01-21 20:48:58.875 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost/api/v2/company/5b4dc690-6cff-49ef-a16f-7ae2d470987d - 404 null application/problem+json; charset=utf-8 2.6068ms
+2026-01-21 20:48:58.877 +01:00 [INF] Request starting HTTP/1.1 DELETE http://localhost/api/v2/company/48f6276a-e48a-47b7-a5e4-daea209bbff9 - null null
+2026-01-21 20:48:58.877 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 20:48:58.877 +01:00 [INF] Request finished HTTP/1.1 DELETE http://localhost/api/v2/company/48f6276a-e48a-47b7-a5e4-daea209bbff9 - 401 null null 0.7035ms
+2026-01-21 20:48:58.880 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:48:58.880 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:58.881 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:48:59.162 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 281.7385ms
+2026-01-21 20:48:59.163 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:48:59.163 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 282.4392ms
+2026-01-21 20:48:59.164 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/company - application/json; charset=utf-8 243
+2026-01-21 20:48:59.166 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.Create (CSharp_Parking_API)'
+2026-01-21 20:48:59.166 +01:00 [INF] Route matched with {action = "Create", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Create(CSharpAPI.Models.M_Company) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:59.168 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.Create (CSharp_Parking_API) in 1.3168ms
+2026-01-21 20:48:59.168 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.Create (CSharp_Parking_API)'
+2026-01-21 20:48:59.168 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/company - 201 null application/json; charset=utf-8 3.8744ms
+2026-01-21 20:48:59.168 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/company/b6c0f998-86dc-40a8-84bb-bf4da4dd7b0c - null null
+2026-01-21 20:48:59.170 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Company.GetById (CSharp_Parking_API)'
+2026-01-21 20:48:59.170 +01:00 [INF] Route matched with {action = "GetById", controller = "C_Company"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetById(System.Guid) on controller CSharpAPI.Controllers.C_Company (CSharp_Parking_API).
+2026-01-21 20:48:59.171 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Company.GetById (CSharp_Parking_API) in 0.8496ms
+2026-01-21 20:48:59.171 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Company.GetById (CSharp_Parking_API)'
+2026-01-21 20:48:59.171 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/company/b6c0f998-86dc-40a8-84bb-bf4da4dd7b0c - 200 null application/json; charset=utf-8 2.5477ms
+2026-01-21 20:48:59.172 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/company - null null
+2026-01-21 20:48:59.173 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 20:48:59.173 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/company - 401 null null 0.6875ms

@@ -1,0 +1,734 @@
+2026-01-21 20:44:07.613 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "type" = 'table' AND "rootpage" IS NOT NULL;
+2026-01-21 20:44:07.631 +01:00 [INF] Session "7e76e2d6-bcb9-4e2b-91db-15a559cadbb3" started for license plate null at parking lot "dd7e9251-1e2d-4780-a30a-dd0277938745"
+2026-01-21 20:44:07.657 +01:00 [INF] Session "d8f84099-d08c-4cf8-a45f-a2c80ff4c1e6" started for license plate AUTO-123 at parking lot "ebe300c0-b32e-45c8-8705-ff2a7ddaff8c"
+2026-01-21 20:44:07.662 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType9`5[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:44:07.738 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "BalanceTransactions" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_BalanceTransactions" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "balance_id" TEXT NULL,
+    "amount" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "type" INTEGER NOT NULL,
+    "description" TEXT NULL,
+    "payment_id" TEXT NULL,
+    "session_id" TEXT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:44:07.739 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Billing" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Billing" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "session_id" TEXT NULL,
+    "reservation_id" TEXT NULL,
+    "payment_id" TEXT NULL,
+    "amount" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "description" TEXT NULL,
+    "due_date" TEXT NOT NULL,
+    "paid" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "paid_at" TEXT NULL,
+    "invoice_number" TEXT NULL,
+    "type" INTEGER NOT NULL,
+    "status" INTEGER NOT NULL
+);
+2026-01-21 20:44:07.740 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Companies" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Companies" PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "tax_id" TEXT NULL,
+    "email" TEXT NULL,
+    "phone" TEXT NULL,
+    "address" TEXT NULL,
+    "primary_contact_user_id" TEXT NULL,
+    "active" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "monthly_billing_enabled" INTEGER NOT NULL
+);
+2026-01-21 20:44:07.740 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "CompanyUsers" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_CompanyUsers" PRIMARY KEY,
+    "company_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "role" INTEGER NOT NULL,
+    "joined_at" TEXT NOT NULL
+);
+2026-01-21 20:44:07.740 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "HotelGuests" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_HotelGuests" PRIMARY KEY,
+    "hotel_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "check_in" TEXT NOT NULL,
+    "check_out" TEXT NULL,
+    "reservation_number" TEXT NULL,
+    "discount_applied" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:44:07.741 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Hotels" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Hotels" PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "address" TEXT NULL,
+    "phone" TEXT NULL,
+    "email" TEXT NULL,
+    "discount_percentage" TEXT NOT NULL,
+    "active" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:44:07.741 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Parkinglots" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Parkinglots" PRIMARY KEY,
+    "name" TEXT NULL,
+    "location" TEXT NULL,
+    "address" TEXT NULL,
+    "capacity" INTEGER NOT NULL,
+    "reserved" INTEGER NOT NULL,
+    "daytarriff" REAL NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "coordinates_lat" REAL NULL,
+    "coordinates_lng" REAL NULL
+);
+2026-01-21 20:44:07.742 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Payments" (
+    "hash" TEXT NOT NULL CONSTRAINT "PK_Payments" PRIMARY KEY,
+    "id" TEXT NOT NULL,
+    "reservation_id" TEXT NOT NULL,
+    "paid_at" TEXT NOT NULL,
+    "transactions" TEXT NULL,
+    "amount" REAL NOT NULL,
+    "initiator" TEXT NULL,
+    "created_at" TEXT NOT NULL,
+    "completed" TEXT NOT NULL,
+    "t_data_amount" REAL NULL,
+    "t_data_date" TEXT NULL,
+    "t_data_method" TEXT NULL,
+    "t_data_issuer" TEXT NULL,
+    "t_data_bank" TEXT NULL,
+    "session_id" TEXT NOT NULL,
+    "parking_lot_id" TEXT NOT NULL
+);
+2026-01-21 20:44:07.742 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "RevokedTokens" (
+    "TokenId" TEXT NOT NULL CONSTRAINT "PK_RevokedTokens" PRIMARY KEY,
+    "UserId" TEXT NOT NULL,
+    "RevokedAt" TEXT NOT NULL,
+    "ExpiresAt" TEXT NOT NULL
+);
+2026-01-21 20:44:07.742 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "UserBalances" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_UserBalances" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "balance" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "last_updated" TEXT NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 20:44:07.743 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Users" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Users" PRIMARY KEY,
+    "username" TEXT NULL,
+    "password" TEXT NULL,
+    "name" TEXT NULL,
+    "email" TEXT NULL,
+    "phone" TEXT NULL,
+    "role" INTEGER NOT NULL,
+    "parking_lot_id" TEXT NULL,
+    "created_at" TEXT NOT NULL,
+    "birth_year" TEXT NOT NULL,
+    "active" INTEGER NOT NULL
+);
+2026-01-21 20:44:07.744 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Vehicles" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Vehicles" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "license_plate" TEXT NULL,
+    "make" TEXT NULL,
+    "model" TEXT NULL,
+    "color" TEXT NULL,
+    "year" TEXT NOT NULL,
+    "created_at" TEXT NOT NULL,
+    CONSTRAINT "FK_Vehicles_Users_user_id" FOREIGN KEY ("user_id") REFERENCES "Users" ("id") ON DELETE CASCADE
+);
+2026-01-21 20:44:07.744 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 20:44:07.744 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Reservations" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Reservations" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "parking_lot_id" TEXT NOT NULL,
+    "vehicle_id" TEXT NOT NULL,
+    "start_time" TEXT NOT NULL,
+    "end_time" TEXT NOT NULL,
+    "status" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "cost" REAL NOT NULL,
+    CONSTRAINT "FK_Reservations_Parkinglots_parking_lot_id" FOREIGN KEY ("parking_lot_id") REFERENCES "Parkinglots" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Reservations_Users_user_id" FOREIGN KEY ("user_id") REFERENCES "Users" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Reservations_Vehicles_vehicle_id" FOREIGN KEY ("vehicle_id") REFERENCES "Vehicles" ("id") ON DELETE CASCADE
+);
+2026-01-21 20:44:07.745 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Sessions" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Sessions" PRIMARY KEY,
+    "parking_lot_id" TEXT NOT NULL,
+    "vehicle_id" TEXT NOT NULL,
+    "license_plate" TEXT NULL,
+    "started" TEXT NOT NULL,
+    "stopped" TEXT NOT NULL,
+    "user" TEXT NULL,
+    "duration_minutes" INTEGER NOT NULL,
+    "cost" REAL NOT NULL,
+    "status" INTEGER NOT NULL,
+    CONSTRAINT "FK_Sessions_Parkinglots_parking_lot_id" FOREIGN KEY ("parking_lot_id") REFERENCES "Parkinglots" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Sessions_Vehicles_vehicle_id" FOREIGN KEY ("vehicle_id") REFERENCES "Vehicles" ("id") ON DELETE CASCADE
+);
+2026-01-21 20:44:07.746 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_parking_lot_id" ON "Reservations" ("parking_lot_id");
+2026-01-21 20:44:07.752 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_user_id" ON "Reservations" ("user_id");
+2026-01-21 20:44:07.753 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_vehicle_id" ON "Reservations" ("vehicle_id");
+2026-01-21 20:44:07.756 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Sessions_parking_lot_id" ON "Sessions" ("parking_lot_id");
+2026-01-21 20:44:07.756 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Sessions_vehicle_id" ON "Sessions" ("vehicle_id");
+2026-01-21 20:44:07.757 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Vehicles_user_id" ON "Vehicles" ("user_id");
+2026-01-21 20:44:07.758 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 17), @p5='?' (Size = 19), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:44:07.758 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 16), @p5='?' (Size = 12), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:44:07.759 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 20), @p5='?' (Size = 17), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 20:44:07.775 +01:00 [INF] User profile is available. Using 'C:\Users\IremP\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-01-21 20:44:07.778 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__request_Username_0='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:44:07.810 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:07.824 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:07.828 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:07.831 +01:00 [INF] User profile is available. Using 'C:\Users\IremP\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-01-21 20:44:07.838 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__request_Username_0='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."id", "u"."active", "u"."birth_year", "u"."created_at", "u"."email", "u"."name", "u"."parking_lot_id", "u"."password", "u"."phone", "u"."role", "u"."username"
+FROM "Users" AS "u"
+WHERE "u"."username" = @__request_Username_0 AND "u"."active"
+LIMIT 1
+2026-01-21 20:44:07.839 +01:00 [INF] User user logged in successfully
+2026-01-21 20:44:07.848 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/gate/status?parkingLotId=00000000-0000-0000-0000-000000000000 - null null
+2026-01-21 20:44:07.853 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Gate.GetGateStatus (CSharp_Parking_API)'
+2026-01-21 20:44:07.862 +01:00 [INF] Route matched with {action = "GetGateStatus", controller = "C_Gate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult GetGateStatus(System.Guid) on controller CSharpAPI.Controllers.C_Gate (CSharp_Parking_API).
+2026-01-21 20:44:07.912 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType10`4[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:44:07.928 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Gate.GetGateStatus (CSharp_Parking_API) in 66.1466ms
+2026-01-21 20:44:07.929 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Gate.GetGateStatus (CSharp_Parking_API)'
+2026-01-21 20:44:07.929 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/gate/status?parkingLotId=00000000-0000-0000-0000-000000000000 - 200 null application/json; charset=utf-8 80.6192ms
+2026-01-21 20:44:07.950 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/gate/close - application/json; charset=utf-8 52
+2026-01-21 20:44:07.957 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Gate.CloseGate (CSharp_Parking_API)'
+2026-01-21 20:44:07.958 +01:00 [INF] Route matched with {action = "CloseGate", controller = "C_Gate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult CloseGate(CSharpAPI.Controllers.CloseGateRequest) on controller CSharpAPI.Controllers.C_Gate (CSharp_Parking_API).
+2026-01-21 20:44:07.987 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Gate.CloseGate (CSharp_Parking_API) in 28.6134ms
+2026-01-21 20:44:07.987 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Gate.CloseGate (CSharp_Parking_API)'
+2026-01-21 20:44:07.987 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/gate/close - 200 null application/json; charset=utf-8 37.5194ms
+2026-01-21 20:44:08.039 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType7`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:44:08.062 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/gate/open - application/json; charset=utf-8 106
+2026-01-21 20:44:08.066 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Gate.OpenGate (CSharp_Parking_API)'
+2026-01-21 20:44:08.067 +01:00 [INF] Route matched with {action = "OpenGate", controller = "C_Gate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult OpenGate(CSharpAPI.Controllers.OpenGateRequest) on controller CSharpAPI.Controllers.C_Gate (CSharp_Parking_API).
+2026-01-21 20:44:08.112 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Gate.OpenGate (CSharp_Parking_API) in 45.1439ms
+2026-01-21 20:44:08.112 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Gate.OpenGate (CSharp_Parking_API)'
+2026-01-21 20:44:08.112 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/gate/open - 200 null application/json; charset=utf-8 50.3936ms
+2026-01-21 20:44:08.115 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType7`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:44:08.185 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/gate/status?parkingLotId=f4dfa333-c6dc-4ee0-9cb9-4b4b7a16d53a - null null
+2026-01-21 20:44:08.185 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Gate.GetGateStatus (CSharp_Parking_API)'
+2026-01-21 20:44:08.186 +01:00 [INF] Route matched with {action = "GetGateStatus", controller = "C_Gate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult GetGateStatus(System.Guid) on controller CSharpAPI.Controllers.C_Gate (CSharp_Parking_API).
+2026-01-21 20:44:08.204 +01:00 [INF] Executing ObjectResult, writing value of type '<>f__AnonymousType7`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:44:08.234 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Gate.GetGateStatus (CSharp_Parking_API) in 48.843ms
+2026-01-21 20:44:08.235 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Gate.GetGateStatus (CSharp_Parking_API)'
+2026-01-21 20:44:08.235 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/gate/status?parkingLotId=f4dfa333-c6dc-4ee0-9cb9-4b4b7a16d53a - 200 null application/json; charset=utf-8 49.6499ms
+2026-01-21 20:44:08.317 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/gate/status?parkingLotId=86edcc48-6348-4143-9e13-8ac92632f3d4 - null null
+2026-01-21 20:44:08.318 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Gate.GetGateStatus (CSharp_Parking_API)'
+2026-01-21 20:44:08.318 +01:00 [INF] Route matched with {action = "GetGateStatus", controller = "C_Gate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult GetGateStatus(System.Guid) on controller CSharpAPI.Controllers.C_Gate (CSharp_Parking_API).
+2026-01-21 20:44:08.414 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Gate.GetGateStatus (CSharp_Parking_API) in 96.2636ms
+2026-01-21 20:44:08.414 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Gate.GetGateStatus (CSharp_Parking_API)'
+2026-01-21 20:44:08.414 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/gate/status?parkingLotId=86edcc48-6348-4143-9e13-8ac92632f3d4 - 200 null application/json; charset=utf-8 97.0194ms
+2026-01-21 20:44:08.550 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType7`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:44:08.560 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/gate/open - application/json; charset=utf-8 106
+2026-01-21 20:44:08.560 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Gate.OpenGate (CSharp_Parking_API)'
+2026-01-21 20:44:08.561 +01:00 [INF] Route matched with {action = "OpenGate", controller = "C_Gate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult OpenGate(CSharpAPI.Controllers.OpenGateRequest) on controller CSharpAPI.Controllers.C_Gate (CSharp_Parking_API).
+2026-01-21 20:44:08.592 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Gate.OpenGate (CSharp_Parking_API) in 30.9649ms
+2026-01-21 20:44:08.592 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Gate.OpenGate (CSharp_Parking_API)'
+2026-01-21 20:44:08.592 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/gate/open - 200 null application/json; charset=utf-8 32.1259ms
+2026-01-21 20:44:08.642 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType10`4[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:44:08.656 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/gate/close - application/json; charset=utf-8 52
+2026-01-21 20:44:08.656 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Gate.CloseGate (CSharp_Parking_API)'
+2026-01-21 20:44:08.656 +01:00 [INF] Route matched with {action = "CloseGate", controller = "C_Gate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult CloseGate(CSharpAPI.Controllers.CloseGateRequest) on controller CSharpAPI.Controllers.C_Gate (CSharp_Parking_API).
+2026-01-21 20:44:08.691 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Gate.CloseGate (CSharp_Parking_API) in 34.4023ms
+2026-01-21 20:44:08.691 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Gate.CloseGate (CSharp_Parking_API)'
+2026-01-21 20:44:08.691 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/gate/close - 200 null application/json; charset=utf-8 35.4278ms
+2026-01-21 20:44:08.720 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType7`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:44:08.766 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/gate/open - application/json; charset=utf-8 4
+2026-01-21 20:44:08.766 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Gate.OpenGate (CSharp_Parking_API)'
+2026-01-21 20:44:08.766 +01:00 [INF] Route matched with {action = "OpenGate", controller = "C_Gate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult OpenGate(CSharpAPI.Controllers.OpenGateRequest) on controller CSharpAPI.Controllers.C_Gate (CSharp_Parking_API).
+2026-01-21 20:44:08.777 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Gate.OpenGate (CSharp_Parking_API) in 10.6431ms
+2026-01-21 20:44:08.777 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Gate.OpenGate (CSharp_Parking_API)'
+2026-01-21 20:44:08.777 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/gate/open - 400 null application/problem+json; charset=utf-8 11.3487ms
+2026-01-21 20:44:08.833 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/gate/close - application/json; charset=utf-8 4
+2026-01-21 20:44:08.833 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Gate.CloseGate (CSharp_Parking_API)'
+2026-01-21 20:44:08.834 +01:00 [INF] Route matched with {action = "CloseGate", controller = "C_Gate"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult CloseGate(CSharpAPI.Controllers.CloseGateRequest) on controller CSharpAPI.Controllers.C_Gate (CSharp_Parking_API).
+2026-01-21 20:44:08.841 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Gate.CloseGate (CSharp_Parking_API) in 7.0444ms
+2026-01-21 20:44:08.842 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Gate.CloseGate (CSharp_Parking_API)'
+2026-01-21 20:44:08.843 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/gate/close - 400 null application/problem+json; charset=utf-8 9.4338ms
+2026-01-21 20:44:08.903 +01:00 [INF] Executing BadRequestObjectResult, writing value of type '<>f__AnonymousType7`2[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 20:44:09.409 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p10='?' (DbType = Guid), @p0='?' (DbType = Boolean), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?' (Size = 16), @p4='?' (Size = 12), @p5='?' (DbType = Guid), @p6='?' (Size = 60), @p7='?', @p8='?' (DbType = Int32), @p9='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "active" = @p0, "birth_year" = @p1, "created_at" = @p2, "email" = @p3, "name" = @p4, "parking_lot_id" = @p5, "password" = @p6, "phone" = @p7, "role" = @p8, "username" = @p9
+WHERE "id" = @p10
+RETURNING 1;
+2026-01-21 20:44:09.411 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 1582.0347ms
+2026-01-21 20:44:09.411 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:09.411 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 1601.6882ms
+2026-01-21 20:44:09.425 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/create - application/json; charset=utf-8 353
+2026-01-21 20:44:09.434 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API)'
+2026-01-21 20:44:09.442 +01:00 [INF] Route matched with {action = "CreateReservation", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateReservation(CSharpAPI.Models.ReservationCreateDto) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:09.448 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API) in 6.2412ms
+2026-01-21 20:44:09.449 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API)'
+2026-01-21 20:44:09.449 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/create - 400 null text/plain; charset=utf-8 23.3517ms
+2026-01-21 20:44:09.452 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:09.456 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:09.456 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:10.456 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 999.7785ms
+2026-01-21 20:44:10.456 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:10.456 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 1004.4786ms
+2026-01-21 20:44:10.474 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/create - application/json; charset=utf-8 399
+2026-01-21 20:44:10.477 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API)'
+2026-01-21 20:44:10.477 +01:00 [INF] Route matched with {action = "CreateReservation", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateReservation(CSharpAPI.Models.ReservationCreateDto) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:10.478 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API) in 0.8843ms
+2026-01-21 20:44:10.478 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API)'
+2026-01-21 20:44:10.478 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/create - 400 null text/plain; charset=utf-8 4.6154ms
+2026-01-21 20:44:10.481 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:10.481 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:10.481 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:11.486 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 1003.306ms
+2026-01-21 20:44:11.487 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:11.487 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 1006.5762ms
+2026-01-21 20:44:11.490 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/user/3138845b-497c-4cce-962c-027cac3641c4?Status=Active - null null
+2026-01-21 20:44:11.494 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.ListReservationsByUser (CSharp_Parking_API)'
+2026-01-21 20:44:11.498 +01:00 [INF] Route matched with {action = "ListReservationsByUser", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListReservationsByUser(System.Guid, Status) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:11.500 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.ListReservationsByUser (CSharp_Parking_API) in 2.6676ms
+2026-01-21 20:44:11.500 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.ListReservationsByUser (CSharp_Parking_API)'
+2026-01-21 20:44:11.501 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/user/3138845b-497c-4cce-962c-027cac3641c4?Status=Active - 403 null null 10.2128ms
+2026-01-21 20:44:11.505 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:11.505 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:11.505 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:12.508 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 1002.4745ms
+2026-01-21 20:44:12.508 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:12.508 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 1003.4811ms
+2026-01-21 20:44:12.510 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/check-availability/parking-lots/00000000-0000-0000-0000-000000000000?from=2026-01-21T19:44:12.5103524Z&to=2026-01-21T20:44:12.5103527Z - null null
+2026-01-21 20:44:12.512 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CheckAvailability (CSharp_Parking_API)'
+2026-01-21 20:44:12.524 +01:00 [INF] Route matched with {action = "CheckAvailability", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CheckAvailability(System.Guid, System.DateTime, System.DateTime) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:12.526 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CheckAvailability (CSharp_Parking_API) in 1.5251ms
+2026-01-21 20:44:12.526 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CheckAvailability (CSharp_Parking_API)'
+2026-01-21 20:44:12.526 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/check-availability/parking-lots/00000000-0000-0000-0000-000000000000?from=2026-01-21T19:44:12.5103524Z&to=2026-01-21T20:44:12.5103527Z - 400 null text/plain; charset=utf-8 16.0459ms
+2026-01-21 20:44:12.528 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/b489a438-e175-4fb5-bc32-8fe033a83d72 - null null
+2026-01-21 20:44:12.529 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/b489a438-e175-4fb5-bc32-8fe033a83d72 - 401 null null 0.8833ms
+2026-01-21 20:44:12.532 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:12.532 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:12.533 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:16.344 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 3811.287ms
+2026-01-21 20:44:16.344 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:16.344 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 3811.9914ms
+2026-01-21 20:44:16.346 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/00000000-0000-0000-0000-000000000000 - null null
+2026-01-21 20:44:16.348 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.GetReservationById (CSharp_Parking_API)'
+2026-01-21 20:44:16.352 +01:00 [INF] Route matched with {action = "GetReservationById", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReservationById(System.Guid) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:16.354 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.GetReservationById (CSharp_Parking_API) in 1.3781ms
+2026-01-21 20:44:16.354 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.GetReservationById (CSharp_Parking_API)'
+2026-01-21 20:44:16.354 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/00000000-0000-0000-0000-000000000000 - 400 null text/plain; charset=utf-8 7.6727ms
+2026-01-21 20:44:16.358 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:16.358 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:16.358 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:16.713 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 355.2901ms
+2026-01-21 20:44:16.713 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:16.714 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 355.863ms
+2026-01-21 20:44:16.743 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/4c5be7d1-4e61-4761-9c3e-bf378abdc33e - null null
+2026-01-21 20:44:16.744 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.GetReservationById (CSharp_Parking_API)'
+2026-01-21 20:44:16.744 +01:00 [INF] Route matched with {action = "GetReservationById", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReservationById(System.Guid) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:16.751 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.GetReservationById (CSharp_Parking_API) in 6.5632ms
+2026-01-21 20:44:16.751 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.GetReservationById (CSharp_Parking_API)'
+2026-01-21 20:44:16.751 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/4c5be7d1-4e61-4761-9c3e-bf378abdc33e - 403 null null 8.3102ms
+2026-01-21 20:44:16.755 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:44:16.756 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:16.756 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:17.116 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 360.3111ms
+2026-01-21 20:44:17.116 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:17.116 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 360.9835ms
+2026-01-21 20:44:17.124 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/admin/create-for-user - application/json; charset=utf-8 243
+2026-01-21 20:44:17.125 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API)'
+2026-01-21 20:44:17.129 +01:00 [INF] Route matched with {action = "CreateReservationForUser", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateReservationForUser(CSharpAPI.Models.DTOs.Reservations.CreateReservationForUserDto) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:17.133 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API) in 4.0411ms
+2026-01-21 20:44:17.133 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API)'
+2026-01-21 20:44:17.133 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/admin/create-for-user - 400 null text/plain; charset=utf-8 9.3078ms
+2026-01-21 20:44:17.136 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:17.136 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:17.136 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:17.480 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 343.9029ms
+2026-01-21 20:44:17.480 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:17.480 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 344.7283ms
+2026-01-21 20:44:17.482 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/admin/create-for-user - application/json; charset=utf-8 244
+2026-01-21 20:44:17.483 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/admin/create-for-user - 403 null null 1.2797ms
+2026-01-21 20:44:17.485 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 48
+2026-01-21 20:44:17.485 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:17.486 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:17.837 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 351.0692ms
+2026-01-21 20:44:17.837 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:17.837 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 351.6808ms
+2026-01-21 20:44:17.838 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/all?page=999 - null null
+2026-01-21 20:44:17.840 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.GetAllReservations (CSharp_Parking_API)'
+2026-01-21 20:44:17.843 +01:00 [INF] Route matched with {action = "GetAllReservations", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllReservations(Int32) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:17.849 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.GetAllReservations (CSharp_Parking_API) in 6.2869ms
+2026-01-21 20:44:17.849 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.GetAllReservations (CSharp_Parking_API)'
+2026-01-21 20:44:17.849 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/all?page=999 - 400 null text/plain; charset=utf-8 10.7063ms
+2026-01-21 20:44:17.852 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:17.852 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:17.852 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:18.188 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 335.9635ms
+2026-01-21 20:44:18.188 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:18.188 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 336.5341ms
+2026-01-21 20:44:18.190 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/create - application/json; charset=utf-8 4
+2026-01-21 20:44:18.191 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API)'
+2026-01-21 20:44:18.191 +01:00 [INF] Route matched with {action = "CreateReservation", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateReservation(CSharpAPI.Models.ReservationCreateDto) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:18.193 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API) in 2.0663ms
+2026-01-21 20:44:18.193 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API)'
+2026-01-21 20:44:18.193 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/create - 400 null application/problem+json; charset=utf-8 3.3864ms
+2026-01-21 20:44:18.195 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:18.196 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:18.196 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:18.536 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 340.6002ms
+2026-01-21 20:44:18.536 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:18.537 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 341.1961ms
+2026-01-21 20:44:18.538 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/32279c5f-ec7c-49d1-840b-963fec11450e - null null
+2026-01-21 20:44:18.540 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.GetReservationById (CSharp_Parking_API)'
+2026-01-21 20:44:18.540 +01:00 [INF] Route matched with {action = "GetReservationById", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReservationById(System.Guid) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:18.541 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.GetReservationById (CSharp_Parking_API) in 0.7983ms
+2026-01-21 20:44:18.541 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.GetReservationById (CSharp_Parking_API)'
+2026-01-21 20:44:18.541 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/32279c5f-ec7c-49d1-840b-963fec11450e - 404 null text/plain; charset=utf-8 2.3498ms
+2026-01-21 20:44:18.543 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:18.544 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:18.544 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:18.886 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 342.633ms
+2026-01-21 20:44:18.886 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:18.886 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 343.1636ms
+2026-01-21 20:44:18.890 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/check-availability/parking-lots/32f7ac86-ac55-426e-a63a-2238f99ac2d6?from=2026-01-21T21:44:18.8905923Z&to=2026-01-21T20:44:18.8905927Z - null null
+2026-01-21 20:44:18.891 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CheckAvailability (CSharp_Parking_API)'
+2026-01-21 20:44:18.891 +01:00 [INF] Route matched with {action = "CheckAvailability", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CheckAvailability(System.Guid, System.DateTime, System.DateTime) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:18.892 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CheckAvailability (CSharp_Parking_API) in 0.3683ms
+2026-01-21 20:44:18.892 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CheckAvailability (CSharp_Parking_API)'
+2026-01-21 20:44:18.892 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/check-availability/parking-lots/32f7ac86-ac55-426e-a63a-2238f99ac2d6?from=2026-01-21T21:44:18.8905923Z&to=2026-01-21T20:44:18.8905927Z - 400 null text/plain; charset=utf-8 1.686ms
+2026-01-21 20:44:18.894 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:18.895 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:18.895 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:19.248 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 353.5211ms
+2026-01-21 20:44:19.248 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:19.248 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 353.9818ms
+2026-01-21 20:44:19.252 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/check-availability/parking-lots/58dfdcd9-caf2-477a-b6e0-c076e32bfc14?from=2026-01-21T20:44:19.2520557Z&to=2026-01-21T21:44:19.2520560Z - null null
+2026-01-21 20:44:19.253 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CheckAvailability (CSharp_Parking_API)'
+2026-01-21 20:44:19.254 +01:00 [INF] Route matched with {action = "CheckAvailability", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CheckAvailability(System.Guid, System.DateTime, System.DateTime) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:19.260 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CheckAvailability (CSharp_Parking_API) in 6.5281ms
+2026-01-21 20:44:19.260 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CheckAvailability (CSharp_Parking_API)'
+2026-01-21 20:44:19.260 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/check-availability/parking-lots/58dfdcd9-caf2-477a-b6e0-c076e32bfc14?from=2026-01-21T20:44:19.2520557Z&to=2026-01-21T21:44:19.2520560Z - 200 null application/json; charset=utf-8 8.1874ms
+2026-01-21 20:44:19.263 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:44:19.263 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:19.263 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:19.596 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 333.3213ms
+2026-01-21 20:44:19.596 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:19.596 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 333.7735ms
+2026-01-21 20:44:19.598 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/admin/create-for-user - application/json; charset=utf-8 244
+2026-01-21 20:44:19.599 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API)'
+2026-01-21 20:44:19.599 +01:00 [INF] Route matched with {action = "CreateReservationForUser", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateReservationForUser(CSharpAPI.Models.DTOs.Reservations.CreateReservationForUserDto) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:19.600 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API) in 0.4624ms
+2026-01-21 20:44:19.600 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API)'
+2026-01-21 20:44:19.600 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/admin/create-for-user - 400 null text/plain; charset=utf-8 1.7801ms
+2026-01-21 20:44:19.602 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:44:19.602 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:19.602 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:19.930 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 327.1854ms
+2026-01-21 20:44:19.930 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:19.930 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 327.7148ms
+2026-01-21 20:44:19.939 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/admin/create-for-user - application/json; charset=utf-8 265
+2026-01-21 20:44:19.941 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API)'
+2026-01-21 20:44:19.941 +01:00 [INF] Route matched with {action = "CreateReservationForUser", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateReservationForUser(CSharpAPI.Models.DTOs.Reservations.CreateReservationForUserDto) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:19.948 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API) in 6.7948ms
+2026-01-21 20:44:19.948 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API)'
+2026-01-21 20:44:19.948 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/admin/create-for-user - 200 null application/json; charset=utf-8 8.8262ms
+2026-01-21 20:44:19.950 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:19.951 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:19.951 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:20.285 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 334.4502ms
+2026-01-21 20:44:20.285 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:20.285 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 334.9586ms
+2026-01-21 20:44:20.290 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/create - application/json; charset=utf-8 399
+2026-01-21 20:44:20.291 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API)'
+2026-01-21 20:44:20.291 +01:00 [INF] Route matched with {action = "CreateReservation", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateReservation(CSharpAPI.Models.ReservationCreateDto) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:20.294 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API) in 2.9297ms
+2026-01-21 20:44:20.294 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API)'
+2026-01-21 20:44:20.294 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/create - 201 null application/json; charset=utf-8 4.5678ms
+2026-01-21 20:44:20.297 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/cancel/b9a18cf5-c233-4dd3-820a-e820e6f5be24 - null null
+2026-01-21 20:44:20.298 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CancelReservation (CSharp_Parking_API)'
+2026-01-21 20:44:20.303 +01:00 [INF] Route matched with {action = "CancelReservation", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CancelReservation(System.Guid) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:20.306 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CancelReservation (CSharp_Parking_API) in 2.6927ms
+2026-01-21 20:44:20.306 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CancelReservation (CSharp_Parking_API)'
+2026-01-21 20:44:20.306 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/cancel/b9a18cf5-c233-4dd3-820a-e820e6f5be24 - 200 null text/plain; charset=utf-8 9.0623ms
+2026-01-21 20:44:20.308 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:20.308 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:20.308 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:20.638 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 329.3773ms
+2026-01-21 20:44:20.638 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:20.638 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 330.0421ms
+2026-01-21 20:44:20.639 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/user/00000000-0000-0000-0000-000000000000?Status=Active - null null
+2026-01-21 20:44:20.641 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.ListReservationsByUser (CSharp_Parking_API)'
+2026-01-21 20:44:20.641 +01:00 [INF] Route matched with {action = "ListReservationsByUser", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListReservationsByUser(System.Guid, Status) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:20.641 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.ListReservationsByUser (CSharp_Parking_API) in 0.3258ms
+2026-01-21 20:44:20.641 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.ListReservationsByUser (CSharp_Parking_API)'
+2026-01-21 20:44:20.641 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/user/00000000-0000-0000-0000-000000000000?Status=Active - 400 null text/plain; charset=utf-8 1.931ms
+2026-01-21 20:44:20.643 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/admin/create-for-user - application/json; charset=utf-8 244
+2026-01-21 20:44:20.644 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/admin/create-for-user - 401 null null 0.6806ms
+2026-01-21 20:44:20.647 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:20.647 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:20.647 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:20.987 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 340.1917ms
+2026-01-21 20:44:20.987 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:20.988 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 340.7162ms
+2026-01-21 20:44:20.991 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/create - application/json; charset=utf-8 398
+2026-01-21 20:44:20.992 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API)'
+2026-01-21 20:44:20.992 +01:00 [INF] Route matched with {action = "CreateReservation", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateReservation(CSharpAPI.Models.ReservationCreateDto) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:20.993 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API) in 1.3125ms
+2026-01-21 20:44:20.994 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API)'
+2026-01-21 20:44:20.994 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/create - 201 null application/json; charset=utf-8 2.8052ms
+2026-01-21 20:44:21.017 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/user/2c25cb77-0217-4d25-a495-17b218963fe0?Status=Active - null null
+2026-01-21 20:44:21.019 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.ListReservationsByUser (CSharp_Parking_API)'
+2026-01-21 20:44:21.019 +01:00 [INF] Route matched with {action = "ListReservationsByUser", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListReservationsByUser(System.Guid, Status) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:21.027 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.ListReservationsByUser (CSharp_Parking_API) in 8.181ms
+2026-01-21 20:44:21.027 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.ListReservationsByUser (CSharp_Parking_API)'
+2026-01-21 20:44:21.027 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/user/2c25cb77-0217-4d25-a495-17b218963fe0?Status=Active - 200 null application/json; charset=utf-8 10.1747ms
+2026-01-21 20:44:21.041 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:21.042 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:21.042 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:21.373 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 331.0492ms
+2026-01-21 20:44:21.373 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:21.374 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 332.0361ms
+2026-01-21 20:44:21.375 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/all?page=0 - null null
+2026-01-21 20:44:21.376 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/all?page=0 - 403 null null 1.4484ms
+2026-01-21 20:44:21.378 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:21.379 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:21.379 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:21.698 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 319.3024ms
+2026-01-21 20:44:21.698 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:21.698 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 319.7063ms
+2026-01-21 20:44:21.701 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/check-availability/parking-lots/35983b4f-3855-414c-ae25-64769fb779f4?from=2026-01-21T21:44:21.7016069Z&to=2026-01-21T19:44:21.7016072Z - null null
+2026-01-21 20:44:21.703 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CheckAvailability (CSharp_Parking_API)'
+2026-01-21 20:44:21.703 +01:00 [INF] Route matched with {action = "CheckAvailability", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CheckAvailability(System.Guid, System.DateTime, System.DateTime) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:21.703 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CheckAvailability (CSharp_Parking_API) in 0.2818ms
+2026-01-21 20:44:21.703 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CheckAvailability (CSharp_Parking_API)'
+2026-01-21 20:44:21.703 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/check-availability/parking-lots/35983b4f-3855-414c-ae25-64769fb779f4?from=2026-01-21T21:44:21.7016069Z&to=2026-01-21T19:44:21.7016072Z - 400 null text/plain; charset=utf-8 1.9421ms
+2026-01-21 20:44:21.706 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:21.706 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:21.706 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:22.016 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 309.2304ms
+2026-01-21 20:44:22.016 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:22.016 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 310.2282ms
+2026-01-21 20:44:22.020 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/check-availability/parking-lots/3571a673-e36a-4a33-ac65-7e703d72e424?from=2026-01-21T20:44:22.0204478Z&to=2026-01-21T21:44:22.0204484Z - null null
+2026-01-21 20:44:22.021 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CheckAvailability (CSharp_Parking_API)'
+2026-01-21 20:44:22.021 +01:00 [INF] Route matched with {action = "CheckAvailability", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CheckAvailability(System.Guid, System.DateTime, System.DateTime) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:22.022 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CheckAvailability (CSharp_Parking_API) in 0.655ms
+2026-01-21 20:44:22.022 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CheckAvailability (CSharp_Parking_API)'
+2026-01-21 20:44:22.022 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/check-availability/parking-lots/3571a673-e36a-4a33-ac65-7e703d72e424?from=2026-01-21T20:44:22.0204478Z&to=2026-01-21T21:44:22.0204484Z - 200 null application/json; charset=utf-8 2.1399ms
+2026-01-21 20:44:22.024 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:44:22.025 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:22.025 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:22.336 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 311.2669ms
+2026-01-21 20:44:22.336 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:22.336 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 311.8915ms
+2026-01-21 20:44:22.338 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/all?page=0 - null null
+2026-01-21 20:44:22.339 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.GetAllReservations (CSharp_Parking_API)'
+2026-01-21 20:44:22.339 +01:00 [INF] Route matched with {action = "GetAllReservations", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllReservations(Int32) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:22.344 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.GetAllReservations (CSharp_Parking_API) in 5.7755ms
+2026-01-21 20:44:22.345 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.GetAllReservations (CSharp_Parking_API)'
+2026-01-21 20:44:22.345 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/all?page=0 - 200 null application/json; charset=utf-8 7.1013ms
+2026-01-21 20:44:22.347 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:22.347 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:22.347 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:22.664 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 317.3326ms
+2026-01-21 20:44:22.664 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:22.664 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 317.8506ms
+2026-01-21 20:44:22.665 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/cancel/346854b6-7b32-4f49-91f0-9a21f7920b29 - null null
+2026-01-21 20:44:22.666 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CancelReservation (CSharp_Parking_API)'
+2026-01-21 20:44:22.666 +01:00 [INF] Route matched with {action = "CancelReservation", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CancelReservation(System.Guid) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:22.667 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CancelReservation (CSharp_Parking_API) in 0.63ms
+2026-01-21 20:44:22.667 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CancelReservation (CSharp_Parking_API)'
+2026-01-21 20:44:22.667 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/cancel/346854b6-7b32-4f49-91f0-9a21f7920b29 - 404 null text/plain; charset=utf-8 1.6097ms
+2026-01-21 20:44:22.670 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:22.670 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:22.670 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:22.986 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 316.1165ms
+2026-01-21 20:44:22.986 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:22.986 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 316.6447ms
+2026-01-21 20:44:22.989 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/create - application/json; charset=utf-8 244
+2026-01-21 20:44:22.994 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API)'
+2026-01-21 20:44:22.994 +01:00 [INF] Route matched with {action = "CreateReservation", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateReservation(CSharpAPI.Models.ReservationCreateDto) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:22.994 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API) in 0.3001ms
+2026-01-21 20:44:22.994 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API)'
+2026-01-21 20:44:22.994 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/create - 400 null text/plain; charset=utf-8 5.071ms
+2026-01-21 20:44:22.997 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:22.997 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:22.997 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:23.312 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 314.8221ms
+2026-01-21 20:44:23.312 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:23.312 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 315.3776ms
+2026-01-21 20:44:23.313 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/check-availability/parking-lots/00000000-0000-0000-0000-000000000000?from=2026-01-21T20:44:23.3135778Z&to=2026-01-21T21:44:23.3135782Z - null null
+2026-01-21 20:44:23.314 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CheckAvailability (CSharp_Parking_API)'
+2026-01-21 20:44:23.314 +01:00 [INF] Route matched with {action = "CheckAvailability", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CheckAvailability(System.Guid, System.DateTime, System.DateTime) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:23.315 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CheckAvailability (CSharp_Parking_API) in 0.5005ms
+2026-01-21 20:44:23.315 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CheckAvailability (CSharp_Parking_API)'
+2026-01-21 20:44:23.315 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/check-availability/parking-lots/00000000-0000-0000-0000-000000000000?from=2026-01-21T20:44:23.3135778Z&to=2026-01-21T21:44:23.3135782Z - 400 null text/plain; charset=utf-8 1.6605ms
+2026-01-21 20:44:23.317 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/cancel/94a54353-cf3c-40b2-bd91-9aaff186f6e2 - null null
+2026-01-21 20:44:23.318 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/cancel/94a54353-cf3c-40b2-bd91-9aaff186f6e2 - 401 null null 0.6029ms
+2026-01-21 20:44:23.321 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/create - application/json; charset=utf-8 244
+2026-01-21 20:44:23.322 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/create - 401 null null 0.6906ms
+2026-01-21 20:44:23.325 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:23.325 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:23.325 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:23.622 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 296.2867ms
+2026-01-21 20:44:23.622 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:23.622 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 296.707ms
+2026-01-21 20:44:23.623 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/cancel/00000000-0000-0000-0000-000000000000 - null null
+2026-01-21 20:44:23.624 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CancelReservation (CSharp_Parking_API)'
+2026-01-21 20:44:23.624 +01:00 [INF] Route matched with {action = "CancelReservation", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CancelReservation(System.Guid) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:23.624 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CancelReservation (CSharp_Parking_API) in 0.1565ms
+2026-01-21 20:44:23.624 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CancelReservation (CSharp_Parking_API)'
+2026-01-21 20:44:23.624 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/cancel/00000000-0000-0000-0000-000000000000 - 400 null text/plain; charset=utf-8 1.5465ms
+2026-01-21 20:44:23.626 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:44:23.627 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:23.627 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:23.917 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 290.8447ms
+2026-01-21 20:44:23.918 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:23.918 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 291.1627ms
+2026-01-21 20:44:23.921 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/admin/create-for-user - application/json; charset=utf-8 242
+2026-01-21 20:44:23.922 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API)'
+2026-01-21 20:44:23.922 +01:00 [INF] Route matched with {action = "CreateReservationForUser", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateReservationForUser(CSharpAPI.Models.DTOs.Reservations.CreateReservationForUserDto) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:23.923 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API) in 0.1857ms
+2026-01-21 20:44:23.923 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API)'
+2026-01-21 20:44:23.923 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/admin/create-for-user - 400 null text/plain; charset=utf-8 1.1865ms
+2026-01-21 20:44:23.925 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:23.925 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:23.925 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:24.206 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 280.4029ms
+2026-01-21 20:44:24.206 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:24.206 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 280.7891ms
+2026-01-21 20:44:24.209 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/create - application/json; charset=utf-8 398
+2026-01-21 20:44:24.210 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API)'
+2026-01-21 20:44:24.210 +01:00 [INF] Route matched with {action = "CreateReservation", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateReservation(CSharpAPI.Models.ReservationCreateDto) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:24.211 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API) in 0.8495ms
+2026-01-21 20:44:24.211 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservation (CSharp_Parking_API)'
+2026-01-21 20:44:24.211 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/create - 201 null application/json; charset=utf-8 1.9015ms
+2026-01-21 20:44:24.213 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/check-availability/parking-lots/4c6b770a-fdec-44d4-b1d4-a21f4b33c800?from=2026-01-21T19:44:24.2129694Z&to=2026-01-21T20:44:24.2129695Z - null null
+2026-01-21 20:44:24.213 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/check-availability/parking-lots/4c6b770a-fdec-44d4-b1d4-a21f4b33c800?from=2026-01-21T19:44:24.2129694Z&to=2026-01-21T20:44:24.2129695Z - 401 null null 0.5238ms
+2026-01-21 20:44:24.215 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 48
+2026-01-21 20:44:24.215 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:24.215 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:24.504 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 288.341ms
+2026-01-21 20:44:24.504 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:24.504 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 288.7107ms
+2026-01-21 20:44:24.505 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/all?page=0 - null null
+2026-01-21 20:44:24.506 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.GetAllReservations (CSharp_Parking_API)'
+2026-01-21 20:44:24.506 +01:00 [INF] Route matched with {action = "GetAllReservations", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllReservations(Int32) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:24.507 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.GetAllReservations (CSharp_Parking_API) in 0.6117ms
+2026-01-21 20:44:24.507 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.GetAllReservations (CSharp_Parking_API)'
+2026-01-21 20:44:24.507 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/all?page=0 - 200 null application/json; charset=utf-8 1.7441ms
+2026-01-21 20:44:24.509 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:44:24.509 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:24.509 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:24.774 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 264.3576ms
+2026-01-21 20:44:24.774 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:24.774 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 264.7567ms
+2026-01-21 20:44:24.775 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/admin/create-for-user - application/json; charset=utf-8 4
+2026-01-21 20:44:24.776 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API)'
+2026-01-21 20:44:24.776 +01:00 [INF] Route matched with {action = "CreateReservationForUser", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateReservationForUser(CSharpAPI.Models.DTOs.Reservations.CreateReservationForUserDto) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:24.776 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API) in 0.2369ms
+2026-01-21 20:44:24.776 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API)'
+2026-01-21 20:44:24.776 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/admin/create-for-user - 400 null application/problem+json; charset=utf-8 1.2025ms
+2026-01-21 20:44:24.778 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:44:24.779 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:24.779 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:25.034 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 255.6025ms
+2026-01-21 20:44:25.034 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:25.034 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 255.8925ms
+2026-01-21 20:44:25.038 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/admin/create-for-user - application/json; charset=utf-8 244
+2026-01-21 20:44:25.038 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API)'
+2026-01-21 20:44:25.039 +01:00 [INF] Route matched with {action = "CreateReservationForUser", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateReservationForUser(CSharpAPI.Models.DTOs.Reservations.CreateReservationForUserDto) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:25.039 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API) in 0.1556ms
+2026-01-21 20:44:25.039 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API)'
+2026-01-21 20:44:25.039 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/admin/create-for-user - 400 null text/plain; charset=utf-8 1.1733ms
+2026-01-21 20:44:25.041 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:44:25.041 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:25.041 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:25.298 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 256.4327ms
+2026-01-21 20:44:25.298 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:25.298 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 256.7437ms
+2026-01-21 20:44:25.300 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/admin/create-for-user - application/json; charset=utf-8 244
+2026-01-21 20:44:25.302 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API)'
+2026-01-21 20:44:25.302 +01:00 [INF] Route matched with {action = "CreateReservationForUser", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateReservationForUser(CSharpAPI.Models.DTOs.Reservations.CreateReservationForUserDto) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:25.302 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API) in 0.2775ms
+2026-01-21 20:44:25.302 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CreateReservationForUser (CSharp_Parking_API)'
+2026-01-21 20:44:25.302 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/admin/create-for-user - 400 null text/plain; charset=utf-8 1.8139ms
+2026-01-21 20:44:25.304 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:25.305 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:25.305 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:25.550 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 245.7482ms
+2026-01-21 20:44:25.550 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:25.551 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 246.0702ms
+2026-01-21 20:44:25.552 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/reservations/cancel/00000000-0000-0000-0000-000000000000 - null null
+2026-01-21 20:44:25.553 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.CancelReservation (CSharp_Parking_API)'
+2026-01-21 20:44:25.553 +01:00 [INF] Route matched with {action = "CancelReservation", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CancelReservation(System.Guid) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:25.553 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.CancelReservation (CSharp_Parking_API) in 0.199ms
+2026-01-21 20:44:25.553 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.CancelReservation (CSharp_Parking_API)'
+2026-01-21 20:44:25.554 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/reservations/cancel/00000000-0000-0000-0000-000000000000 - 400 null text/plain; charset=utf-8 1.5105ms
+2026-01-21 20:44:25.556 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:25.556 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:25.556 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:25.796 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 239.619ms
+2026-01-21 20:44:25.796 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:25.796 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 239.9955ms
+2026-01-21 20:44:25.797 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/00000000-0000-0000-0000-000000000000 - null null
+2026-01-21 20:44:25.798 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.GetReservationById (CSharp_Parking_API)'
+2026-01-21 20:44:25.798 +01:00 [INF] Route matched with {action = "GetReservationById", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReservationById(System.Guid) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:25.798 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.GetReservationById (CSharp_Parking_API) in 0.1335ms
+2026-01-21 20:44:25.798 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.GetReservationById (CSharp_Parking_API)'
+2026-01-21 20:44:25.798 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/00000000-0000-0000-0000-000000000000 - 400 null text/plain; charset=utf-8 1.0751ms
+2026-01-21 20:44:25.800 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 20:44:25.800 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:25.800 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:26.037 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 236.7074ms
+2026-01-21 20:44:26.037 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:26.037 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 237.0192ms
+2026-01-21 20:44:26.038 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/all?page=999 - null null
+2026-01-21 20:44:26.039 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.GetAllReservations (CSharp_Parking_API)'
+2026-01-21 20:44:26.039 +01:00 [INF] Route matched with {action = "GetAllReservations", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllReservations(Int32) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:26.040 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.GetAllReservations (CSharp_Parking_API) in 0.495ms
+2026-01-21 20:44:26.040 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.GetAllReservations (CSharp_Parking_API)'
+2026-01-21 20:44:26.040 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/all?page=999 - 400 null text/plain; charset=utf-8 1.4838ms
+2026-01-21 20:44:26.041 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/all?page=0 - null null
+2026-01-21 20:44:26.042 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/all?page=0 - 401 null null 0.5354ms
+2026-01-21 20:44:26.044 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/user/22ce3423-b3f5-4842-b868-a8e0d73fcb29?Status=Active - null null
+2026-01-21 20:44:26.044 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/user/22ce3423-b3f5-4842-b868-a8e0d73fcb29?Status=Active - 401 null null 0.4703ms
+2026-01-21 20:44:26.047 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 20:44:26.047 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:26.047 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 20:44:26.282 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 235.2372ms
+2026-01-21 20:44:26.282 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API)'
+2026-01-21 20:44:26.282 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 235.5225ms
+2026-01-21 20:44:26.283 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/reservations/user/00000000-0000-0000-0000-000000000000?Status=Active - null null
+2026-01-21 20:44:26.284 +01:00 [INF] Executing endpoint 'CSharpAPI.Controllers.C_Reservations.ListReservationsByUser (CSharp_Parking_API)'
+2026-01-21 20:44:26.284 +01:00 [INF] Route matched with {action = "ListReservationsByUser", controller = "C_Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListReservationsByUser(System.Guid, Status) on controller CSharpAPI.Controllers.C_Reservations (CSharp_Parking_API).
+2026-01-21 20:44:26.284 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Reservations.ListReservationsByUser (CSharp_Parking_API) in 0.1587ms
+2026-01-21 20:44:26.284 +01:00 [INF] Executed endpoint 'CSharpAPI.Controllers.C_Reservations.ListReservationsByUser (CSharp_Parking_API)'
+2026-01-21 20:44:26.284 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/reservations/user/00000000-0000-0000-0000-000000000000?Status=Active - 400 null text/plain; charset=utf-8 0.9831ms
