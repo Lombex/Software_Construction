@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Parking System ERD Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .instructions {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #007acc;
+        }
+        .code-block {
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        .button {
+            display: inline-block;
+            background: #007acc;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 10px 10px 0;
+        }
+        .button:hover {
+            background: #005999;
+        }
+        .diagram-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏗️ Parking Management System ERD</h1>
+
+        <div class="instructions">
+            <h3>📋 How to Generate Your Visual ERD:</h3>
+            <ol>
+                <li><strong>Online Method (Recommended):</strong></li>
+                <ul>
+                    <li>Go to: <a href="https://www.plantuml.com/plantuml" target="_blank">PlantUML Online Server</a></li>
+                    <li>Copy the PlantUML code below</li>
+                    <li>Paste it into the online editor</li>
+                    <li>Click "Submit" to generate PNG/SVG diagram</li>
+                </ul>
+
+                <li><strong>Alternative Online Tools:</strong></li>
+                <ul>
+                    <li><a href="https://planttext.com/" target="_blank">PlantText</a></li>
+                    <li><a href="https://www.plantuml.com/plantuml/uml/" target="_blank">PlantUML Web Service</a></li>
+                </ul>
+
+                <li><strong>VS Code (if you have PlantUML extension):</strong></li>
+                <ul>
+                    <li>Open <code>parking_system_erd.puml</code></li>
+                    <li>Right-click and select "Preview Current Diagram"</li>
+                </ul>
+            </ol>
+        </div>
+
+        <div class="diagram-info">
+            <h3>🎯 What This ERD Shows:</h3>
+            <ul>
+                <li><strong>14 Controllers</strong> - HTTP API endpoints (Presentation Layer)</li>
+                <li><strong>13 Services</strong> - Business logic components (Business Layer)</li>
+                <li><strong>14 Models</strong> - EF Core entities with exact properties (Data Layer)</li>
+                <li><strong>All Database Relationships</strong> - Foreign keys from EF Core schema</li>
+                <li><strong>3-Layer Architecture</strong> - Complete system overview</li>
+            </ul>
+
+            <p><strong>Generated from:</strong> EF Core database schema + Code analysis</p>
+            <p><strong>Format:</strong> PlantUML - Industry standard for software architecture diagrams</p>
+        </div>
+
+        <div class="code-block">
+            <strong>📄 PlantUML Code (parking_system_erd.puml):</strong><br><br>
+            <!-- PlantUML content would go here -->
+            <em>Copy the contents of <code>parking_system_erd.puml</code> file</em>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="https://www.plantuml.com/plantuml" target="_blank" class="button">
+                🚀 Generate Diagram Online
+            </a>
+            <a href="https://planttext.com/" target="_blank" class="button">
+                📊 Alternative Tool
+            </a>
+        </div>
+
+        <div class="instructions">
+            <h3>🛠️ Local Installation (Optional):</h3>
+            <pre><code># Install Chocolatey first
+# Then run:
+choco install plantuml
+
+# Generate diagram:
+plantuml parking_system_erd.puml</code></pre>
+        </div>
+    </div>
+</body>
+</html>

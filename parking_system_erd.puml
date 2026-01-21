@@ -1,0 +1,601 @@
+@startuml Complete Parking Management System Architecture
+
+!define TABLE(name,desc) class name as "name\n━━━\n desc" << (T,#FFAAAA) >>
+!define CONTROLLER(name,desc) class name as "name\n━━━\n desc" << (C,#ADD8E6) >>
+!define SERVICE(name,desc) class name as "name\n━━━\n desc" << (S,#90EE90) >>
+!define MODEL(name,desc) class name as "name\n━━━\n desc" << (M,#FFB6C1) >>
+!define PRIMARY_KEY(name,type) +{static} name : type <<PK>>
+!define FOREIGN_KEY(name,type) + name : type <<FK>>
+!define ATTRIBUTE(name,type) + name : type
+!define ENUM(name) enum name << (E,lightblue) >>
+
+' ==========================================
+' PRESENTATION LAYER - CONTROLLERS
+' ==========================================
+
+CONTROLLER(C_Auth, Authentication & User Management) {
+    + Login(LoginRequest) : IActionResult
+    + Register(RegisterRequest) : IActionResult
+    + Me() : IActionResult
+    + Logout() : IActionResult
+}
+
+CONTROLLER(C_Users, User Administration) {
+    + GetAllUsers(int page) : IActionResult
+    + GetUserByID(Guid) : IActionResult
+    + CreateUser(M_Users) : IActionResult
+    + UpdateUser(Guid, M_Users) : IActionResult
+    + DeleteUser(Guid) : IActionResult
+}
+
+CONTROLLER(C_Vehicles, Vehicle Management) {
+    + GetMyVehicles() : IActionResult
+    + GetAllVehicles(int page) : IActionResult
+    + GetVehicleByID(Guid) : IActionResult
+    + CreateVehicle(CreateVehicleDto) : IActionResult
+    + UpdateVehicle(Guid, UpdateVehicleDto) : IActionResult
+    + DeleteVehicle(Guid) : IActionResult
+}
+
+CONTROLLER(C_Parkinglots, Parking Lot Management) {
+    + GetAll() : IActionResult
+    + GetById(Guid) : IActionResult
+    + Create(M_Parkinglots) : IActionResult
+    + Update(Guid, M_Parkinglots) : IActionResult
+    + Delete(Guid) : IActionResult
+    + SearchNearby(float lat, float lng, float radius) : IActionResult
+}
+
+CONTROLLER(C_Sessions, Parking Sessions) {
+    + StartSession(M_Session) : IActionResult
+    + StopSession(Guid) : IActionResult
+    + GetSessionsById(string) : IActionResult
+    + GetAllSessions(string user, PaymentStatus status) : IActionResult
+    + AutoStartSession(AutoStartSessionRequest) : IActionResult
+    + GetMyParkingHistory(int? limit) : IActionResult
+}
+
+CONTROLLER(C_Reservations, Parking Reservations) {
+    + GetAllReservations(int page) : IActionResult
+    + CreateReservation(ReservationCreateDto) : IActionResult
+    + CancelReservation(Guid) : IActionResult
+    + GetReservationById(Guid) : IActionResult
+    + ListReservationsByUser(Guid, Status) : IActionResult
+    + CheckAvailability(Guid, DateTime, DateTime) : IActionResult
+    + CreateReservationForUser(CreateReservationForUserDto) : IActionResult
+}
+
+CONTROLLER(C_Payments, Payment Processing) {
+    + GetAllPayments(int page) : IActionResult
+    + GetPaymentByID(Guid) : IActionResult
+    + CreatePayment(M_Payments) : IActionResult
+    + UpdatePayment(Guid, M_Payments) : IActionResult
+    + DeletePayment(Guid) : IActionResult
+    + RefundPayment(Guid, RefundRequest) : IActionResult
+}
+
+CONTROLLER(C_Billing, Billing & Invoicing) {
+    + GetAll() : IActionResult
+    + GetMine() : IActionResult
+    + GetMinePending() : IActionResult
+    + GetMineOverdue() : IActionResult
+    + GetForUser(Guid) : IActionResult
+    + GetById(Guid) : IActionResult
+    + Create(M_Billing) : IActionResult
+    + Update(Guid, M_Billing) : IActionResult
+    + MarkPaid(Guid) : IActionResult
+    + Cancel(Guid) : IActionResult
+    + Delete(Guid) : IActionResult
+    + GetMonthlyBundles(Guid, DateTime?) : IActionResult
+}
+
+CONTROLLER(C_Balance, User Balance Management) {
+    + GetMyBalance() : IActionResult
+    + GetUserBalance(Guid) : IActionResult
+    + AddToMyBalance(AddBalanceRequest) : IActionResult
+    + GetMyTransactions(int? limit) : IActionResult
+    + CheckBalance(decimal) : IActionResult
+}
+
+CONTROLLER(C_Company, Company Management) {
+    + GetAll() : IActionResult
+    + GetById(Guid) : IActionResult
+    + Create(M_Company) : IActionResult
+    + Update(Guid, M_Company) : IActionResult
+    + Delete(Guid) : IActionResult
+    + GetCompanyVehicles(Guid) : IActionResult
+    + AddUserToCompany(Guid, AddUserToCompanyRequest) : IActionResult
+    + GetCompanyUsers(Guid) : IActionResult
+    + GenerateMonthlyBundle(Guid, GenerateBundleRequest) : IActionResult
+}
+
+CONTROLLER(C_Hotel, Hotel Management) {
+    + GetAll() : IActionResult
+    + GetById(Guid) : IActionResult
+    + Create(M_Hotel) : IActionResult
+    + Update(Guid, M_Hotel) : IActionResult
+    + Delete(Guid) : IActionResult
+    + RegisterGuest(Guid, RegisterGuestRequest) : IActionResult
+    + CheckOutGuest(Guid) : IActionResult
+    + GetActiveGuests(Guid) : IActionResult
+}
+
+CONTROLLER(C_Profile, User Profile Management) {
+    + GetProfile(Guid id) : IActionResult
+    + GetProfileById(Guid) : IActionResult
+    + UpdateProfile(Guid) : IActionResult
+    + ChangePassword(Guid, string) : IActionResult
+    + DeleteProfile(Guid) : IActionResult
+}
+
+CONTROLLER(C_NFC, NFC Payment Processing) {
+    + VerifyAndPay(NFCVerifyRequest) : IActionResult
+    + VerifyCard(NFCVerifyCardRequest) : IActionResult
+}
+
+CONTROLLER(C_Gate, Parking Gate Control) {
+    + OpenGate(OpenGateRequest) : IActionResult
+    + CloseGate(CloseGateRequest) : IActionResult
+    + GetGateStatus(Guid) : IActionResult
+}
+
+' ==========================================
+' BUSINESS LOGIC LAYER - SERVICES
+' ==========================================
+
+SERVICE(S_Users, User Management Service) {
+    + GetAll(int page) : Task<List<M_Users>>
+    + GetById(Guid) : Task<M_Users>
+    + Create(M_Users) : Task<M_Users>
+    + Update(M_Users) : Task<M_Users>
+    + Delete(Guid) : Task<bool>
+    + GetByUsername(string) : Task<M_Users>
+    + GetByEmail(string) : Task<M_Users>
+}
+
+SERVICE(S_Vehicles, Vehicle Management Service) {
+    + GetByID(Guid) : Task<M_Vehicles>
+    + GetVehiclesByUserId(Guid) : Task<List<M_Vehicles>>
+    + CreateVehicle(M_Vehicles) : Task<M_Vehicles>
+    + UpdateVehicle(Guid, M_Vehicles) : Task
+    + DeleteVehicle(Guid) : Task
+}
+
+SERVICE(S_Parkinglots, Parking Lot Service) {
+    + GetAll() : Task<List<M_Parkinglots>>
+    + GetById(Guid) : Task<M_Parkinglots>
+    + Create(M_Parkinglots) : Task<M_Parkinglots>
+    + Update(M_Parkinglots) : Task
+    + Delete(Guid) : Task<bool>
+}
+
+SERVICE(S_Sessions, Parking Session Service) {
+    + Start(M_Session) : Task<M_Session>
+    + Stop(Guid) : Task<M_Session>
+    + GetSessionById(string username) : Task<List<M_Session>>
+    + GetAllSessions(string? user, PaymentStatus? status) : Task<List<M_Session>>
+    + GetActiveSession(string username) : Task<M_Session?>
+}
+
+SERVICE(S_Reservations, Reservation Service) {
+    + GetAll(int page) : Task<List<M_Reservations>>
+    + GetById(Guid) : Task<M_Reservations>
+    + Create(M_Reservations) : Task<M_Reservations>
+    + Cancel(Guid) : Task<M_Reservations>
+    + GetByUserId(Guid) : Task<List<M_Reservations>>
+    + CheckAvailability(Guid lotId, DateTime start, DateTime end) : Task<bool>
+}
+
+SERVICE(S_Payments, Payment Processing Service) {
+    + GetAll(int page) : Task<List<M_Payments>>
+    + GetById(Guid) : Task<M_Payments>
+    + Create(M_Payments) : Task<M_Payments>
+    + Update(M_Payments) : Task
+    + Delete(Guid) : Task<bool>
+    + ProcessPayment(M_Payments) : Task<bool>
+}
+
+SERVICE(S_Billing, Billing Service) {
+    + GetAll() : Task<List<M_Billing>>
+    + GetById(Guid) : Task<M_Billing>
+    + GetForUser(Guid) : Task<List<M_Billing>>
+    + GetPendingForUser(Guid) : Task<List<M_Billing>>
+    + GetOverdueForUser(Guid) : Task<List<M_Billing>>
+    + Create(M_Billing) : Task<M_Billing>
+    + MarkAsPaid(Guid) : Task<M_Billing>
+    + Cancel(Guid) : Task<M_Billing>
+}
+
+SERVICE(S_UserBalance, User Balance Service) {
+    + GetByUserId(Guid) : Task<M_UserBalance>
+    + AddFunds(Guid userId, decimal amount) : Task<M_UserBalance>
+    + DeductFunds(Guid userId, decimal amount) : Task<M_UserBalance>
+    + GetTransactionHistory(Guid userId, int? limit) : Task<List<M_BalanceTransaction>>
+}
+
+SERVICE(S_Company, Company Management Service) {
+    + GetAll() : Task<List<M_Company>>
+    + GetById(Guid) : Task<M_Company>
+    + Create(M_Company) : Task<M_Company>
+    + Update(M_Company) : Task
+    + Delete(Guid) : Task<bool>
+    + GetUsers(Guid) : Task<List<M_CompanyUser>>
+    + AddUser(Guid companyId, Guid userId, CompanyUserRole role) : Task
+}
+
+SERVICE(S_Hotel, Hotel Management Service) {
+    + GetAll() : Task<List<M_Hotel>>
+    + GetById(Guid) : Task<M_Hotel>
+    + Create(M_Hotel) : Task<M_Hotel>
+    + Update(M_Hotel) : Task
+    + Delete(Guid) : Task<bool>
+    + RegisterGuest(Guid hotelId, Guid userId, DateTime checkIn) : Task<M_HotelGuest>
+    + CheckOutGuest(Guid guestId) : Task
+}
+
+SERVICE(S_Profile, User Profile Service) {
+    + GetById(Guid) : Task<M_Users>
+    + UpdateProfile(Guid, M_Users) : Task<M_Users>
+    + ChangePassword(Guid, string) : Task
+    + DeleteProfile(Guid) : Task
+}
+
+SERVICE(TokenService, JWT Token Management) {
+    + GenerateToken(string userId, string username, string role, DateTime& expiresAt) : string
+}
+
+SERVICE(TokenRevocationService, Token Revocation Management) {
+    + RevokeToken(string token, string userId) : Task
+    + IsTokenRevoked(string token) : Task<bool>
+}
+
+' ==========================================
+' DATA ACCESS LAYER - MODELS
+' ==========================================
+
+MODEL(M_Users, User accounts and authentication) {
+    PRIMARY_KEY(id, Guid)
+    ATTRIBUTE(username, string)
+    ATTRIBUTE(password, string)
+    ATTRIBUTE(name, string)
+    ATTRIBUTE(email, string)
+    ATTRIBUTE(phone, string)
+    ATTRIBUTE(role, UserRole)
+    FOREIGN_KEY(parking_lot_id, Guid)
+    ATTRIBUTE(created_at, DateTime)
+    ATTRIBUTE(birth_year, DateTime)
+    ATTRIBUTE(active, bool)
+}
+
+MODEL(M_Parkinglots, Parking facilities) {
+    PRIMARY_KEY(id, Guid)
+    ATTRIBUTE(name, string)
+    ATTRIBUTE(location, string)
+    ATTRIBUTE(address, string)
+    ATTRIBUTE(capacity, int)
+    ATTRIBUTE(reserved, int)
+    ATTRIBUTE(daytarriff, float)
+    ATTRIBUTE(created_at, DateTime)
+    ATTRIBUTE(coordinates_lat, float)
+    ATTRIBUTE(coordinates_lng, float)
+}
+
+MODEL(M_Vehicles, User vehicles) {
+    PRIMARY_KEY(id, Guid)
+    FOREIGN_KEY(user_id, Guid)
+    ATTRIBUTE(license_plate, string)
+    ATTRIBUTE(make, string)
+    ATTRIBUTE(model, string)
+    ATTRIBUTE(color, string)
+    ATTRIBUTE(year, DateTime)
+    ATTRIBUTE(created_at, DateTime)
+}
+
+MODEL(M_Session, Active parking usage) {
+    PRIMARY_KEY(id, Guid)
+    FOREIGN_KEY(parking_lot_id, Guid)
+    FOREIGN_KEY(vehicle_id, Guid)
+    ATTRIBUTE(license_plate, string)
+    ATTRIBUTE(started, DateTime)
+    ATTRIBUTE(stopped, DateTime)
+    ATTRIBUTE(user, string)
+    ATTRIBUTE(duration_minutes, int)
+    ATTRIBUTE(cost, float)
+    ATTRIBUTE(status, PaymentStatus)
+}
+
+MODEL(M_Reservations, Reserved parking slots) {
+    PRIMARY_KEY(id, Guid)
+    FOREIGN_KEY(user_id, Guid)
+    FOREIGN_KEY(parking_lot_id, Guid)
+    FOREIGN_KEY(vehicle_id, Guid)
+    ATTRIBUTE(start_time, DateTime)
+    ATTRIBUTE(end_time, DateTime)
+    ATTRIBUTE(status, ReservationStatus)
+    ATTRIBUTE(created_at, DateTime)
+    ATTRIBUTE(cost, float)
+}
+
+MODEL(M_Payments, Payment transactions) {
+    PRIMARY_KEY(id, Guid)
+    PRIMARY_KEY(hash, Guid)
+    FOREIGN_KEY(reservation_id, Guid)
+    FOREIGN_KEY(session_id, Guid)
+    FOREIGN_KEY(parking_lot_id, Guid)
+    ATTRIBUTE(paid_at, DateTime)
+    ATTRIBUTE(transactions, string)
+    ATTRIBUTE(amount, float)
+    ATTRIBUTE(initiator, string)
+    ATTRIBUTE(created_at, DateTime)
+    ATTRIBUTE(completed, DateTime)
+    ATTRIBUTE(t_data_amount, float)
+    ATTRIBUTE(t_data_date, DateTime)
+    ATTRIBUTE(t_data_method, string)
+    ATTRIBUTE(t_data_issuer, string)
+    ATTRIBUTE(t_data_bank, string)
+}
+
+MODEL(M_Billing, Invoices and bills) {
+    PRIMARY_KEY(id, Guid)
+    FOREIGN_KEY(user_id, Guid)
+    FOREIGN_KEY(session_id, Guid)
+    FOREIGN_KEY(reservation_id, Guid)
+    FOREIGN_KEY(payment_id, Guid)
+    ATTRIBUTE(amount, decimal)
+    ATTRIBUTE(currency, string)
+    ATTRIBUTE(description, string)
+    ATTRIBUTE(due_date, DateTime)
+    ATTRIBUTE(paid, bool)
+    ATTRIBUTE(created_at, DateTime)
+    ATTRIBUTE(paid_at, DateTime)
+    ATTRIBUTE(invoice_number, string)
+    ATTRIBUTE(type, BillingType)
+    ATTRIBUTE(status, BillingStatus)
+}
+
+MODEL(M_UserBalance, User account balances) {
+    PRIMARY_KEY(id, Guid)
+    FOREIGN_KEY(user_id, Guid)
+    ATTRIBUTE(balance, decimal)
+    ATTRIBUTE(currency, string)
+    ATTRIBUTE(last_updated, DateTime)
+    ATTRIBUTE(created_at, DateTime)
+}
+
+MODEL(M_BalanceTransaction, Balance transaction history) {
+    PRIMARY_KEY(id, Guid)
+    FOREIGN_KEY(user_id, Guid)
+    FOREIGN_KEY(balance_id, Guid)
+    ATTRIBUTE(amount, decimal)
+    ATTRIBUTE(currency, string)
+    ATTRIBUTE(type, TransactionType)
+    ATTRIBUTE(description, string)
+    FOREIGN_KEY(payment_id, Guid)
+    FOREIGN_KEY(session_id, Guid)
+    ATTRIBUTE(created_at, DateTime)
+}
+
+MODEL(M_Company, Business organizations) {
+    PRIMARY_KEY(id, Guid)
+    ATTRIBUTE(name, string)
+    ATTRIBUTE(tax_id, string)
+    ATTRIBUTE(email, string)
+    ATTRIBUTE(phone, string)
+    ATTRIBUTE(address, string)
+    FOREIGN_KEY(primary_contact_user_id, Guid)
+    ATTRIBUTE(active, bool)
+    ATTRIBUTE(created_at, DateTime)
+    ATTRIBUTE(monthly_billing_enabled, bool)
+}
+
+MODEL(M_CompanyUser, User-Company associations) {
+    PRIMARY_KEY(id, Guid)
+    FOREIGN_KEY(company_id, Guid)
+    FOREIGN_KEY(user_id, Guid)
+    ATTRIBUTE(role, CompanyUserRole)
+    ATTRIBUTE(joined_at, DateTime)
+}
+
+MODEL(M_Hotel, Hotel accommodations) {
+    PRIMARY_KEY(id, Guid)
+    ATTRIBUTE(name, string)
+    ATTRIBUTE(address, string)
+    ATTRIBUTE(phone, string)
+    ATTRIBUTE(email, string)
+    ATTRIBUTE(discount_percentage, decimal)
+    ATTRIBUTE(active, bool)
+    ATTRIBUTE(created_at, DateTime)
+}
+
+MODEL(M_HotelGuest, Hotel guest records) {
+    PRIMARY_KEY(id, Guid)
+    FOREIGN_KEY(hotel_id, Guid)
+    FOREIGN_KEY(user_id, Guid)
+    ATTRIBUTE(check_in, DateTime)
+    ATTRIBUTE(check_out, DateTime)
+    ATTRIBUTE(reservation_number, string)
+    ATTRIBUTE(discount_applied, bool)
+    ATTRIBUTE(created_at, DateTime)
+}
+
+MODEL(M_RevokedTokens, JWT token revocation) {
+    PRIMARY_KEY(TokenId, string)
+    ATTRIBUTE(UserId, string)
+    ATTRIBUTE(RevokedAt, DateTime)
+    ATTRIBUTE(ExpiresAt, DateTime)
+}
+
+' ==========================================
+' ENUMERATIONS
+' ==========================================
+
+ENUM(UserRole) {
+    ParkingUser
+    ParkingLotAdmin
+    SuperAdmin
+}
+
+ENUM(CompanyUserRole) {
+    Employee
+    Manager
+    Admin
+}
+
+ENUM(PaymentStatus) {
+    Paid
+    Unpaid
+}
+
+ENUM(ReservationStatus) {
+    Active
+    Cancelled
+    Completed
+}
+
+ENUM(BillingType) {
+    ParkingSession
+    Reservation
+    MonthlyBundle
+    Refund
+    Other
+}
+
+ENUM(BillingStatus) {
+    Pending
+    Due
+    Paid
+    Overdue
+    Cancelled
+    Refunded
+}
+
+ENUM(TransactionType) {
+    Credit
+    Debit
+    Payment
+    Refund
+    Deposit
+    Withdrawal
+}
+
+' ==========================================
+' ARCHITECTURAL RELATIONSHIPS
+' ==========================================
+
+' Controller to Service relationships (Dependency Injection)
+C_Auth ..> S_Users : uses
+C_Auth ..> TokenService : uses
+C_Auth ..> TokenRevocationService : uses
+
+C_Users ..> S_Users : uses
+C_Vehicles ..> S_Vehicles : uses
+C_Parkinglots ..> S_Parkinglots : uses
+C_Sessions ..> S_Sessions : uses
+C_Reservations ..> S_Reservations : uses
+C_Payments ..> S_Payments : uses
+C_Billing ..> S_Billing : uses
+C_Balance ..> S_UserBalance : uses
+C_Company ..> S_Company : uses
+C_Hotel ..> S_Hotel : uses
+C_Profile ..> S_Profile : uses
+C_NFC ..> S_UserBalance : uses
+C_NFC ..> S_Sessions : uses
+
+' Service to Model relationships (Data Access)
+S_Users ..> M_Users : manages
+S_Vehicles ..> M_Vehicles : manages
+S_Parkinglots ..> M_Parkinglots : manages
+S_Sessions ..> M_Session : manages
+S_Reservations ..> M_Reservations : manages
+S_Payments ..> M_Payments : manages
+S_Billing ..> M_Billing : manages
+S_UserBalance ..> M_UserBalance : manages
+S_UserBalance ..> M_BalanceTransaction : manages
+S_Company ..> M_Company : manages
+S_Company ..> M_CompanyUser : manages
+S_Hotel ..> M_Hotel : manages
+S_Hotel ..> M_HotelGuest : manages
+
+' Cross-service relationships
+S_Billing ..> S_Payments : references
+S_UserBalance ..> S_Payments : references
+S_UserBalance ..> S_Sessions : references
+
+' ==========================================
+' DATABASE RELATIONSHIPS (from EF Core schema)
+' ==========================================
+
+' User Management Relationships
+M_Users ||--o{ M_Vehicles : "user_id → id"
+M_Users ||--o{ M_Reservations : "user_id → id"
+M_Users ||--o{ M_Billing : "user_id → id"
+M_Users ||--o{ M_UserBalance : "user_id → id"
+M_Users ||--o{ M_BalanceTransaction : "user_id → id"
+M_Users ||--o{ M_CompanyUser : "user_id → id"
+M_Users ||--o{ M_HotelGuest : "user_id → id"
+M_Users ||--o{ M_Session : "user → username (ref)"
+
+M_Company ||--o{ M_CompanyUser : "company_id → id"
+M_Company ||--o| M_Users : "primary_contact_user_id → id"
+
+M_Hotel ||--o{ M_HotelGuest : "hotel_id → id"
+
+' Parking Infrastructure Relationships
+M_Parkinglots ||--o{ M_Session : "parking_lot_id → id"
+M_Parkinglots ||--o{ M_Reservations : "parking_lot_id → id"
+M_Parkinglots ||--o{ M_Payments : "parking_lot_id → id"
+M_Parkinglots ||--o{ M_Users : "parking_lot_id → id\n(managed by ParkingLotAdmin)"
+
+' Vehicle Relationships
+M_Vehicles ||--o{ M_Session : "vehicle_id → id"
+M_Vehicles ||--o{ M_Reservations : "vehicle_id → id"
+
+' Financial Relationships
+M_Session ||--o{ M_Payments : "session_id → id"
+M_Session ||--o{ M_Billing : "session_id → id"
+M_Session ||--o{ M_BalanceTransaction : "session_id → id"
+
+M_Reservations ||--o{ M_Payments : "reservation_id → id"
+M_Reservations ||--o{ M_Billing : "reservation_id → id"
+
+M_Payments ||--o{ M_Billing : "payment_id → id"
+M_Payments ||--o{ M_BalanceTransaction : "payment_id → id"
+
+M_UserBalance ||--o{ M_BalanceTransaction : "balance_id → id"
+
+' ==========================================
+' LEGEND & NOTES
+' ==========================================
+
+legend right
+|= Symbol |= Meaning |
+| <<C,#ADD8E6>> | Controller (Presentation Layer) |
+| <<S,#90EE90>> | Service (Business Logic Layer) |
+| <<M,#FFB6C1>> | Model (Data Access Layer) |
+| <<E,lightblue>> | Enumeration |
+| <<PK>> | Primary Key |
+| <<FK>> | Foreign Key |
+| ..> | Uses/Depends on |
+| ||--o{ | One-to-Many (Database FK) |
+| ||--o| | One-to-One (Database FK) |
+endlegend
+
+note as ArchitectureNote
+    **3-Layer Architecture**
+    • **Controllers**: HTTP API endpoints, request/response handling
+    • **Services**: Business logic, validation, orchestration
+    • **Models**: EF Core entities, database mapping
+
+    **Generated from EF Core database schema**
+    Using: dotnet ef migrations script --context SQLite_Database
+end note
+
+note as DatabaseNote
+    **Database Schema (SQLite)**
+    • 13 main tables + 1 junction table
+    • 30+ foreign key relationships
+    • Owned entities flattened into parent tables
+    • All relationships defined via EF Core migrations
+end note
+
+@enduml
