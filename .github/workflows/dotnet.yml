@@ -62,7 +62,7 @@ jobs:
       - name: Generate detailed coverage report
         run: |
           reportgenerator \
-            "-reports:**/coverage.cobertura.xml" \
+            "-reports:./test-results/**/coverage.cobertura.xml" \
             "-targetdir:coveragereport" \
             "-reporttypes:TextSummary;Html;Cobertura"
 
