@@ -1,0 +1,20 @@
+disable-default-queries: false
+queries:
+  # Include security and quality queries
+  - uses: security-and-quality
+  - uses: security-experimental
+
+paths-ignore:
+  # Ignore test files for security analysis
+  - "**/Test*/**"
+  - "**/*Test*/**"
+  - "**/*.Tests/**"
+  # Ignore generated files
+  - "**/Migrations/**"
+  - "**/obj/**"
+  - "**/bin/**"
+
+paths:
+  # Focus analysis on main application code
+  - "CSharp Parking API/**"
+  - "CSharp Parking Tests/**/*.cs" # Include test code for quality checks
