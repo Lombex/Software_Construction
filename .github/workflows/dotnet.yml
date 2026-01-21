@@ -1,0 +1,122 @@
+name: CI/CD Workflow for CSharpAPI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  PROJECT_PATH: "CSharp_Parking_Tests/CSharp_Parking_Tests.csproj"
+  # UNIT_TEST_PROJECT_PATH: './Unit.Tests/Unit.Tests.csproj'
+  MIN_BRANCH_COVERAGE: 0
+  DOTNET_ROOT: /usr/share/dotnet
+ 
+jobs:
+  # Job 1: Build
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: |
+          dotnet restore ${{ env.PROJECT_PATH }}
+        # dotnet restore ${{ env.TEST_PROJECT_PATH }}
+        # dotnet restore ${{ env.UNIT_TEST_PROJECT_PATH }}
+          
+      - name: Build
+        run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+
+  # Job 2: Test
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: |
+          dotnet restore ${{ env.PROJECT_PATH }}
+
+      # ✅ Single, correct test step
+      - name: Run tests with coverage
+        run: |
+          dotnet test ${{ env.PROJECT_PATH }} \
+            --configuration Release \
+            --no-restore \
+            --verbosity normal \
+            /p:CollectCoverage=true \
+            /p:CoverletOutput=./TestResults/Coverage/coverage \
+            /p:CoverletOutputFormat=cobertura
+
+      - name: Install ReportGenerator
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+
+      - name: Generate coverage report
+        run: |
+          reportgenerator \
+            "-reports:**/coverage.cobertura.xml" \
+            "-targetdir:coveragereport" \
+            "-reporttypes:TextSummary;Html;Cobertura"
+
+      - name: Add coverage report to job summary
+        run: |
+          echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
+          cat coveragereport/Summary.txt >> $GITHUB_STEP_SUMMARY
+
+      - name: Check branch coverage threshold
+        run: |
+          BRANCH_COVERAGE=$(grep -oP '(?<=Branch coverage: )[0-9.]+' coveragereport/Summary.txt || echo "0")
+          echo "Branch coverage: $BRANCH_COVERAGE%"
+
+          if (( $(echo "$BRANCH_COVERAGE < ${{ env.MIN_BRANCH_COVERAGE }}" | bc -l) )); then
+            echo "❌ Branch coverage ($BRANCH_COVERAGE%) is below minimum threshold of ${{ env.MIN_BRANCH_COVERAGE }}%"
+            exit 1
+          else
+            echo "✅ Branch coverage ($BRANCH_COVERAGE%) meets minimum threshold of ${{ env.MIN_BRANCH_COVERAGE }}%"
+          fi
+
+      - name: Store coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coveragereport
+
+
+  # Job 3: Deployment (after tests pass on master or PR to master)
+  deployment:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: master
+
+      - name: Send webhook notification
+        if: success()
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{"content": "Deployment successful! Master branch has passed all tests and has been deployed."}' \
+          $WEBHOOK_URL

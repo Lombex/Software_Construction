@@ -1,0 +1,368 @@
+2026-01-21 23:18:22.703 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "type" = 'table' AND "rootpage" IS NOT NULL;
+2026-01-21 23:18:22.823 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:22.885 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "BalanceTransactions" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_BalanceTransactions" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "balance_id" TEXT NULL,
+    "amount" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "type" INTEGER NOT NULL,
+    "description" TEXT NULL,
+    "payment_id" TEXT NULL,
+    "session_id" TEXT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 23:18:22.895 +01:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Billing" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Billing" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "session_id" TEXT NULL,
+    "reservation_id" TEXT NULL,
+    "payment_id" TEXT NULL,
+    "amount" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "description" TEXT NULL,
+    "due_date" TEXT NOT NULL,
+    "paid" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "paid_at" TEXT NULL,
+    "invoice_number" TEXT NULL,
+    "type" INTEGER NOT NULL,
+    "status" INTEGER NOT NULL
+);
+2026-01-21 23:18:22.896 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Companies" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Companies" PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "tax_id" TEXT NULL,
+    "email" TEXT NULL,
+    "phone" TEXT NULL,
+    "address" TEXT NULL,
+    "primary_contact_user_id" TEXT NULL,
+    "active" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "monthly_billing_enabled" INTEGER NOT NULL
+);
+2026-01-21 23:18:22.897 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "CompanyUsers" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_CompanyUsers" PRIMARY KEY,
+    "company_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "role" INTEGER NOT NULL,
+    "joined_at" TEXT NOT NULL
+);
+2026-01-21 23:18:22.898 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "HotelGuests" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_HotelGuests" PRIMARY KEY,
+    "hotel_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "check_in" TEXT NOT NULL,
+    "check_out" TEXT NULL,
+    "reservation_number" TEXT NULL,
+    "discount_applied" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 23:18:22.898 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Hotels" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Hotels" PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "address" TEXT NULL,
+    "phone" TEXT NULL,
+    "email" TEXT NULL,
+    "discount_percentage" TEXT NOT NULL,
+    "active" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 23:18:22.898 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Parkinglots" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Parkinglots" PRIMARY KEY,
+    "name" TEXT NULL,
+    "location" TEXT NULL,
+    "address" TEXT NULL,
+    "capacity" INTEGER NOT NULL,
+    "reserved" INTEGER NOT NULL,
+    "daytarriff" REAL NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "coordinates_lat" REAL NULL,
+    "coordinates_lng" REAL NULL
+);
+2026-01-21 23:18:22.899 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Payments" (
+    "hash" TEXT NOT NULL CONSTRAINT "PK_Payments" PRIMARY KEY,
+    "id" TEXT NOT NULL,
+    "reservation_id" TEXT NOT NULL,
+    "paid_at" TEXT NOT NULL,
+    "transactions" TEXT NULL,
+    "amount" REAL NOT NULL,
+    "initiator" TEXT NULL,
+    "created_at" TEXT NOT NULL,
+    "completed" TEXT NOT NULL,
+    "t_data_amount" REAL NULL,
+    "t_data_date" TEXT NULL,
+    "t_data_method" TEXT NULL,
+    "t_data_issuer" TEXT NULL,
+    "t_data_bank" TEXT NULL,
+    "session_id" TEXT NOT NULL,
+    "parking_lot_id" TEXT NOT NULL
+);
+2026-01-21 23:18:22.899 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "RevokedTokens" (
+    "TokenId" TEXT NOT NULL CONSTRAINT "PK_RevokedTokens" PRIMARY KEY,
+    "UserId" TEXT NOT NULL,
+    "RevokedAt" TEXT NOT NULL,
+    "ExpiresAt" TEXT NOT NULL
+);
+2026-01-21 23:18:22.900 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "UserBalances" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_UserBalances" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "balance" TEXT NOT NULL,
+    "currency" TEXT NOT NULL,
+    "last_updated" TEXT NOT NULL,
+    "created_at" TEXT NOT NULL
+);
+2026-01-21 23:18:22.900 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Users" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Users" PRIMARY KEY,
+    "username" TEXT NULL,
+    "password" TEXT NULL,
+    "name" TEXT NULL,
+    "email" TEXT NULL,
+    "phone" TEXT NULL,
+    "role" INTEGER NOT NULL,
+    "parking_lot_id" TEXT NULL,
+    "created_at" TEXT NOT NULL,
+    "birth_year" TEXT NOT NULL,
+    "active" INTEGER NOT NULL
+);
+2026-01-21 23:18:22.901 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Vehicles" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Vehicles" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "license_plate" TEXT NULL,
+    "make" TEXT NULL,
+    "model" TEXT NULL,
+    "color" TEXT NULL,
+    "year" TEXT NOT NULL,
+    "created_at" TEXT NOT NULL,
+    CONSTRAINT "FK_Vehicles_Users_user_id" FOREIGN KEY ("user_id") REFERENCES "Users" ("id") ON DELETE CASCADE
+);
+2026-01-21 23:18:22.901 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Reservations" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Reservations" PRIMARY KEY,
+    "user_id" TEXT NOT NULL,
+    "parking_lot_id" TEXT NOT NULL,
+    "vehicle_id" TEXT NOT NULL,
+    "start_time" TEXT NOT NULL,
+    "end_time" TEXT NOT NULL,
+    "status" INTEGER NOT NULL,
+    "created_at" TEXT NOT NULL,
+    "cost" REAL NOT NULL,
+    CONSTRAINT "FK_Reservations_Parkinglots_parking_lot_id" FOREIGN KEY ("parking_lot_id") REFERENCES "Parkinglots" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Reservations_Users_user_id" FOREIGN KEY ("user_id") REFERENCES "Users" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Reservations_Vehicles_vehicle_id" FOREIGN KEY ("vehicle_id") REFERENCES "Vehicles" ("id") ON DELETE CASCADE
+);
+2026-01-21 23:18:22.901 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Sessions" (
+    "id" TEXT NOT NULL CONSTRAINT "PK_Sessions" PRIMARY KEY,
+    "parking_lot_id" TEXT NOT NULL,
+    "vehicle_id" TEXT NOT NULL,
+    "license_plate" TEXT NULL,
+    "started" TEXT NOT NULL,
+    "stopped" TEXT NOT NULL,
+    "user" TEXT NULL,
+    "duration_minutes" INTEGER NOT NULL,
+    "cost" REAL NOT NULL,
+    "status" INTEGER NOT NULL,
+    CONSTRAINT "FK_Sessions_Parkinglots_parking_lot_id" FOREIGN KEY ("parking_lot_id") REFERENCES "Parkinglots" ("id") ON DELETE CASCADE,
+    CONSTRAINT "FK_Sessions_Vehicles_vehicle_id" FOREIGN KEY ("vehicle_id") REFERENCES "Vehicles" ("id") ON DELETE CASCADE
+);
+2026-01-21 23:18:22.901 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_parking_lot_id" ON "Reservations" ("parking_lot_id");
+2026-01-21 23:18:22.902 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_user_id" ON "Reservations" ("user_id");
+2026-01-21 23:18:22.902 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Reservations_vehicle_id" ON "Reservations" ("vehicle_id");
+2026-01-21 23:18:22.902 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Sessions_parking_lot_id" ON "Sessions" ("parking_lot_id");
+2026-01-21 23:18:22.902 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Sessions_vehicle_id" ON "Sessions" ("vehicle_id");
+2026-01-21 23:18:22.903 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Vehicles_user_id" ON "Vehicles" ("user_id");
+2026-01-21 23:18:22.904 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 20), @p5='?' (Size = 17), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 8)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 23:18:22.905 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 17), @p5='?' (Size = 19), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 10)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 23:18:22.906 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Boolean), @p2='?' (DbType = DateTime), @p3='?' (DbType = DateTime), @p4='?' (Size = 16), @p5='?' (Size = 12), @p6='?' (DbType = Guid), @p7='?' (Size = 44), @p8='?', @p9='?' (DbType = Int32), @p10='?' (Size = 4)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("id", "active", "birth_year", "created_at", "email", "name", "parking_lot_id", "password", "phone", "role", "username")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2026-01-21 23:18:22.914 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__tokenHash_0='?' (Size = 44)], CommandType='"Text"', CommandTimeout='30']
+SELECT "r"."TokenId", "r"."ExpiresAt", "r"."RevokedAt", "r"."UserId"
+FROM "RevokedTokens" AS "r"
+WHERE "r"."TokenId" = @__tokenHash_0
+LIMIT 1
+2026-01-21 23:18:22.939 +01:00 [INF] Executed DbCommand (0ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT "h"."id", "h"."active", "h"."address", "h"."created_at", "h"."discount_percentage", "h"."email", "h"."name", "h"."phone"
+FROM "Hotels" AS "h"
+WHERE "h"."id" = @__id_0 AND "h"."active"
+LIMIT 1
+2026-01-21 23:18:22.939 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 23:18:22.987 +01:00 [INF] User profile is available. Using 'C:\Users\IremP\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-01-21 23:18:23.035 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 23:18:23.041 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 23:18:23.065 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 23:18:24.962 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 1896.2922ms
+2026-01-21 23:18:24.962 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 1921.3146ms
+2026-01-21 23:18:24.975 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost/api/v2/profile/change-password/62aa65f2-179f-45cb-b653-9c1d1853cdbf - application/json; charset=utf-8 13
+2026-01-21 23:18:24.987 +01:00 [INF] Route matched with {action = "ChangePassword", controller = "C_Profile"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ChangePassword(System.Guid, System.String) on controller CSharpAPI.Controllers.C_Profile (CSharp_Parking_API).
+2026-01-21 23:18:24.993 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Profile.ChangePassword (CSharp_Parking_API) in 6.3094ms
+2026-01-21 23:18:24.993 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost/api/v2/profile/change-password/62aa65f2-179f-45cb-b653-9c1d1853cdbf - 403 null null 18.3105ms
+2026-01-21 23:18:25.008 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 56
+2026-01-21 23:18:25.011 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 23:18:25.343 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:25.438 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2026-01-21 23:18:26.385 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 1373.0649ms
+2026-01-21 23:18:26.385 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 1377.5253ms
+2026-01-21 23:18:26.388 +01:00 [INF] Request starting HTTP/1.1 DELETE http://localhost/api/v2/profile/delete/6426c5cd-bfa7-499b-b719-d10735a40eb7 - null null
+2026-01-21 23:18:26.396 +01:00 [INF] Route matched with {action = "DeleteProfile", controller = "C_Profile"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] DeleteProfile(System.Guid) on controller CSharpAPI.Controllers.C_Profile (CSharp_Parking_API).
+2026-01-21 23:18:26.401 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Profile.DeleteProfile (CSharp_Parking_API) in 5.2309ms
+2026-01-21 23:18:26.402 +01:00 [INF] Request finished HTTP/1.1 DELETE http://localhost/api/v2/profile/delete/6426c5cd-bfa7-499b-b719-d10735a40eb7 - 200 null application/json; charset=utf-8 13.9455ms
+2026-01-21 23:18:26.420 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost/api/v2/profile/update/79071813-677f-4e68-aa18-1834de842087 - null null
+2026-01-21 23:18:26.423 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost/api/v2/profile/update/79071813-677f-4e68-aa18-1834de842087 - 401 null null 2.883ms
+2026-01-21 23:18:26.429 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 23:18:26.429 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 23:18:26.756 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:26.783 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_HotelGuest, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 23:18:27.668 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 1238.504ms
+2026-01-21 23:18:27.669 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 1239.5516ms
+2026-01-21 23:18:27.700 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost/api/v2/profile/change-password/83d1ee2c-59c7-4964-b8f1-b358ba12ff7d - application/json; charset=utf-8 17
+2026-01-21 23:18:27.702 +01:00 [INF] Route matched with {action = "ChangePassword", controller = "C_Profile"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ChangePassword(System.Guid, System.String) on controller CSharpAPI.Controllers.C_Profile (CSharp_Parking_API).
+2026-01-21 23:18:27.709 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Profile.ChangePassword (CSharp_Parking_API) in 7.1242ms
+2026-01-21 23:18:27.710 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost/api/v2/profile/change-password/83d1ee2c-59c7-4964-b8f1-b358ba12ff7d - 200 null application/json; charset=utf-8 10.141ms
+2026-01-21 23:18:27.736 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 23:18:27.737 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 23:18:28.112 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:28.125 +01:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2026-01-21 23:18:29.074 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 1336.8158ms
+2026-01-21 23:18:29.074 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 1337.9703ms
+2026-01-21 23:18:29.077 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/profile?id=83d1ee2c-59c7-4964-b8f1-b358ba12ff7d - null null
+2026-01-21 23:18:29.093 +01:00 [INF] Route matched with {action = "GetProfile", controller = "C_Profile"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProfile(System.Guid) on controller CSharpAPI.Controllers.C_Profile (CSharp_Parking_API).
+2026-01-21 23:18:29.098 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Profile.GetProfile (CSharp_Parking_API) in 5.6829ms
+2026-01-21 23:18:29.099 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/profile?id=83d1ee2c-59c7-4964-b8f1-b358ba12ff7d - 200 null application/json; charset=utf-8 21.5469ms
+2026-01-21 23:18:29.102 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 23:18:29.103 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 23:18:29.108 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 4.44ms
+2026-01-21 23:18:29.108 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 401 null application/problem+json; charset=utf-8 5.4392ms
+2026-01-21 23:18:29.126 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 23:18:29.127 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 23:18:29.129 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 2.297ms
+2026-01-21 23:18:29.129 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 401 null application/problem+json; charset=utf-8 3.118ms
+2026-01-21 23:18:29.134 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 44
+2026-01-21 23:18:29.135 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 23:18:30.674 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:30.686 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Hotel'.
+2026-01-21 23:18:30.703 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_Hotel'.
+2026-01-21 23:18:32.291 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 3155.902ms
+2026-01-21 23:18:32.291 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 3156.9516ms
+2026-01-21 23:18:32.295 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost/api/v2/profile/update/83d1ee2c-59c7-4964-b8f1-b358ba12ff7d - text/plain; charset=utf-8 0
+2026-01-21 23:18:32.300 +01:00 [INF] Route matched with {action = "UpdateProfile", controller = "C_Profile"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] UpdateProfile(System.Guid) on controller CSharpAPI.Controllers.C_Profile (CSharp_Parking_API).
+2026-01-21 23:18:32.304 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Profile.UpdateProfile (CSharp_Parking_API) in 3.9151ms
+2026-01-21 23:18:32.305 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost/api/v2/profile/update/83d1ee2c-59c7-4964-b8f1-b358ba12ff7d - 200 null application/json; charset=utf-8 10.0505ms
+2026-01-21 23:18:32.309 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/profile/0467c0cd-8668-4909-b1ba-9b564c2de7c9 - null null
+2026-01-21 23:18:32.310 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/profile/0467c0cd-8668-4909-b1ba-9b564c2de7c9 - 401 null null 1.3773ms
+2026-01-21 23:18:32.318 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 50
+2026-01-21 23:18:32.319 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 23:18:32.389 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:32.398 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Hotel'.
+2026-01-21 23:18:32.747 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 428.3994ms
+2026-01-21 23:18:32.748 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 429.6243ms
+2026-01-21 23:18:32.750 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost/api/v2/profile/update/21a2887d-7877-4cb6-8472-8c07a46ea1f6 - text/plain; charset=utf-8 0
+2026-01-21 23:18:32.751 +01:00 [INF] Route matched with {action = "UpdateProfile", controller = "C_Profile"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] UpdateProfile(System.Guid) on controller CSharpAPI.Controllers.C_Profile (CSharp_Parking_API).
+2026-01-21 23:18:32.753 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Profile.UpdateProfile (CSharp_Parking_API) in 1.8056ms
+2026-01-21 23:18:32.753 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost/api/v2/profile/update/21a2887d-7877-4cb6-8472-8c07a46ea1f6 - 200 null application/json; charset=utf-8 3.5186ms
+2026-01-21 23:18:32.759 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 52
+2026-01-21 23:18:32.760 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 23:18:32.836 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:32.842 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 23:18:33.177 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 416.7006ms
+2026-01-21 23:18:33.177 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 417.3931ms
+2026-01-21 23:18:33.179 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost/api/v2/profile/update/62aa65f2-179f-45cb-b653-9c1d1853cdbf - null null
+2026-01-21 23:18:33.186 +01:00 [INF] Route matched with {action = "UpdateProfile", controller = "C_Profile"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] UpdateProfile(System.Guid) on controller CSharpAPI.Controllers.C_Profile (CSharp_Parking_API).
+2026-01-21 23:18:33.186 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Profile.UpdateProfile (CSharp_Parking_API) in 0.2959ms
+2026-01-21 23:18:33.186 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost/api/v2/profile/update/62aa65f2-179f-45cb-b653-9c1d1853cdbf - 403 null null 7.2592ms
+2026-01-21 23:18:33.192 +01:00 [INF] Request starting HTTP/1.1 DELETE http://localhost/api/v2/profile/delete/cc1d5616-c94a-46c3-b61e-7e7e1c55ec56 - null null
+2026-01-21 23:18:33.193 +01:00 [INF] Request finished HTTP/1.1 DELETE http://localhost/api/v2/profile/delete/cc1d5616-c94a-46c3-b61e-7e7e1c55ec56 - 401 null null 1.1852ms
+2026-01-21 23:18:33.198 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 41
+2026-01-21 23:18:33.199 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 23:18:33.201 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 2.5102ms
+2026-01-21 23:18:33.202 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 401 null application/problem+json; charset=utf-8 3.6268ms
+2026-01-21 23:18:33.208 +01:00 [INF] Request starting HTTP/1.1 PUT http://localhost/api/v2/profile/change-password/dcc6b3ac-9758-42dc-80b4-41d8432e9512 - application/json; charset=utf-8 13
+2026-01-21 23:18:33.209 +01:00 [INF] Request finished HTTP/1.1 PUT http://localhost/api/v2/profile/change-password/dcc6b3ac-9758-42dc-80b4-41d8432e9512 - 401 null null 0.9533ms
+2026-01-21 23:18:33.214 +01:00 [INF] Request starting HTTP/1.1 POST http://localhost/api/v2/auth/login - application/json; charset=utf-8 52
+2026-01-21 23:18:33.214 +01:00 [INF] Route matched with {action = "Login", controller = "C_Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(LoginRequest) on controller CSharpAPI.Controllers.C_Auth (CSharp_Parking_API).
+2026-01-21 23:18:33.265 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:33.271 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Hotel'.
+2026-01-21 23:18:33.641 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Auth.Login (CSharp_Parking_API) in 426.8382ms
+2026-01-21 23:18:33.641 +01:00 [INF] Request finished HTTP/1.1 POST http://localhost/api/v2/auth/login - 200 null application/json; charset=utf-8 427.6169ms
+2026-01-21 23:18:33.645 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/profile?id=62aa65f2-179f-45cb-b653-9c1d1853cdbf - null null
+2026-01-21 23:18:33.646 +01:00 [INF] Route matched with {action = "GetProfile", controller = "C_Profile"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProfile(System.Guid) on controller CSharpAPI.Controllers.C_Profile (CSharp_Parking_API).
+2026-01-21 23:18:33.647 +01:00 [INF] Executed action CSharpAPI.Controllers.C_Profile.GetProfile (CSharp_Parking_API) in 0.52ms
+2026-01-21 23:18:33.647 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/profile?id=62aa65f2-179f-45cb-b653-9c1d1853cdbf - 403 null null 2.5234ms
+2026-01-21 23:18:33.652 +01:00 [INF] Request starting HTTP/1.1 GET http://localhost/api/v2/profile?id=83d1ee2c-59c7-4964-b8f1-b358ba12ff7d - null null
+2026-01-21 23:18:33.653 +01:00 [INF] Request finished HTTP/1.1 GET http://localhost/api/v2/profile?id=83d1ee2c-59c7-4964-b8f1-b358ba12ff7d - 401 null null 0.9373ms
+2026-01-21 23:18:33.698 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:33.710 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_HotelGuest'.
+2026-01-21 23:18:34.119 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:34.123 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 23:18:34.126 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 23:18:34.552 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:34.566 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_Hotel, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 23:18:34.965 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:34.970 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Hotel'.
+2026-01-21 23:18:34.974 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_Hotel'.
+2026-01-21 23:18:35.369 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:35.384 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 23:18:35.786 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:35.793 +01:00 [INF] Executing OkObjectResult, writing value of type 'CSharpAPI.Models.M_HotelGuest'.
+2026-01-21 23:18:36.166 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:36.182 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 23:18:36.577 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:36.582 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 23:18:36.584 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 23:18:36.937 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:36.944 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_HotelGuest, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 23:18:37.286 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:37.290 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 23:18:37.629 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:37.632 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 23:18:37.960 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:37.963 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 23:18:37.966 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (ParkingLotAdmin|SuperAdmin)
+2026-01-21 23:18:37.970 +01:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 23:18:38.290 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:38.293 +01:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (SuperAdmin)
+2026-01-21 23:18:38.605 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:38.608 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[CSharpAPI.Models.M_Hotel, CSharp_Parking_API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-01-21 23:18:38.922 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:38.927 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 23:18:39.306 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:39.310 +01:00 [INF] Executing ObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ProblemDetails'.
+2026-01-21 23:18:39.672 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType0`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-21 23:18:39.676 +01:00 [INF] Executing CreatedAtActionResult, writing value of type 'CSharpAPI.Models.M_Hotel'.

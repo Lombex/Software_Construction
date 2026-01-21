@@ -1,0 +1,463 @@
+### ============================================
+### C# Parking API - Comprehensive Test Suite
+### ============================================
+### Base URL
+@baseUrl = http://localhost:5001
+@contentType = application/json
+
+### ============================================
+### AUTHENTICATION TESTS
+### ============================================
+
+### 1. Login as SuperAdmin
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "Username": "superadmin",
+  "Password": "superpass"
+}
+
+### Save SuperAdmin token (copy from response) REPLACE ON TEST, USE LOGIN TO GET TOKEN
+@superAdminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlNmUxNTRmYy0zNThlLTQzNmEtOTZlYy0wNWNlNzMyNGYyYmUiLCJ1bmlxdWVfbmFtZSI6InN1cGVyYWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImU2ZTE1NGZjLTM1OGUtNDM2YS05NmVjLTA1Y2U3MzI0ZjJiZSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJzdXBlcmFkbWluIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiU3VwZXJBZG1pbiIsIm5iZiI6MTc2MzYzODA4NywiZXhwIjoxNzYzNjQ1Mjg3LCJpc3MiOiJDU2hhcnBQYXJraW5nQVBJIiwiYXVkIjoiQ1NoYXJwUGFya2luZ0FQSUNsaWVudHMifQ.A0U31osbb3zwsA4JbMrs6Em0y4zqeRGkQxaZniCIUDQ
+
+###
+
+### 2. Login as ParkingLotAdmin
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "Username": "lotadmin",
+  "Password": "lotpass"
+}
+
+### Save LotAdmin token (copy from response)
+@lotAdminToken = YOUR_LOTADMIN_TOKEN_HERE
+
+###
+
+### 3. Login as Regular User
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "Username": "user",
+  "Password": "userpass"
+}
+
+### Save User token (copy from response)
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlNmUxNTRmYy0zNThlLTQzNmEtOTZlYy0wNWNlNzMyNGYyYmUiLCJ1bmlxdWVfbmFtZSI6InN1cGVyYWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImU2ZTE1NGZjLTM1OGUtNDM2YS05NmVjLTA1Y2U3MzI0ZjJiZSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJzdXBlcmFkbWluIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiU3VwZXJBZG1pbiIsIm5iZiI6MTc2MzYzODA4NywiZXhwIjoxNzYzNjQ1Mjg3LCJpc3MiOiJDU2hhcnBQYXJraW5nQVBJIiwiYXVkIjoiQ1NoYXJwUGFya2luZ0FQSUNsaWVudHMifQ.A0U31osbb3zwsA4JbMrs6Em0y4zqeRGkQxaZniCIUDQ
+
+###
+
+### 4. Login with Invalid Credentials (should return 401)
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "Username": "invalid",
+  "Password": "wrong"
+}
+
+###
+
+### 5. Login with Missing Fields (should return 400)
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "Username": "superadmin"
+}
+
+###
+
+### ============================================
+### AUTH ENDPOINT TESTS
+### ============================================
+
+### 6. Get Current User Info (SuperAdmin) - Replace token
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{superAdminToken}}
+
+###
+
+### 7. Get Current User Info (LotAdmin) - Replace token
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{lotAdminToken}}
+
+###
+
+### 8. Get Current User Info (User) - Replace token
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{userToken}}
+
+###
+
+### 9. Get Current User Info Without Token (should return 401)
+GET {{baseUrl}}/api/auth/me
+
+###
+
+### 10. Get Current User Info with Invalid Token (should return 401)
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer invalid_token_here
+
+###
+
+### ============================================
+### USERS ENDPOINT TESTS (SuperAdmin Only)
+### ============================================
+
+### 11. Get All Users (SuperAdmin) - Replace token
+GET {{baseUrl}}/api/users/all?page=0
+Authorization: Bearer {{superAdminToken}}
+
+###
+
+### 12. Get All Users (LotAdmin) - Should return 403 Forbidden
+GET {{baseUrl}}/api/users/all?page=0
+Authorization: Bearer {{lotAdminToken}}
+
+###
+
+### 13. Get All Users (Regular User) - Should return 403 Forbidden
+GET {{baseUrl}}/api/users/all?page=0
+Authorization: Bearer {{userToken}}
+
+###
+
+### 14. Get All Users Without Token - Should return 401 Unauthorized
+GET {{baseUrl}}/api/users/all?page=0
+
+###
+
+### 15. Get User By ID (SuperAdmin) - Replace token and user ID
+GET {{baseUrl}}/api/users/USER_ID_HERE
+Authorization: Bearer {{superAdminToken}}
+
+###
+
+### ============================================
+### PAYMENTS ENDPOINT TESTS
+### ============================================
+
+### 16. Get All Payments (SuperAdmin) - Replace token
+GET {{baseUrl}}/api/payments/all
+Authorization: Bearer {{superAdminToken}}
+
+###
+
+### 17. Get All Payments (LotAdmin) - Replace token
+GET {{baseUrl}}/api/payments/all
+Authorization: Bearer {{lotAdminToken}}
+
+###
+
+### 18. Get All Payments (Regular User) - Should return 403 Forbidden
+GET {{baseUrl}}/api/payments/all
+Authorization: Bearer {{userToken}}
+
+###
+
+### 19. Get All Payments Without Token - Should return 401 Unauthorized
+GET {{baseUrl}}/api/payments/all
+
+###
+
+### 20. Create Payment (Any Authenticated User) - Replace token
+POST {{baseUrl}}/api/payments/create
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "amount": 10.50,
+  "payment_method": "credit_card",
+  "status": "pending"
+}
+
+###
+
+### 21. Create Payment (SuperAdmin) - Replace token
+POST {{baseUrl}}/api/payments/create
+Content-Type: {{contentType}}
+Authorization: Bearer {{superAdminToken}}
+
+{
+  "amount": 25.00,
+  "payment_method": "debit_card",
+  "status": "completed"
+}
+
+###
+
+### 22. Create Payment Without Token - Should return 401
+POST {{baseUrl}}/api/payments/create
+Content-Type: {{contentType}}
+
+{
+  "amount": 10.50,
+  "payment_method": "credit_card",
+  "status": "pending"
+}
+
+###
+
+### 23. Get Payment By ID (Any Authenticated User) - Replace token and payment ID
+GET {{baseUrl}}/api/payments/PAYMENT_ID_HERE
+Authorization: Bearer {{userToken}}
+
+###
+
+### 24. Update Payment (SuperAdmin) - Replace token and payment ID
+PUT {{baseUrl}}/api/payments/update/PAYMENT_ID_HERE
+Content-Type: {{contentType}}
+Authorization: Bearer {{superAdminToken}}
+
+{
+  "amount": 15.75,
+  "payment_method": "credit_card",
+  "status": "completed"
+}
+
+###
+
+### 25. Update Payment (LotAdmin) - Replace token and payment ID
+PUT {{baseUrl}}/api/payments/update/PAYMENT_ID_HERE
+Content-Type: {{contentType}}
+Authorization: Bearer {{lotAdminToken}}
+
+{
+  "amount": 20.00,
+  "payment_method": "debit_card",
+  "status": "completed"
+}
+
+###
+
+### 26. Update Payment (Regular User) - Should return 403 Forbidden
+PUT {{baseUrl}}/api/payments/update/PAYMENT_ID_HERE
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "amount": 15.75,
+  "status": "completed"
+}
+
+###
+
+### 27. Delete Payment (SuperAdmin Only) - Replace token and payment ID
+DELETE {{baseUrl}}/api/payments/delete/PAYMENT_ID_HERE
+Authorization: Bearer {{superAdminToken}}
+
+###
+
+### 28. Delete Payment (LotAdmin) - Should return 403 Forbidden
+DELETE {{baseUrl}}/api/payments/delete/PAYMENT_ID_HERE
+Authorization: Bearer {{lotAdminToken}}
+
+###
+
+### 29. Delete Payment (Regular User) - Should return 403 Forbidden
+DELETE {{baseUrl}}/api/payments/delete/PAYMENT_ID_HERE
+Authorization: Bearer {{userToken}}
+
+###
+
+### ============================================
+### VEHICLES ENDPOINT TESTS
+### ============================================
+
+### 30. Get All Vehicles (SuperAdmin) - Replace token
+GET {{baseUrl}}/api/vehicles/all?page=0
+Authorization: Bearer {{superAdminToken}}
+
+###
+
+### 31. Get All Vehicles (LotAdmin) - Replace token
+GET {{baseUrl}}/api/vehicles/all?page=0
+Authorization: Bearer {{lotAdminToken}}
+
+###
+
+### 32. Get All Vehicles (Regular User) - Should return 403 Forbidden
+GET {{baseUrl}}/api/vehicles/all?page=0
+Authorization: Bearer {{userToken}}
+
+###
+
+### 33. Get Vehicle By ID (Any Authenticated User) - Replace token and vehicle ID
+GET {{baseUrl}}/api/vehicles/VEHICLE_ID_HERE
+Authorization: Bearer {{userToken}}
+
+###
+
+### 34. Create Vehicle (Any Authenticated User) - Replace token
+POST {{baseUrl}}/api/vehicles/create
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "user_id": "USER_ID_HERE",
+  "license_plate": "ABC-123",
+  "make": "Toyota",
+  "model": "Camry",
+  "color": "Blue",
+  "year": 2020
+}
+
+###
+
+### 35. Create Vehicle Without Token - Should return 401
+POST {{baseUrl}}/api/vehicles/create
+Content-Type: {{contentType}}
+
+{
+  "license_plate": "XYZ-789",
+  "make": "Honda",
+  "model": "Civic",
+  "color": "Red",
+  "year": 2021
+}
+
+###
+
+### ============================================
+### RESERVATIONS ENDPOINT TESTS
+### ============================================
+
+### 36. Get All Reservations (SuperAdmin) - Replace token
+GET {{baseUrl}}/api/reservations/all
+Authorization: Bearer {{superAdminToken}}
+
+###
+
+### 37. Get All Reservations (LotAdmin) - Replace token
+GET {{baseUrl}}/api/reservations/all
+Authorization: Bearer {{lotAdminToken}}
+
+###
+
+### 38. Get All Reservations (Regular User) - Should return 403 Forbidden
+GET {{baseUrl}}/api/reservations/all
+Authorization: Bearer {{userToken}}
+
+###
+
+### 39. Create Reservation (Any Authenticated User) - Replace token
+POST {{baseUrl}}/api/reservations/create
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "user_id": "USER_ID_HERE",
+  "parking_lot_id": "PARKING_LOT_ID_HERE",
+  "vehicle_id": "VEHICLE_ID_HERE",
+  "start_time": "2025-01-15T10:00:00Z",
+  "end_time": "2025-01-15T12:00:00Z"
+}
+
+###
+
+### ============================================
+### SESSIONS ENDPOINT TESTS
+### ============================================
+
+### 40. Start Session (Any Authenticated User) - Replace token
+POST {{baseUrl}}/api/sessions/start
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "vehicle_id": "VEHICLE_ID_HERE",
+  "parking_lot_id": "PARKING_LOT_ID_HERE"
+}
+
+###
+
+### 41. Get All Sessions (Any Authenticated User) - Replace token
+GET {{baseUrl}}/api/sessions/all
+Authorization: Bearer {{userToken}}
+
+###
+
+### 42. Get Session By ID (Any Authenticated User) - Replace token and session ID
+GET {{baseUrl}}/api/sessions/SESSION_ID_HERE
+Authorization: Bearer {{userToken}}
+
+###
+
+### ============================================
+### PROFILE ENDPOINT TESTS
+### ============================================
+
+### 43. Get Current User Profile (Any Authenticated User) - Replace token
+GET {{baseUrl}}/api/profile/
+Authorization: Bearer {{userToken}}
+
+###
+
+### 44. Get Profile By ID (Any Authenticated User) - Replace token and user ID
+GET {{baseUrl}}/api/profile/USER_ID_HERE
+Authorization: Bearer {{userToken}}
+
+###
+
+### 45. Update Profile (Any Authenticated User) - Replace token and user ID
+PUT {{baseUrl}}/api/profile/update/USER_ID_HERE
+Content-Type: {{contentType}}
+Authorization: Bearer {{userToken}}
+
+{
+  "name": "Updated Name",
+  "email": "updated@example.com",
+  "phone": "1234567890"
+}
+
+###
+
+### ============================================
+### NEGATIVE TESTS - Edge Cases
+### ============================================
+
+### 46. Access Protected Endpoint with Expired Token (if you have one)
+GET {{baseUrl}}/api/users/all?page=0
+Authorization: Bearer EXPIRED_TOKEN_HERE
+
+###
+
+### 47. Access Protected Endpoint with Malformed Token
+GET {{baseUrl}}/api/users/all?page=0
+Authorization: Bearer not.a.valid.token
+
+###
+
+### 48. Access Protected Endpoint with Wrong Authorization Format
+GET {{baseUrl}}/api/users/all?page=0
+Authorization: Token {{superAdminToken}}
+
+###
+
+### 49. Login with Empty Username
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "Username": "",
+  "Password": "superpass"
+}
+
+###
+
+### 50. Login with Empty Password
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "Username": "superadmin",
+  "Password": ""
+}
+
+###
+

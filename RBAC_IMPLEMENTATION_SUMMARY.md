@@ -138,23 +138,23 @@ Configured in `Program.cs`:
 ### 10. Files Modified/Created
 
 **Modified:**
-- `CSharp Parking API/Models/Model_Users.cs` - Added 3-tier roles + parking_lot_id
-- `CSharp Parking API/Program.cs` - Added JWT config, auth policies, seed data
-- `CSharp Parking API/Controllers/Controller_Users.cs` - SuperAdminOnly policies
-- `CSharp Parking API/Controllers/Controller_Payments.cs` - AdminOrAbove + SuperAdminOnly
-- `CSharp Parking API/Controllers/Controller_Reservations.cs` - AdminOrAbove + Authenticated
-- `CSharp Parking API/Controllers/Controller_Vehicles.cs` - AdminOrAbove + Authenticated
-- `CSharp Parking API/Controllers/Controller_Sessions.cs` - Authenticated
-- `CSharp Parking API/Controllers/Controller_Profile.cs` - Authenticated
-- `CSharp Parking API.Tests/TestingWebAppFactory.cs` - Updated seed data with 3 roles
+ `CSharp_Parking_API/Models/Model_Users.cs` - Added 3-tier roles + parking_lot_id
+ `CSharp_Parking_API/Program.cs` - Added JWT config, auth policies, seed data
+ `CSharp_Parking_API/Controllers/Controller_Users.cs` - SuperAdminOnly policies
+ `CSharp_Parking_API/Controllers/Controller_Payments.cs` - AdminOrAbove + SuperAdminOnly
+ `CSharp_Parking_API/Controllers/Controller_Reservations.cs` - AdminOrAbove + Authenticated
+ `CSharp_Parking_API/Controllers/Controller_Vehicles.cs` - AdminOrAbove + Authenticated
+ `CSharp_Parking_API/Controllers/Controller_Sessions.cs` - Authenticated
+ `CSharp_Parking_API/Controllers/Controller_Profile.cs` - Authenticated
+ `CSharp_Parking_Tests/TestingWebAppFactory.cs` - Updated seed data with 3 roles
 
 **Created:**
-- `CSharp Parking API/Services/Service_Token.cs` - JWT generation service
-- `CSharp Parking API/Controllers/Controller_Auth.cs` - Login + Me endpoints
-- `CSharp Parking API.Tests/PaymentIntegrationTests.cs` - Payment RBAC tests
-- `CSharp Parking API.Tests/AuthIntegrationTests.cs` - Auth flow tests
-- `CSharp Parking API/appsettings.json` - JWT configuration
-- `CSharp Parking API/Migrations/20251117111803_UpdateUserRoles.cs` - DB migration
+ `CSharp_Parking_API/Services/Service_Token.cs` - JWT generation service
+ `CSharp_Parking_API/Controllers/Controller_Auth.cs` - Login + Me endpoints
+ `CSharp_Parking_Tests/PaymentIntegrationTests.cs` - Payment RBAC tests
+ `CSharp_Parking_Tests/AuthIntegrationTests.cs` - Auth flow tests
+ `CSharp_Parking_API/appsettings.json` - JWT configuration
+ `CSharp_Parking_API/Migrations/20251117111803_UpdateUserRoles.cs` - DB migration
 
 ### 11. Test Results
 
