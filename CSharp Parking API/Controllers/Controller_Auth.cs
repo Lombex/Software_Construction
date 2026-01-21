@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using CSharpAPI.Controllers.Utils;
 using Microsoft.AspNetCore.Identity;
 using Serilog;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace CSharpAPI.Controllers
 {
@@ -146,13 +148,31 @@ namespace CSharpAPI.Controllers
                     return Unauthorized("No token provided.");
 
                 // Get user ID from claims
-                var userId = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                string? expClaim = User.Claims.FirstOrDefault(c => c.Type == "exp")?.Value;
+
+                // Fallback: parse token if claims are missing (e.g., test environment)
+                if (string.IsNullOrEmpty(userId))
+                {
+                    try
+                    {
+                        var handler = new JwtSecurityTokenHandler();
+                        var jwt = handler.ReadJwtToken(token);
+                        userId = jwt.Claims.FirstOrDefault(c =>
+                            c.Type == ClaimTypes.NameIdentifier || c.Type == JwtRegisteredClaimNames.Sub)?.Value;
+                        expClaim = jwt.Claims.FirstOrDefault(c => c.Type == "exp")?.Value;
+                    }
+                    catch
+                    {
+                        return Unauthorized("Invalid token.");
+                    }
+                }
+
                 if (string.IsNullOrEmpty(userId))
                     return Unauthorized("Invalid token claims.");
 
                 // Get token expiration from claims (if available) or use default 2 hours
                 var expiresAt = DateTime.UtcNow.AddHours(2);
-                var expClaim = User.Claims.FirstOrDefault(c => c.Type == "exp")?.Value;
                 if (!string.IsNullOrEmpty(expClaim) && long.TryParse(expClaim, out var expUnix))
                 {
                     expiresAt = DateTimeOffset.FromUnixTimeSeconds(expUnix).DateTime;

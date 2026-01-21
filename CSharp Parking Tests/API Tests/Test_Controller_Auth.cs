@@ -5,6 +5,8 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 using System.Security.Claims;
@@ -13,16 +15,28 @@ namespace CSharpAPI.Tests.APITests
 {
     public class Test_Controller_Auth
     {
+        private static SQLite_Database CreateInMemoryDatabase()
+        {
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+            var options = new DbContextOptionsBuilder<SQLite_Database>()
+                .UseSqlite(connection)
+                .Options;
+            var db = new SQLite_Database(options);
+            db.Database.EnsureCreated();
+            return db;
+        }
+
         [Fact]
         public void Me_With_Null_User_Identity_Should_Handle_Gracefully()
         {
             // Arrange - create controller with mocked HttpContext
-            var mockDb = new Mock<SQLite_Database>();
+            var db = CreateInMemoryDatabase();
             var mockTokenService = new Mock<ITokenService>();
             var mockTokenRevocationService = new Mock<ITokenRevocationService>();
             var mockLogger = new Mock<ILogger<C_Auth>>();
 
-            var controller = new C_Auth(mockDb.Object, mockTokenService.Object, mockTokenRevocationService.Object);
+            var controller = new C_Auth(db, mockTokenService.Object, mockTokenRevocationService.Object);
 
             // Mock HttpContext with null User.Identity
             var httpContext = new DefaultHttpContext();
@@ -45,12 +59,12 @@ namespace CSharpAPI.Tests.APITests
         public void Me_With_Missing_Claims_Should_Handle_Gracefully()
         {
             // Arrange
-            var mockDb = new Mock<SQLite_Database>();
+            var db = CreateInMemoryDatabase();
             var mockTokenService = new Mock<ITokenService>();
             var mockTokenRevocationService = new Mock<ITokenRevocationService>();
             var mockLogger = new Mock<ILogger<C_Auth>>();
 
-            var controller = new C_Auth(mockDb.Object, mockTokenService.Object, mockTokenRevocationService.Object);
+            var controller = new C_Auth(db, mockTokenService.Object, mockTokenRevocationService.Object);
 
             // Mock HttpContext with User.Identity but missing claims
             var claims = new[]

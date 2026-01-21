@@ -183,7 +183,7 @@ namespace CSharpAPI.Tests.APITests
         public async Task MarkPaid_Without_Token_Should_Return_401()
         {
             var client = _factory.CreateClient();
-            var response = await client.PostAsync($"/api/v2/billing/{Guid.NewGuid()}/mark-paid", null);
+            var response = await client.PutAsync($"/api/v2/billing/{Guid.NewGuid()}/mark-paid", null);
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
 
@@ -192,7 +192,7 @@ namespace CSharpAPI.Tests.APITests
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
-            var response = await client.PostAsync($"/api/v2/billing/{Guid.Empty}/mark-paid", null);
+            var response = await client.PutAsync($"/api/v2/billing/{Guid.Empty}/mark-paid", null);
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
@@ -372,7 +372,7 @@ namespace CSharpAPI.Tests.APITests
                 var created = await billingService.Create(bill);
                 
                 // Mark as paid
-                var response = await client.PostAsync($"/api/v2/billing/{created.id}/mark-paid", null);
+                var response = await client.PutAsync($"/api/v2/billing/{created.id}/mark-paid", null);
                 response.StatusCode.Should().BeOneOf(HttpStatusCode.OK, HttpStatusCode.Forbidden);
             }
         }

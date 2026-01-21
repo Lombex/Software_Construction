@@ -9,12 +9,12 @@ on:
 permissions:
   contents: read
   security-events: write
-  actions: read
 
 env:
   DOTNET_VERSION: '8.0.x'
   API_PROJECT_PATH: "CSharp Parking API/CSharp Parking API.csproj"
   TEST_PROJECT_PATH: "CSharp Parking Tests/CSharp Parking Tests.csproj"
+  MIN_LINE_COVERAGE: 80.0
   MIN_BRANCH_COVERAGE: 80.0
   DOTNET_ROOT: /usr/share/dotnet
  
@@ -75,27 +75,27 @@ jobs:
             echo "| Error | Coverage report not found |" >> $GITHUB_STEP_SUMMARY
           fi
 
-      - name: Check branch coverage requirement (80%)
+      - name: Check line coverage requirement (80%)
         run: |
           if [ -f "coveragereport/Summary.txt" ]; then
-            BRANCH_COVERAGE=$(grep -oP '(?<=Branch coverage: )\d+\.\d+' coveragereport/Summary.txt || echo "0")
+            LINE_COVERAGE=$(grep -oP '(?<=Line coverage: )\d+\.\d+' coveragereport/Summary.txt || echo "0")
           else
             echo "Coverage report not found - checking for any coverage files..."
             find . -name "*.cobertura.xml" -type f
-            BRANCH_COVERAGE="0"
+            LINE_COVERAGE="0"
           fi
 
-          echo "Current branch coverage: ${BRANCH_COVERAGE}%"
-          echo "Required branch coverage: ${{ env.MIN_BRANCH_COVERAGE }}%"
+          echo "Current line coverage: ${LINE_COVERAGE}%"
+          echo "Required line coverage: ${{ env.MIN_LINE_COVERAGE }}%"
 
-          if (( $(echo "${BRANCH_COVERAGE} < ${{ env.MIN_BRANCH_COVERAGE }}" | bc -l) )); then
-            echo "BRANCH COVERAGE REQUIREMENT FAILED"
-            echo "Branch coverage (${BRANCH_COVERAGE}%) is below minimum threshold of ${{ env.MIN_BRANCH_COVERAGE }}%"
+          if (( $(echo "${LINE_COVERAGE} < ${{ env.MIN_LINE_COVERAGE }}" | bc -l) )); then
+            echo "LINE COVERAGE REQUIREMENT FAILED"
+            echo "Line coverage (${LINE_COVERAGE}%) is below minimum threshold of ${{ env.MIN_LINE_COVERAGE }}%"
             echo "Fix: Add more tests to cover conditional branches and edge cases"
             exit 1
           else
-            echo "BRANCH COVERAGE REQUIREMENT MET"
-            echo "Branch coverage (${BRANCH_COVERAGE}%) exceeds ${{ env.MIN_BRANCH_COVERAGE }}% threshold"
+            echo "LINE COVERAGE REQUIREMENT MET"
+            echo "Line coverage (${LINE_COVERAGE}%) exceeds ${{ env.MIN_LINE_COVERAGE }}% threshold"
           fi
 
       - name: Upload test results
@@ -131,7 +131,7 @@ jobs:
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v4
-        if: always()
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false
         with:
           sarif_file: 'trivy-results.sarif'
 
@@ -141,8 +141,6 @@ jobs:
     needs: [build-and-test, security-scan]
     if: github.ref == 'refs/heads/Csharp_development_CICDnew' && github.event_name == 'push'
     environment: staging
-    permissions:
-      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

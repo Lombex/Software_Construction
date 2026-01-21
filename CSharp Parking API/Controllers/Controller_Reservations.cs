@@ -35,6 +35,8 @@ namespace CSharpAPI.Controllers
         [Authorize(Policy = "AdminOrAbove")] // Only admins can view all reservations
         public async Task<IActionResult> GetAllReservations([FromQuery] int page)
         {
+            if (CurrentUserId == null) return Unauthorized();
+
             var reservations = await _reservationService.GetAllReservations();
 
             int totalItem = reservations.Count;

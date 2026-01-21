@@ -31,7 +31,7 @@ namespace CSharpAPI.Controllers
         [HttpGet("my-vehicles")]
         public async Task<IActionResult> GetMyVehicles()
         {
-            if (CurrentUserId == null) return Unauthorized("User ID not found in token.");
+            if (CurrentUserId == null) return Unauthorized();
 
             var vehicles = await _vehicleService.GetVehiclesByUserId(CurrentUserId.Value);
             

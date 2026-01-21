@@ -48,6 +48,21 @@ namespace CSharpAPI.Controllers
                 var licensePlate = request.LicensePlate;
                 var parkingLotId = request.ParkingLotId;
 
+                // Check parking lot capacity
+                M_Parkinglots? parkingLot;
+                try
+                {
+                    parkingLot = await _parkinglotsService.GetById(parkingLotId);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Parking lot not found: {ParkingLotId}", parkingLotId);
+                    return NotFound("Parking lot not found.");
+                }
+
+                if (parkingLot == null)
+                    return NotFound("Parking lot not found.");
+
                 // Check if user has sufficient balance
                 var hasBalance = await _balanceService.HasSufficientBalance(userId, amount);
                 if (!hasBalance)
@@ -55,11 +70,6 @@ namespace CSharpAPI.Controllers
                     _logger.LogWarning("Insufficient balance for user {UserId}. Required: {Amount}", userId, amount);
                     return BadRequest(new { success = false, message = "Insufficient balance. Please add funds." });
                 }
-
-                // Check parking lot capacity
-                var parkingLot = await _parkinglotsService.GetById(parkingLotId);
-                if (parkingLot == null)
-                    return NotFound("Parking lot not found.");
 
                 // Get active sessions and reservations for this parking lot
                 var activeSessions = await _sessionsService.GetAll();
