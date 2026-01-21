@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ "master", "Csharp_development_CICDnew" ]
 
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
 env:
   DOTNET_VERSION: '8.0.x'
   API_PROJECT_PATH: "CSharp Parking API/CSharp Parking API.csproj"
@@ -87,9 +92,7 @@ jobs:
             echo "BRANCH COVERAGE REQUIREMENT FAILED"
             echo "Branch coverage (${BRANCH_COVERAGE}%) is below minimum threshold of ${{ env.MIN_BRANCH_COVERAGE }}%"
             echo "Fix: Add more tests to cover conditional branches and edge cases"
-            # For CI/CD development, let's not fail yet - comment out the exit
-            # exit 1
-            echo "Continuing despite coverage failure (development mode)"
+            exit 1
           else
             echo "BRANCH COVERAGE REQUIREMENT MET"
             echo "Branch coverage (${BRANCH_COVERAGE}%) exceeds ${{ env.MIN_BRANCH_COVERAGE }}% threshold"
@@ -127,7 +130,7 @@ jobs:
           output: 'trivy-results.sarif'
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
@@ -138,6 +141,8 @@ jobs:
     needs: [build-and-test, security-scan]
     if: github.ref == 'refs/heads/Csharp_development_CICDnew' && github.event_name == 'push'
     environment: staging
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
