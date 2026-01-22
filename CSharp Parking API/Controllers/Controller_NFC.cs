@@ -161,6 +161,77 @@ namespace CSharpAPI.Controllers
                 return StatusCode(500, new { success = false, message = "Error verifying card." });
             }
         }
+
+        // Exit flow: calculate amount, confirm payment, stop session
+        [HttpPost("exit")]
+        public async Task<IActionResult> ExitAndPay([FromBody] NFCExitRequest request)
+        {
+            try
+            {
+                var userId = request.UserId;
+                var licensePlate = request.LicensePlate;
+
+                // Enforce same card/user by matching vehicle owner
+                var vehicles = await _vehiclesService.GetAllVehicles();
+                var vehicle = vehicles.FirstOrDefault(v => v.license_plate == licensePlate && v.user_id == userId);
+                if (vehicle == null)
+                    return BadRequest(new { success = false, message = "Use the same card as entry for this vehicle." });
+
+                // Find active session for this vehicle
+                var sessions = await _sessionsService.GetAll();
+                var session = sessions.FirstOrDefault(s =>
+                    s.vehicle_id == vehicle.id && (s.stopped == default || s.stopped > DateTime.UtcNow));
+                if (session == null)
+                    return NotFound(new { success = false, message = "Active session not found for this vehicle." });
+
+                var now = DateTime.UtcNow;
+                var durationMinutes = (int)(now - session.started).TotalMinutes;
+                var amountDue = durationMinutes * 0.05f; // same rate as Stop()
+
+                if (!request.ConfirmPayment)
+                {
+                    return Ok(new
+                    {
+                        success = true,
+                        confirmRequired = true,
+                        sessionId = session.id,
+                        amount = amountDue,
+                        durationMinutes,
+                        message = "Payment confirmation required."
+                    });
+                }
+
+                var hasBalance = await _balanceService.HasSufficientBalance(userId, (decimal)amountDue);
+                if (!hasBalance)
+                {
+                    _logger.LogWarning("Insufficient balance for user {UserId} on exit. Required: {Amount}", userId, amountDue);
+                    return BadRequest(new { success = false, message = "Insufficient balance. Please add funds." });
+                }
+
+                await _balanceService.DeductFromBalance(userId, (decimal)amountDue, $"Parking exit payment for {licensePlate}");
+                var stoppedSession = await _sessionsService.Stop(session.id);
+                if (stoppedSession == null)
+                    return NotFound(new { success = false, message = "Session not found." });
+
+                await _sessionsService.Pay(stoppedSession.id);
+
+                _logger.LogInformation("Exit payment successful. Session {SessionId}", stoppedSession.id);
+                _logger.LogInformation("Gate opened for exit session {SessionId}", stoppedSession.id);
+
+                return Ok(new
+                {
+                    success = true,
+                    session = stoppedSession,
+                    amount = amountDue,
+                    message = "Payment completed. Gate opened."
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing exit payment");
+                return StatusCode(500, new { success = false, message = "Error processing exit payment." });
+            }
+        }
     }
 
     public class NFCVerifyRequest
@@ -175,6 +246,13 @@ namespace CSharpAPI.Controllers
     {
         public Guid UserId { get; set; }
         public decimal RequiredAmount { get; set; }
+    }
+
+    public class NFCExitRequest
+    {
+        public Guid UserId { get; set; }
+        public string LicensePlate { get; set; } = string.Empty;
+        public bool ConfirmPayment { get; set; }
     }
 }
 
