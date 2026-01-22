@@ -1,60 +1,49 @@
 Summary
-  Generated on: 1/22/2026 - 12:17:58 AM
-  Coverage date: 1/22/2026 - 12:17:06 AM
+  Generated on: 1/22/2026 - 1:16:12 AM
+  Coverage date: 1/22/2026 - 1:15:29 AM
   Parser: Cobertura
   Assemblies: 1
-  Classes: 74
-  Files: 65
-  Line coverage: 31.9%
-  Covered lines: 2299
-  Uncovered lines: 4899
-  Coverable lines: 7198
-  Total lines: 10007
-  Branch coverage: 78.7% (567 of 720)
-  Covered branches: 567
-  Total branches: 720
-  Method coverage: 88.8% (421 of 474)
-  Full method coverage: 78.9% (374 of 474)
+  Classes: 63
+  Files: 46
+  Line coverage: 88%
+  Covered lines: 1984
+  Uncovered lines: 269
+  Coverable lines: 2253
+  Total lines: 4911
+  Branch coverage: 81.8% (588 of 718)
+  Covered branches: 588
+  Total branches: 718
+  Method coverage: 95% (421 of 443)
+  Full method coverage: 84.4% (374 of 443)
   Covered methods: 421
   Fully covered methods: 374
-  Total methods: 474
+  Total methods: 443
 
-CSharp Parking API                                                 31.9%
-  CSharp_Parking_API.Migrations.AddBillingTable                       0%
-  CSharp_Parking_API.Migrations.AddRevokedTokensTable                 0%
-  CSharp_Parking_API.Migrations.DatabaseFix                           0%
-  CSharp_Parking_API.Migrations.DatabaseTest                          0%
-  CSharp_Parking_API.Migrations.FixedDatabase                         0%
-  CSharp_Parking_API.Migrations.FixSessionVehicleFk                   0%
-  CSharp_Parking_API.Migrations.InitialCreate                         0%
-  CSharp_Parking_API.Migrations.SQLite_DatabaseModelSnapshot          0%
-  CSharp_Parking_API.Migrations.UpdateUserRoles                       0%
-  CSharp_Parking_API.Models.Generated.ParkingContext                  0%
-  CSharp_Parking_API.ParkingContext                                   0%
+CSharp Parking API                                                   88%
   CSharpAPI.Controllers.AddBalanceRequest                           100%
   CSharpAPI.Controllers.AddUserToCompanyRequest                     100%
   CSharpAPI.Controllers.AutoStartSessionRequest                     100%
-  CSharpAPI.Controllers.C_Auth                                     83.4%
-  CSharpAPI.Controllers.C_Balance                                  71.8%
-  CSharpAPI.Controllers.C_Billing                                  83.4%
-  CSharpAPI.Controllers.C_Company                                  61.2%
-  CSharpAPI.Controllers.C_Gate                                       75%
-  CSharpAPI.Controllers.C_Hotel                                    62.9%
-  CSharpAPI.Controllers.C_NFC                                        87%
+  CSharpAPI.Controllers.C_Auth                                       86%
+  CSharpAPI.Controllers.C_Balance                                  70.5%
+  CSharpAPI.Controllers.C_Billing                                  84.7%
+  CSharpAPI.Controllers.C_Company                                  57.9%
+  CSharpAPI.Controllers.C_Gate                                     76.3%
+  CSharpAPI.Controllers.C_Hotel                                    60.3%
+  CSharpAPI.Controllers.C_NFC                                      88.3%
   CSharpAPI.Controllers.C_Parkinglots                               100%
-  CSharpAPI.Controllers.C_Payments                                   94%
-  CSharpAPI.Controllers.C_Profile                                    98%
-  CSharpAPI.Controllers.C_Reservations                             95.5%
-  CSharpAPI.Controllers.C_Sessions                                 69.6%
+  CSharpAPI.Controllers.C_Payments                                 94.8%
+  CSharpAPI.Controllers.C_Profile                                  97.6%
+  CSharpAPI.Controllers.C_Reservations                               96%
+  CSharpAPI.Controllers.C_Sessions                                 78.8%
   CSharpAPI.Controllers.C_Users                                     100%
-  CSharpAPI.Controllers.C_Vehicles                                 78.8%
+  CSharpAPI.Controllers.C_Vehicles                                 81.3%
   CSharpAPI.Controllers.CloseGateRequest                            100%
   CSharpAPI.Controllers.GenerateBundleRequest                       100%
   CSharpAPI.Controllers.NFCVerifyCardRequest                        100%
   CSharpAPI.Controllers.NFCVerifyRequest                            100%
   CSharpAPI.Controllers.OpenGateRequest                             100%
   CSharpAPI.Controllers.RegisterGuestRequest                        100%
-  CSharpAPI.Controllers.Utils.C_Utils                              91.1%
+  CSharpAPI.Controllers.Utils.C_Utils                              90.4%
   CSharpAPI.Database.SQLite_Database                                100%
   CSharpAPI.Models.Coordinates                                      100%
   CSharpAPI.Models.CreateVehicleDto                                 100%
@@ -87,10 +76,10 @@ CSharp Parking API                                                 31.9%
   CSharpAPI.Services.S_Payments                                     100%
   CSharpAPI.Services.S_Reservations                                 100%
   CSharpAPI.Services.S_Sessions                                     100%
-  CSharpAPI.Services.S_UserBalance                                 98.9%
+  CSharpAPI.Services.S_UserBalance                                 98.8%
   CSharpAPI.Services.S_Users                                        100%
   CSharpAPI.Services.S_Vehicles                                    87.7%
   CSharpAPI.Services.Service_Profile                                100%
-  CSharpAPI.Services.TokenRevocationService                        94.1%
+  CSharpAPI.Services.TokenRevocationService                        94.8%
   CSharpAPI.Services.TokenService                                   100%
-  Program                                                          61.1%
+  Program                                                          64.8%
