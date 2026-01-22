@@ -33,37 +33,20 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Restore API dependencies
-        run: |
-          start=$(date +%s)
-          dotnet restore "${{ env.API_PROJECT_PATH }}"
-          end=$(date +%s)
-          echo "DUR_RESTORE_API=$((end-start))" >> $GITHUB_ENV
+        run: dotnet restore "${{ env.API_PROJECT_PATH }}"
 
       - name: Restore test dependencies
-        run: |
-          start=$(date +%s)
-          dotnet restore "${{ env.TEST_PROJECT_PATH }}"
-          end=$(date +%s)
-          echo "DUR_RESTORE_TESTS=$((end-start))" >> $GITHUB_ENV
+        run: dotnet restore "${{ env.TEST_PROJECT_PATH }}"
 
       - name: Build API
-        run: |
-          start=$(date +%s)
-          dotnet build "${{ env.API_PROJECT_PATH }}" --configuration Release --no-restore
-          end=$(date +%s)
-          echo "DUR_BUILD_API=$((end-start))" >> $GITHUB_ENV
+        run: dotnet build "${{ env.API_PROJECT_PATH }}" --configuration Release --no-restore
 
       - name: Build tests
-        run: |
-          start=$(date +%s)
-          dotnet build "${{ env.TEST_PROJECT_PATH }}" --configuration Release --no-restore
-          end=$(date +%s)
-          echo "DUR_BUILD_TESTS=$((end-start))" >> $GITHUB_ENV
+        run: dotnet build "${{ env.TEST_PROJECT_PATH }}" --configuration Release --no-restore
 
       # Run comprehensive tests with coverage (ignore failures)
       - name: Run tests with detailed coverage
         run: |
-          start=$(date +%s)
           dotnet test "${{ env.TEST_PROJECT_PATH }}" \
             --configuration Release \
             --no-restore \
@@ -72,25 +55,16 @@ jobs:
             --collect:"XPlat Code Coverage" \
             --results-directory ./test-results \
             --logger "trx;LogFileName=test-results.trx" || true
-          end=$(date +%s)
-          echo "DUR_TESTS=$((end-start))" >> $GITHUB_ENV
 
       - name: Install ReportGenerator
-        run: |
-          start=$(date +%s)
-          dotnet tool install -g dotnet-reportgenerator-globaltool
-          end=$(date +%s)
-          echo "DUR_REPORTGEN_INSTALL=$((end-start))" >> $GITHUB_ENV
+        run: dotnet tool install -g dotnet-reportgenerator-globaltool
 
       - name: Generate detailed coverage report
         run: |
-          start=$(date +%s)
           reportgenerator \
             "-reports:./test-results/**/coverage.cobertura.xml" \
             "-targetdir:coveragereport" \
             "-reporttypes:TextSummary;Html;Cobertura"
-          end=$(date +%s)
-          echo "DUR_REPORTGEN_RUN=$((end-start))" >> $GITHUB_ENV
 
       - name: Display coverage summary
         run: |
@@ -103,9 +77,53 @@ jobs:
             echo "| Error | Coverage report not found |" >> $GITHUB_STEP_SUMMARY
           fi
 
+      - name: Display slowest API tests
+        run: |
+          python - <<'PY'
+          import xml.etree.ElementTree as ET
+          from datetime import timedelta
+
+          trx_path = "test-results/test-results.trx"
+          try:
+              tree = ET.parse(trx_path)
+          except FileNotFoundError:
+              print("## API Test Response Times", file=open("GITHUB_STEP_SUMMARY", "a"))
+              print("TRX file not found.", file=open("GITHUB_STEP_SUMMARY", "a"))
+              raise SystemExit(0)
+
+          root = tree.getroot()
+          ns = {"t": root.tag.split("}")[0].strip("{")} if "}" in root.tag else {}
+          results = root.findall(".//t:UnitTestResult", ns) if ns else root.findall(".//UnitTestResult")
+
+          def parse_duration(d):
+              # format: HH:MM:SS.mmmmmm
+              parts = d.split(":")
+              if len(parts) != 3:
+                  return 0.0
+              h, m = int(parts[0]), int(parts[1])
+              s = float(parts[2])
+              return h * 3600 + m * 60 + s
+
+          items = []
+          for r in results:
+              name = r.attrib.get("testName", "Unknown")
+              duration = r.attrib.get("duration", "00:00:00")
+              seconds = parse_duration(duration)
+              items.append((seconds, name))
+
+          items.sort(reverse=True)
+          top = items[:10]
+
+          with open("GITHUB_STEP_SUMMARY", "a") as f:
+              f.write("## API Test Response Times (slowest 10)\n")
+              f.write("| Test | Duration (ms) |\n")
+              f.write("|------|---------------|\n")
+              for seconds, name in top:
+                  f.write(f"| {name} | {int(seconds*1000)} |\n")
+          PY
+
       - name: Check branch coverage requirement (80%)
         run: |
-          start=$(date +%s)
           if [ -f "coveragereport/Summary.txt" ]; then
             BRANCH_COVERAGE=$(grep -oP '(?<=Branch coverage: )\d+(\.\d+)?' coveragereport/Summary.txt || echo "0")
           else
@@ -126,22 +144,6 @@ jobs:
             echo "BRANCH COVERAGE REQUIREMENT MET"
             echo "Branch coverage (${BRANCH_COVERAGE}%) exceeds ${{ env.MIN_BRANCH_COVERAGE }}% threshold"
           fi
-          end=$(date +%s)
-          echo "DUR_COVERAGE_CHECK=$((end-start))" >> $GITHUB_ENV
-
-      - name: Display performance summary
-        run: |
-          echo "## CI/CD Performance (jobs/steps)" >> $GITHUB_STEP_SUMMARY
-          echo "| Step | Duration (s) |" >> $GITHUB_STEP_SUMMARY
-          echo "|------|--------------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Restore API | ${DUR_RESTORE_API:-0} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Restore Tests | ${DUR_RESTORE_TESTS:-0} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Build API | ${DUR_BUILD_API:-0} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Build Tests | ${DUR_BUILD_TESTS:-0} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Tests + Coverage | ${DUR_TESTS:-0} |" >> $GITHUB_STEP_SUMMARY
-          echo "| ReportGenerator Install | ${DUR_REPORTGEN_INSTALL:-0} |" >> $GITHUB_STEP_SUMMARY
-          echo "| ReportGenerator Run | ${DUR_REPORTGEN_RUN:-0} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Coverage Gate | ${DUR_COVERAGE_CHECK:-0} |" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload test results
         if: always()
