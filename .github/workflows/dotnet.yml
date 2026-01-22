@@ -33,20 +33,37 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Restore API dependencies
-        run: dotnet restore "${{ env.API_PROJECT_PATH }}"
+        run: |
+          start=$(date +%s)
+          dotnet restore "${{ env.API_PROJECT_PATH }}"
+          end=$(date +%s)
+          echo "DUR_RESTORE_API=$((end-start))" >> $GITHUB_ENV
 
       - name: Restore test dependencies
-        run: dotnet restore "${{ env.TEST_PROJECT_PATH }}"
+        run: |
+          start=$(date +%s)
+          dotnet restore "${{ env.TEST_PROJECT_PATH }}"
+          end=$(date +%s)
+          echo "DUR_RESTORE_TESTS=$((end-start))" >> $GITHUB_ENV
 
       - name: Build API
-        run: dotnet build "${{ env.API_PROJECT_PATH }}" --configuration Release --no-restore
+        run: |
+          start=$(date +%s)
+          dotnet build "${{ env.API_PROJECT_PATH }}" --configuration Release --no-restore
+          end=$(date +%s)
+          echo "DUR_BUILD_API=$((end-start))" >> $GITHUB_ENV
 
       - name: Build tests
-        run: dotnet build "${{ env.TEST_PROJECT_PATH }}" --configuration Release --no-restore
+        run: |
+          start=$(date +%s)
+          dotnet build "${{ env.TEST_PROJECT_PATH }}" --configuration Release --no-restore
+          end=$(date +%s)
+          echo "DUR_BUILD_TESTS=$((end-start))" >> $GITHUB_ENV
 
       # Run comprehensive tests with coverage (ignore failures)
       - name: Run tests with detailed coverage
         run: |
+          start=$(date +%s)
           dotnet test "${{ env.TEST_PROJECT_PATH }}" \
             --configuration Release \
             --no-restore \
@@ -55,16 +72,25 @@ jobs:
             --collect:"XPlat Code Coverage" \
             --results-directory ./test-results \
             --logger "trx;LogFileName=test-results.trx" || true
+          end=$(date +%s)
+          echo "DUR_TESTS=$((end-start))" >> $GITHUB_ENV
 
       - name: Install ReportGenerator
-        run: dotnet tool install -g dotnet-reportgenerator-globaltool
+        run: |
+          start=$(date +%s)
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+          end=$(date +%s)
+          echo "DUR_REPORTGEN_INSTALL=$((end-start))" >> $GITHUB_ENV
 
       - name: Generate detailed coverage report
         run: |
+          start=$(date +%s)
           reportgenerator \
             "-reports:./test-results/**/coverage.cobertura.xml" \
             "-targetdir:coveragereport" \
             "-reporttypes:TextSummary;Html;Cobertura"
+          end=$(date +%s)
+          echo "DUR_REPORTGEN_RUN=$((end-start))" >> $GITHUB_ENV
 
       - name: Display coverage summary
         run: |
@@ -79,6 +105,7 @@ jobs:
 
       - name: Check branch coverage requirement (80%)
         run: |
+          start=$(date +%s)
           if [ -f "coveragereport/Summary.txt" ]; then
             BRANCH_COVERAGE=$(grep -oP '(?<=Branch coverage: )\d+(\.\d+)?' coveragereport/Summary.txt || echo "0")
           else
@@ -99,6 +126,22 @@ jobs:
             echo "BRANCH COVERAGE REQUIREMENT MET"
             echo "Branch coverage (${BRANCH_COVERAGE}%) exceeds ${{ env.MIN_BRANCH_COVERAGE }}% threshold"
           fi
+          end=$(date +%s)
+          echo "DUR_COVERAGE_CHECK=$((end-start))" >> $GITHUB_ENV
+
+      - name: Display performance summary
+        run: |
+          echo "## CI/CD Performance (jobs/steps)" >> $GITHUB_STEP_SUMMARY
+          echo "| Step | Duration (s) |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Restore API | ${DUR_RESTORE_API:-0} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Restore Tests | ${DUR_RESTORE_TESTS:-0} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build API | ${DUR_BUILD_API:-0} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build Tests | ${DUR_BUILD_TESTS:-0} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Tests + Coverage | ${DUR_TESTS:-0} |" >> $GITHUB_STEP_SUMMARY
+          echo "| ReportGenerator Install | ${DUR_REPORTGEN_INSTALL:-0} |" >> $GITHUB_STEP_SUMMARY
+          echo "| ReportGenerator Run | ${DUR_REPORTGEN_RUN:-0} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Coverage Gate | ${DUR_COVERAGE_CHECK:-0} |" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload test results
         if: always()
