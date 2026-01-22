@@ -80,7 +80,7 @@ jobs:
       - name: Check branch coverage requirement (80%)
         run: |
           if [ -f "coveragereport/Summary.txt" ]; then
-            BRANCH_COVERAGE=$(grep -oP '(?<=Branch coverage: )\d+\.\d+' coveragereport/Summary.txt || echo "0")
+            BRANCH_COVERAGE=$(grep -oP '(?<=Branch coverage: )\d+(\.\d+)?' coveragereport/Summary.txt || echo "0")
           else
             echo "Coverage report not found - checking for any coverage files..."
             find . -name "*.cobertura.xml" -type f
