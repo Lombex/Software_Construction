@@ -179,7 +179,7 @@ jobs:
   deploy-staging:
     runs-on: self-hosted
     needs: [build-and-test, security-scan]
-    if: github.ref == 'refs/heads/Csharp_development_CICDnew'
+    if: github.ref == 'refs/heads/master'
     environment: staging
 
     steps:
