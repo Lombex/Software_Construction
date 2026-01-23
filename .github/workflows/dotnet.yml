@@ -90,57 +90,61 @@ jobs:
       - uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy-results.sarif
- 
+
+
 # ============================================================
-# JOB 3 — STAGING DEPLOY
+# JOB 3 — STAGING DEPLOY (SELF-HOSTED, NO SSH/SCP)
 # ============================================================
+
   deploy-staging:
     runs-on: self-hosted
     needs: [build-and-test, security-scan]
     if: github.ref == 'refs/heads/Csharp_development_CICDnew'
     environment: staging
- 
+
     steps:
-      - uses: actions/checkout@v4
- 
-      - name: Build Docker image
-        run: docker build -t parking-api-staging:${{ github.run_id }} -f "CSharp Parking API/Dockerfile" .
- 
-      - name: Save Docker image
-        run: docker save parking-api-staging:${{ github.run_id }} -o parking-api-image.tar
- 
-      - name: Install sshpass
-        run: sudo apt-get update && sudo apt-get install -y sshpass
- 
-      - name: Copy image to server (staging)
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Debug runner & docker access
         run: |
-          sshpass -p "$DOCKER_SERVER_PASSWORD" scp \
-            -o StrictHostKeyChecking=no \
-            parking-api-image.tar \
-            $DOCKER_SERVER_USER@$DOCKER_SERVER_IP:/tmp/parking-api-staging.tar
-        env:
-          DOCKER_SERVER_USER: ${{ secrets.DOCKER_SERVER_USER }}
-          DOCKER_SERVER_IP: ${{ secrets.DOCKER_SERVER_IP }}
-          DOCKER_SERVER_PASSWORD: ${{ secrets.DOCKER_SERVER_PASSWORD }}
- 
-      - name: Deploy staging container
+          echo "== Runner info =="
+          whoami
+          hostname
+          pwd
+          echo
+          echo "== Docker info =="
+          docker --version
+          docker ps
+
+      - name: Build Docker image (staging)
         run: |
-          sshpass -p "$DOCKER_SERVER_PASSWORD" ssh \
-            -o StrictHostKeyChecking=no \
-            $DOCKER_SERVER_USER@$DOCKER_SERVER_IP << EOF
-              docker load -i /tmp/parking-api-staging.tar
-              docker stop parking-api-staging || true
-              docker rm parking-api-staging || true
-              docker run -d \
-                --name parking-api-staging \
-                -p 8400:80 \
-                parking-api-staging:${{ github.run_id }}
-          EOF
-        env:
-          DOCKER_SERVER_USER: ${{ secrets.DOCKER_SERVER_USER }}
-          DOCKER_SERVER_IP: ${{ secrets.DOCKER_SERVER_IP }}
-          DOCKER_SERVER_PASSWORD: ${{ secrets.DOCKER_SERVER_PASSWORD }}
- 
+          docker build             -t parking-api-staging:${{ github.run_id }}             -f "CSharp Parking API/Dockerfile"             .
+
+      - name: Tag image as latest (staging)
+        run: |
+          docker tag parking-api-staging:${{ github.run_id }} parking-api-staging:latest
+
+      - name: Stop old staging container (if any)
+        run: |
+          docker rm -f parking-api-staging || true
+
+      - name: Run staging container (port 8400)
+        run: |
+          docker run -d --restart unless-stopped             --name parking-api-staging             -p 8400:80             parking-api-staging:${{ github.run_id }}
+
+      - name: Verify staging deployment
+        run: |
+          echo "== docker ps =="
+          docker ps --filter "name=parking-api-staging"
+          echo
+          echo "== docker port =="
+          docker port parking-api-staging || true
+          echo
+          echo "== last logs =="
+          docker logs --tail 50 parking-api-staging || true
+
+
 # ============================================================
 # JOB 4 — PRODUCTION DEPLOY
 # ============================================================
