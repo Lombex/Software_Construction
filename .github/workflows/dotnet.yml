@@ -2,9 +2,9 @@ name: CI/CD Pipeline - Parking Management System
  
 on:
   push:
-    branches: [ "master", "Csharp_development_CICDnew" ]
+    branches: [ "main", "master", "Csharp_development_CICDnew" ]
   pull_request:
-    branches: [ "master", "Csharp_development_CICDnew" ]
+    branches: [ "main", "master", "Csharp_development_CICDnew" ]
  
 permissions:
   contents: read
@@ -179,7 +179,7 @@ jobs:
   deploy-staging:
     runs-on: self-hosted
     needs: [build-and-test, security-scan]
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/Csharp_development_CICDnew'
     environment: staging
 
     steps:
@@ -231,41 +231,42 @@ jobs:
   deploy-production:
     runs-on: self-hosted
     needs: deploy-staging
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     environment: production
- 
+
     steps:
-      - uses: actions/checkout@v4
- 
-      - name: Copy image to server (production)
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Debug runner & docker access
         run: |
-          sshpass -p "$DOCKER_SERVER_PASSWORD" scp \
-            -o StrictHostKeyChecking=no \
-            parking-api-image.tar \
-            $DOCKER_SERVER_USER@$DOCKER_SERVER_IP:/tmp/parking-api-prod.tar
-        env:
-          DOCKER_SERVER_USER: ${{ secrets.DOCKER_SERVER_USER }}
-          DOCKER_SERVER_IP: ${{ secrets.DOCKER_SERVER_IP }}
-          DOCKER_SERVER_PASSWORD: ${{ secrets.DOCKER_SERVER_PASSWORD }}
- 
-      - name: Deploy production container
+          whoami
+          hostname
+          docker --version
+          docker ps
+
+      - name: Build Docker image (production)
         run: |
-          sshpass -p "$DOCKER_SERVER_PASSWORD" ssh \
-            -o StrictHostKeyChecking=no \
-            $DOCKER_SERVER_USER@$DOCKER_SERVER_IP << EOF
-              docker load -i /tmp/parking-api-prod.tar
-              docker stop parking-api-prod || true
-              docker rm parking-api-prod || true
-              docker run -d \
-                --name parking-api-prod \
-                -p 8401:80 \
-                parking-api-staging:${{ github.run_id }}
-          EOF
-        env:
-          DOCKER_SERVER_USER: ${{ secrets.DOCKER_SERVER_USER }}
-          DOCKER_SERVER_IP: ${{ secrets.DOCKER_SERVER_IP }}
-          DOCKER_SERVER_PASSWORD: ${{ secrets.DOCKER_SERVER_PASSWORD }}
- 
+          docker build             -t parking-api-prod:${{ github.run_id }}             -f "CSharp Parking API/Dockerfile"             .
+
+      - name: Tag image as latest (production)
+        run: |
+          docker tag parking-api-prod:${{ github.run_id }} parking-api-prod:latest
+
+      - name: Stop old production container (if any)
+        run: |
+          docker rm -f parking-api-prod || true
+
+      - name: Run production container (port 8401)
+        run: |
+          docker run -d --restart unless-stopped             --name parking-api-prod             -p 8401:80             parking-api-prod:${{ github.run_id }}
+
+      - name: Verify production deployment
+        run: |
+          docker ps --filter "name=parking-api-prod"
+          docker port parking-api-prod || true
+          docker logs --tail 50 parking-api-prod || true
+
   # Job 5: Notifications
   notifications:
     runs-on: ubuntu-latest
