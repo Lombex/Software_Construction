@@ -201,7 +201,7 @@ static bool IsPortInUse(int port)
 // Check if port 5001 is available before binding (skip in Testing environment)
 if (!app.Environment.IsEnvironment("Testing"))
 {
-    int port = 5001;
+    int port = 8401;
     if (IsPortInUse(port))
     {
         Log.Error($"Port {port} is already in use. Please stop the other application using this port or change the port configuration.");
@@ -210,7 +210,7 @@ if (!app.Environment.IsEnvironment("Testing"))
         Console.WriteLine($"You can check which process is using the port with: netstat -ano | findstr :{port}");
         Environment.Exit(1);
     }
-    app.Urls.Add($"http://localhost:{port}");
+    app.Urls.Add($"http://145.24.223.213:{port}");
 }
 
 if (!app.Environment.IsEnvironment("Testing"))
