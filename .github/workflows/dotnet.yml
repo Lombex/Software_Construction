@@ -213,7 +213,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t parking-api-staging:${{ github.run_id }} -f "CSharp Parking API/Dockerfile" ./CSharp\ Parking\ API
+          docker build -t parking-api-staging:${{ github.run_id }} -f "CSharp Parking API/Dockerfile" .
 
       - name: Save Docker image as tar
         run: |
