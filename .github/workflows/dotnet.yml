@@ -37,18 +37,20 @@ jobs:
  
       - run: dotnet build "${{ env.API_PROJECT_PATH }}" --configuration Release --no-restore
       - run: dotnet build "${{ env.TEST_PROJECT_PATH }}" --configuration Release --no-restore
- 
-      - name: Run tests with coverage
+
+      - run: dotnet tool install -g dotnet-reportgenerator-globaltool
+
+      - name: Run tests with detailed coverage
         run: |
           dotnet test "${{ env.TEST_PROJECT_PATH }}" \
             --configuration Release \
             --no-restore \
+            --verbosity normal \
             --settings "${{ env.COVERAGE_SETTINGS_PATH }}" \
             --collect:"XPlat Code Coverage" \
-            --results-directory ./test-results || true
- 
-      - run: dotnet tool install -g dotnet-reportgenerator-globaltool
- 
+            --results-directory ./test-results \
+            --logger "trx;LogFileName=test-results.trx" || true
+
       - name: Generate coverage report
         run: |
           reportgenerator \
@@ -56,6 +58,77 @@ jobs:
             "-targetdir:coveragereport" \
             "-reporttypes:TextSummary"
  
+      - name: Display coverage summary
+        run: |
+          echo "## Test Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          if [ -f "coveragereport/Summary.txt" ]; then
+            cat coveragereport/Summary.txt | grep -E "(Line coverage|Branch coverage|Method coverage)" | sed 's/:/|/' | sed 's/$/|/' >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Error | Coverage report not found |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Display slowest API tests
+        run: |
+          python - <<'PY'
+          import xml.etree.ElementTree as ET
+          from datetime import timedelta
+          trx_path = "test-results/test-results.trx"
+          try:
+              tree = ET.parse(trx_path)
+          except FileNotFoundError:
+              print("## API Test Response Times", file=open("GITHUB_STEP_SUMMARY", "a"))
+              print("TRX file not found.", file=open("GITHUB_STEP_SUMMARY", "a"))
+              raise SystemExit(0)
+          root = tree.getroot()
+          ns = {"t": root.tag.split("}")[0].strip("{")} if "}" in root.tag else {}
+          results = root.findall(".//t:UnitTestResult", ns) if ns else root.findall(".//UnitTestResult")
+          def parse_duration(d):
+              # format: HH:MM:SS.mmmmmm
+              parts = d.split(":")
+              if len(parts) != 3:
+                  return 0.0
+              h, m = int(parts[0]), int(parts[1])
+              s = float(parts[2])
+              return h * 3600 + m * 60 + s
+          items = []
+          for r in results:
+              name = r.attrib.get("testName", "Unknown")
+              duration = r.attrib.get("duration", "00:00:00")
+              seconds = parse_duration(duration)
+              items.append((seconds, name))
+          items.sort(reverse=True)
+          top = items[:10]
+          with open("GITHUB_STEP_SUMMARY", "a") as f:
+              f.write("## API Test Response Times (slowest 10)\n")
+              f.write("| Test | Duration (ms) |\n")
+              f.write("|------|---------------|\n")
+              for seconds, name in top:
+                  f.write(f"| {name} | {int(seconds*1000)} |\n")
+          PY
+
+      - name: Check branch coverage requirement (80%)
+        run: |
+          if [ -f "coveragereport/Summary.txt" ]; then
+            BRANCH_COVERAGE=$(grep -oP '(?<=Branch coverage: )\d+(\.\d+)?' coveragereport/Summary.txt || echo "0")
+          else
+            echo "Coverage report not found - checking for any coverage files..."
+            find . -name "*.cobertura.xml" -type f
+            BRANCH_COVERAGE="0"
+          fi
+          echo "Current branch coverage: ${BRANCH_COVERAGE}%"
+          echo "Required branch coverage: ${{ env.MIN_BRANCH_COVERAGE }}%"
+          if (( $(echo "${BRANCH_COVERAGE} < ${{ env.MIN_BRANCH_COVERAGE }}" | bc -l) )); then
+            echo "BRANCH COVERAGE REQUIREMENT FAILED"
+            echo "Branch coverage (${BRANCH_COVERAGE}%) is below minimum threshold of ${{ env.MIN_BRANCH_COVERAGE }}%"
+            echo "Fix: Add more tests to cover conditional branches and edge cases"
+            exit 1
+          else
+            echo "BRANCH COVERAGE REQUIREMENT MET"
+            echo "Branch coverage (${BRANCH_COVERAGE}%) exceeds ${{ env.MIN_BRANCH_COVERAGE }}% threshold"
+          fi
+
       - name: Enforce branch coverage
         run: |
           BRANCH=$(grep -oP '(?<=Branch coverage: )\d+(\.\d+)?' coveragereport/Summary.txt || echo 0)
@@ -65,6 +138,13 @@ jobs:
             exit 1
           fi
  
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ github.run_id }}
+          path: coveragereport/
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
