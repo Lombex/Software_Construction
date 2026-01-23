@@ -95,7 +95,7 @@ jobs:
 # JOB 3 — STAGING DEPLOY
 # ============================================================
   deploy-staging:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: [build-and-test, security-scan]
     if: github.ref == 'refs/heads/Csharp_development_CICDnew'
     environment: staging
