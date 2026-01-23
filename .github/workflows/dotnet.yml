@@ -1,15 +1,15 @@
 name: CI/CD Pipeline - Parking Management System
-
+ 
 on:
   push:
     branches: [ "main", "master", "Csharp_development_CICDnew" ]
   pull_request:
     branches: [ "main", "master", "Csharp_development_CICDnew" ]
-
+ 
 permissions:
   contents: read
   security-events: write
-
+ 
 env:
   DOTNET_VERSION: '8.0.x'
   API_PROJECT_PATH: "CSharp Parking API/CSharp Parking API.csproj"
@@ -18,11 +18,10 @@ env:
   MIN_LINE_COVERAGE: 80.0
   MIN_BRANCH_COVERAGE: 80.0
   DOTNET_ROOT: /usr/share/dotnet
-
+ 
 # ============================================================
 # JOB 1 — BUILD & TEST
 # ============================================================
-
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -147,30 +146,32 @@ jobs:
         with:
           name: coverage-report
           path: coveragereport/
-
-  # ============================================================
-  # JOB 2 — SECURITY SCAN
-  # ============================================================
+ 
+# ============================================================
+# JOB 2 — SECURITY SCAN
+# ============================================================
   security-scan:
     runs-on: ubuntu-latest
     needs: build-and-test
     steps:
       - uses: actions/checkout@v4
-
+ 
       - uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'fs'
           scan-ref: '.'
           format: 'sarif'
           output: 'trivy-results.sarif'
-
+ 
       - uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy-results.sarif
 
-  # ============================================================
-  # JOB 3 — STAGING DEPLOY (SELF-HOSTED, NO SSH/SCP)
-  # ============================================================
+
+# ============================================================
+# JOB 3 — STAGING DEPLOY (SELF-HOSTED, NO SSH/SCP)
+# ============================================================
+
   deploy-staging:
     runs-on: self-hosted
     needs: [build-and-test, security-scan]
@@ -191,25 +192,18 @@ jobs:
           echo "== Docker info =="
           docker --version
           docker ps
-
       - name: Build Docker image (staging)
-        run: docker build -t parking-api-staging:${{ github.run_id }} -f "CSharp Parking API/Dockerfile" .
-
+        run: |
+          docker build             -t parking-api-staging:${{ github.run_id }}             -f "CSharp Parking API/Dockerfile"             .
       - name: Tag image as latest (staging)
-        run: docker tag parking-api-staging:${{ github.run_id }} parking-api-staging:latest
-
+        run: |
+          docker tag parking-api-staging:${{ github.run_id }} parking-api-staging:latest
       - name: Stop old staging container (if any)
-        run: docker rm -f parking-api-staging || true
-
-      - name: Free host port 8401 (staging)
         run: |
-          docker ps --filter "publish=8401" --format "table {{.ID}}\t{{.Names}}\t{{.Ports}}" || true
-          docker ps --filter "publish=8401" -q | xargs -r docker rm -f
-
-      - name: Run staging container (port 8401)
+          docker rm -f parking-api-staging || true
+      - name: Run staging container (port 8400)
         run: |
-          docker run -d --restart unless-stopped             --name parking-api-staging             -e ASPNETCORE_ENVIRONMENT="Production"             -p 8401:5001             parking-api-staging:${{ github.run_id }}
-
+          docker run -d --restart unless-stopped             --name parking-api-staging             -p 8400:5001             parking-api-staging:${{ github.run_id }}
       - name: Verify staging deployment
         run: |
           echo "== docker ps =="
@@ -220,10 +214,9 @@ jobs:
           echo
           echo "== last logs =="
           docker logs --tail 50 parking-api-staging || true
-
-  # ============================================================
-  # JOB 4 — PRODUCTION DEPLOY
-  # ============================================================
+# ============================================================
+# JOB 4 — PRODUCTION DEPLOY
+# ============================================================
   deploy-production:
     runs-on: self-hosted
     needs: deploy-staging
@@ -240,34 +233,24 @@ jobs:
           hostname
           docker --version
           docker ps
-
       - name: Build Docker image (production)
-        run: docker build -t parking-api-prod:${{ github.run_id }} -f "CSharp Parking API/Dockerfile" .
-
+        run: |
+          docker build             -t parking-api-prod:${{ github.run_id }}             -f "CSharp Parking API/Dockerfile"             .
       - name: Tag image as latest (production)
-        run: docker tag parking-api-prod:${{ github.run_id }} parking-api-prod:latest
-
+        run: |
+          docker tag parking-api-prod:${{ github.run_id }} parking-api-prod:latest
       - name: Stop old production container (if any)
-        run: docker rm -f parking-api-prod || true
-
-      - name: Free host port 8402 (production)
         run: |
-          docker ps --filter "publish=8402" --format "table {{.ID}}\t{{.Names}}\t{{.Ports}}" || true
-          docker ps --filter "publish=8402" -q | xargs -r docker rm -f
-
-      - name: Run production container (port 8402)
+          docker rm -f parking-api-prod || true
+      - name: Run production container (port 8401)
         run: |
-          docker run -d --restart unless-stopped             --name parking-api-prod             -e ASPNETCORE_ENVIRONMENT="Production"             -p 8402:5001             parking-api-prod:${{ github.run_id }}
-
+          docker run -d --restart unless-stopped             --name parking-api-prod             -p 8401:5001             parking-api-prod:${{ github.run_id }}
       - name: Verify production deployment
         run: |
           docker ps --filter "name=parking-api-prod"
           docker port parking-api-prod || true
           docker logs --tail 50 parking-api-prod || true
-
-  # ============================================================
-  # JOB 5 — NOTIFICATIONS
-  # ============================================================
+  # Job 5: Notifications
   notifications:
     runs-on: ubuntu-latest
     needs: [build-and-test, security-scan, deploy-staging]
@@ -280,7 +263,6 @@ jobs:
           echo "Tests: PASSED"
           echo "Security: PASSED"
           echo "Deployment: Ready"
-
       - name: Pipeline failure notification
         if: failure()
         run: |
