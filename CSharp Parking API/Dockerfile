@@ -5,8 +5,7 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-# Copy csproj and restore as distinct layers
-COPY "CSharp Parking API/CSharp Parking API.csproj" "CSharp Parking API/"
+COPY CSharp Parking API/CSharp Parking API.csproj CSharp Parking API/
 RUN dotnet restore "CSharp Parking API/CSharp Parking API.csproj"
 # Copy the rest of the source code
 COPY . .
