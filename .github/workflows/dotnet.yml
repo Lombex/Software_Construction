@@ -209,9 +209,9 @@ jobs:
         run: |
           docker rm -f parking-api-staging || true
 
-      - name: Run staging container (port 8400)
+      - name: Run staging container (port 8401)
         run: |
-          docker run -d --restart unless-stopped             --name parking-api-staging             -p 8400:5001             parking-api-staging:${{ github.run_id }}
+          docker run -d --restart unless-stopped             --name parking-api-staging             -p 8401:5001             parking-api-staging:${{ github.run_id }}
 
       - name: Verify staging deployment
         run: |
@@ -257,9 +257,9 @@ jobs:
         run: |
           docker rm -f parking-api-prod || true
 
-      - name: Run production container (port 8401)
+      - name: Run production container (port 8402)
         run: |
-          docker run -d --restart unless-stopped             --name parking-api-prod             -p 8401:5001             parking-api-prod:${{ github.run_id }}
+          docker run -d --restart unless-stopped             --name parking-api-prod             -p 8402:5001             parking-api-prod:${{ github.run_id }}
 
       - name: Verify production deployment
         run: |
