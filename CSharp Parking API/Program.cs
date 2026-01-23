@@ -176,8 +176,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Helper method to check if a port is in use
-static bool IsPortInUse(int port)
+// Might cause issues on CI/CD pipelines or test environments
+/*static bool IsPortInUse(int port)
 {
     try
     {
@@ -211,7 +211,7 @@ if (!app.Environment.IsEnvironment("Testing"))
         Environment.Exit(1);
     }
     app.Urls.Add($"http://145.24.223.213:{port}");
-}
+}*/
 
 if (!app.Environment.IsEnvironment("Testing"))
 {
