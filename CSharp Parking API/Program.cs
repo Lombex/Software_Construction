@@ -210,7 +210,7 @@ if (!app.Environment.IsEnvironment("Testing"))
         Console.WriteLine($"You can check which process is using the port with: netstat -ano | findstr :{port}");
         Environment.Exit(1);
     }
-    app.Urls.Add($"http://0.0.0.0:{port}");
+    app.Urls.Add($"http://localhost:{port}");
 }
 
 if (!app.Environment.IsEnvironment("Testing"))
