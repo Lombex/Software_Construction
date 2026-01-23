@@ -213,16 +213,12 @@ jobs:
 
       - name: Run staging container (port 8401)
         run: |
-<<<<<<< HEAD
           docker run -d --restart unless-stopped \
           --name parking-api-staging \
           -e ASPNETCORE_URLS="http://+:5001" \
           -e ASPNETCORE_ENVIRONMENT="Production" \
           -p 8401:5001 \
           parking-api-staging:${{ github.run_id }}
-=======
-          docker run -d --restart unless-stopped             --name parking-api-staging             -p 8401:5001             parking-api-staging:${{ github.run_id }}
->>>>>>> d8849bcb5267142b78ec41ab603582aebb8885a9
 
       - name: Verify staging deployment
         run: |
@@ -272,16 +268,12 @@ jobs:
 
       - name: Run production container (port 8402)
         run: |
-<<<<<<< HEAD
           docker run -d --restart unless-stopped \
           --name parking-api-prod \
           -e ASPNETCORE_URLS="http://+:5001" \
           -e ASPNETCORE_ENVIRONMENT="Production" \
           -p 8402:5001 \
           parking-api-prod:${{ github.run_id }}
-=======
-          docker run -d --restart unless-stopped             --name parking-api-prod             -p 8402:5001             parking-api-prod:${{ github.run_id }}
->>>>>>> d8849bcb5267142b78ec41ab603582aebb8885a9
 
       - name: Verify production deployment
         run: |
