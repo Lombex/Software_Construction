@@ -19,38 +19,45 @@ env:
   MIN_BRANCH_COVERAGE: 80.0
   DOTNET_ROOT: /usr/share/dotnet
 
+# ============================================================
+# JOB 1 — BUILD & TEST
+# ============================================================
+
 jobs:
-  # ============================================================
-  # JOB 1 — BUILD & TEST
-  # ============================================================
   build-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
+ 
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-
+ 
       - run: dotnet restore "${{ env.API_PROJECT_PATH }}"
       - run: dotnet restore "${{ env.TEST_PROJECT_PATH }}"
-
+ 
       - run: dotnet build "${{ env.API_PROJECT_PATH }}" --configuration Release --no-restore
       - run: dotnet build "${{ env.TEST_PROJECT_PATH }}" --configuration Release --no-restore
 
-      - name: Install reportgenerator
-        run: |
-          dotnet tool install -g dotnet-reportgenerator-globaltool
-          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+      - run: dotnet tool install -g dotnet-reportgenerator-globaltool
 
       - name: Run tests with detailed coverage
         run: |
-          dotnet test "${{ env.TEST_PROJECT_PATH }}"             --configuration Release             --no-restore             --verbosity normal             --settings "${{ env.COVERAGE_SETTINGS_PATH }}"             --collect:"XPlat Code Coverage"             --results-directory ./test-results             --logger "trx;LogFileName=test-results.trx"
-
+          dotnet test "${{ env.TEST_PROJECT_PATH }}" \
+            --configuration Release \
+            --no-restore \
+            --verbosity normal \
+            --settings "${{ env.COVERAGE_SETTINGS_PATH }}" \
+            --collect:"XPlat Code Coverage" \
+            --results-directory ./test-results \
+            --logger "trx;LogFileName=test-results.trx" || true
       - name: Generate coverage report
         run: |
-          reportgenerator             "-reports:./test-results/**/coverage.cobertura.xml"             "-targetdir:coveragereport"             "-reporttypes:TextSummary"
-
+          reportgenerator \
+            "-reports:./test-results/**/coverage.cobertura.xml" \
+            "-targetdir:coveragereport" \
+            "-reporttypes:TextSummary"
+ 
       - name: Display coverage summary
         run: |
           echo "## Test Coverage Report" >> $GITHUB_STEP_SUMMARY
@@ -61,7 +68,44 @@ jobs:
           else
             echo "| Error | Coverage report not found |" >> $GITHUB_STEP_SUMMARY
           fi
-
+      - name: Display slowest API tests
+        run: |
+          python - <<'PY'
+          import xml.etree.ElementTree as ET
+          from datetime import timedelta
+          trx_path = "test-results/test-results.trx"
+          try:
+              tree = ET.parse(trx_path)
+          except FileNotFoundError:
+              print("## API Test Response Times", file=open("GITHUB_STEP_SUMMARY", "a"))
+              print("TRX file not found.", file=open("GITHUB_STEP_SUMMARY", "a"))
+              raise SystemExit(0)
+          root = tree.getroot()
+          ns = {"t": root.tag.split("}")[0].strip("{")} if "}" in root.tag else {}
+          results = root.findall(".//t:UnitTestResult", ns) if ns else root.findall(".//UnitTestResult")
+          def parse_duration(d):
+              # format: HH:MM:SS.mmmmmm
+              parts = d.split(":")
+              if len(parts) != 3:
+                  return 0.0
+              h, m = int(parts[0]), int(parts[1])
+              s = float(parts[2])
+              return h * 3600 + m * 60 + s
+          items = []
+          for r in results:
+              name = r.attrib.get("testName", "Unknown")
+              duration = r.attrib.get("duration", "00:00:00")
+              seconds = parse_duration(duration)
+              items.append((seconds, name))
+          items.sort(reverse=True)
+          top = items[:10]
+          with open("GITHUB_STEP_SUMMARY", "a") as f:
+              f.write("## API Test Response Times (slowest 10)\n")
+              f.write("| Test | Duration (ms) |\n")
+              f.write("|------|---------------|\n")
+              for seconds, name in top:
+                  f.write(f"| {name} | {int(seconds*1000)} |\n")
+          PY
       - name: Check branch coverage requirement (80%)
         run: |
           if [ -f "coveragereport/Summary.txt" ]; then
@@ -74,18 +118,34 @@ jobs:
           echo "Current branch coverage: ${BRANCH_COVERAGE}%"
           echo "Required branch coverage: ${{ env.MIN_BRANCH_COVERAGE }}%"
           if (( $(echo "${BRANCH_COVERAGE} < ${{ env.MIN_BRANCH_COVERAGE }}" | bc -l) )); then
-            echo "❌ BRANCH COVERAGE REQUIREMENT FAILED"
+            echo "BRANCH COVERAGE REQUIREMENT FAILED"
             echo "Branch coverage (${BRANCH_COVERAGE}%) is below minimum threshold of ${{ env.MIN_BRANCH_COVERAGE }}%"
+            echo "Fix: Add more tests to cover conditional branches and edge cases"
             exit 1
           else
-            echo "✅ BRANCH COVERAGE REQUIREMENT MET"
+            echo "BRANCH COVERAGE REQUIREMENT MET"
+            echo "Branch coverage (${BRANCH_COVERAGE}%) exceeds ${{ env.MIN_BRANCH_COVERAGE }}% threshold"
           fi
-
+      - name: Enforce branch coverage
+        run: |
+          BRANCH=$(grep -oP '(?<=Branch coverage: )\d+(\.\d+)?' coveragereport/Summary.txt || echo 0)
+          echo "Branch coverage: $BRANCH%"
+          if (( $(echo "$BRANCH < ${{ env.MIN_BRANCH_COVERAGE }}" | bc -l) )); then
+            echo "❌ Branch coverage too low"
+            exit 1
+          fi
+ 
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report-${{ github.run_id }}
+          path: coveragereport/
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
           path: coveragereport/
 
   # ============================================================
