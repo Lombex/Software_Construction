@@ -233,7 +233,7 @@ jobs:
 
       - name: Deploy Docker container on server
         run: |
-          sshpass -p "$DOCKER_SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no -p $DOCKER_SERVER_PORT $DOCKER_SERVER_USER@$DOCKER_SERVER_IP '
+          ssh -p $DOCKER_SERVER_PORT $DOCKER_SERVER_USER@$DOCKER_SERVER_IP
             docker load -i /tmp/parking-api-staging-image.tar && \
             docker stop parking-api-staging || true && \
             docker rm parking-api-staging || true && \
