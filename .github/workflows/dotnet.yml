@@ -211,12 +211,37 @@ jobs:
           name: parking-api-staging
           path: parking-api-staging-${{ github.run_id }}.tar.gz
 
-      - name: Deploy to staging environment
+      - name: Build Docker image
         run: |
-          echo "Deploying to staging environment..."
-          echo "Package: parking-api-staging-${{ github.run_id }}.tar.gz"
-          echo "Staging deployment completed"
-          # Add actual deployment commands here (Azure App Service, AWS, Docker, etc.)
+          docker build -t parking-api-staging:${{ github.run_id }} -f "CSharp Parking API/Dockerfile" ./CSharp\ Parking\ API
+
+      - name: Save Docker image as tar
+        run: |
+          docker save parking-api-staging:${{ github.run_id }} -o parking-api-staging-image.tar
+
+      - name: Install sshpass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      - name: Copy Docker image to server
+        run: |
+          sshpass -p "$DOCKER_SERVER_PASSWORD" scp -o StrictHostKeyChecking=no -P 22 parking-api-staging-image.tar $DOCKER_SERVER_USER@$DOCKER_SERVER_IP:/tmp/
+        env:
+          DOCKER_SERVER_USER: ${{ secrets.DOCKER_SERVER_USER }}
+          DOCKER_SERVER_IP: ${{ secrets.DOCKER_SERVER_IP }}
+          DOCKER_SERVER_PASSWORD: ${{ secrets.DOCKER_SERVER_PASSWORD }}
+
+      - name: Deploy Docker container on server
+        run: |
+          sshpass -p "$DOCKER_SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no -p 22 $DOCKER_SERVER_USER@$DOCKER_SERVER_IP '
+            docker load -i /tmp/parking-api-staging-image.tar && \
+            docker stop parking-api-staging || true && \
+            docker rm parking-api-staging || true && \
+            docker run -d --name parking-api-staging -p 8400:80 parking-api-staging:${{ github.run_id }}
+          '
+        env:
+          DOCKER_SERVER_USER: ${{ secrets.DOCKER_SERVER_USER }}
+          DOCKER_SERVER_IP: ${{ secrets.DOCKER_SERVER_IP }}
+          DOCKER_SERVER_PASSWORD: ${{ secrets.DOCKER_SERVER_PASSWORD }}
 
   # Job 4: Production Deployment
   deploy-production:
