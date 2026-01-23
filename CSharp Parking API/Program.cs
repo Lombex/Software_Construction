@@ -1,18 +1,19 @@
-﻿using CSharpAPI.Database;
+﻿using CSharpAPI.Controllers.Utils;
+using CSharpAPI.Database;
 using CSharpAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
-using System.Net.Sockets;
-using CSharpAPI.Controllers.Utils;
 using Serilog;
+using System.Net.Sockets;
+using System.Text;
 
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
@@ -212,6 +213,10 @@ if (!app.Environment.IsEnvironment("Testing"))
     }
     app.Urls.Add($"http://145.24.223.213:{port}");
 }*/
+builder.WebHost.ConfigureKestrel(o =>
+{
+    o.ListenAnyIP(5001);
+});
 
 if (!app.Environment.IsEnvironment("Testing"))
 {
