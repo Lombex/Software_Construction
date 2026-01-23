@@ -368,5 +368,142 @@ namespace CSharpAPI.Tests.APITests
             var response = await client.PostAsJsonAsync("/api/v2/nfc/verify", request);
             response.StatusCode.Should().BeOneOf(HttpStatusCode.OK, HttpStatusCode.InternalServerError);
         }
+
+        [Fact]
+        public async Task Exit_With_Confirm_False_Should_Return_Amount_And_Require_Confirm()
+        {
+            var client = _factory.CreateClient();
+            using var scope = _factory.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<SQLite_Database>();
+            var user = db.Users.FirstOrDefault(u => u.username == "user");
+            if (user != null)
+            {
+                var vehicleId = Guid.NewGuid();
+                db.Vehicles.Add(new M_Vehicles
+                {
+                    id = vehicleId,
+                    user_id = user.id,
+                    license_plate = "EXIT-123",
+                    make = "Make",
+                    model = "Model",
+                    color = "Blue",
+                    year = new DateTime(2020, 1, 1),
+                    created_at = DateTime.UtcNow
+                });
+                var lotId = Guid.NewGuid();
+                db.Parkinglots.Add(new M_Parkinglots
+                {
+                    id = lotId,
+                    name = "Exit Lot",
+                    location = "Test",
+                    address = "Test",
+                    capacity = 100,
+                    reserved = 0,
+                    daytarriff = 10.0f,
+                    created_at = DateTime.UtcNow,
+                    coordinates = new Coordinates { lat = 52.0f, lng = 5.0f }
+                });
+                db.Sessions.Add(new M_Session
+                {
+                    id = Guid.NewGuid(),
+                    user = user.id.ToString(),
+                    vehicle_id = vehicleId,
+                    parking_lot_id = lotId,
+                    license_plate = "EXIT-123",
+                    started = DateTime.UtcNow.AddMinutes(-30),
+                    status = M_Session.PaymentStatus.Unpaid
+                });
+                await db.SaveChangesAsync();
+
+                var request = new
+                {
+                    UserId = user.id,
+                    LicensePlate = "EXIT-123",
+                    ConfirmPayment = false
+                };
+                var response = await client.PostAsJsonAsync("/api/v2/nfc/exit", request);
+                response.StatusCode.Should().Be(HttpStatusCode.OK);
+                var content = await response.Content.ReadAsStringAsync();
+                content.Should().Contain("confirmRequired");
+            }
+        }
+
+        [Fact]
+        public async Task Exit_With_Invalid_Card_Should_Return_400()
+        {
+            var client = _factory.CreateClient();
+            var request = new
+            {
+                UserId = Guid.NewGuid(),
+                LicensePlate = "UNKNOWN-PLATE",
+                ConfirmPayment = true
+            };
+            var response = await client.PostAsJsonAsync("/api/v2/nfc/exit", request);
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task Exit_With_Confirm_True_And_Sufficient_Balance_Should_Return_200()
+        {
+            var client = _factory.CreateClient();
+            using var scope = _factory.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<SQLite_Database>();
+            var user = db.Users.FirstOrDefault(u => u.username == "user");
+            if (user != null)
+            {
+                var balanceService = scope.ServiceProvider.GetRequiredService<CSharpAPI.Services.IUserBalanceService>();
+                try
+                {
+                    await balanceService.CreateBalance(user.id, 100.0m);
+                }
+                catch { }
+
+                var vehicleId = Guid.NewGuid();
+                db.Vehicles.Add(new M_Vehicles
+                {
+                    id = vehicleId,
+                    user_id = user.id,
+                    license_plate = "EXIT-OK",
+                    make = "Make",
+                    model = "Model",
+                    color = "Red",
+                    year = new DateTime(2020, 1, 1),
+                    created_at = DateTime.UtcNow
+                });
+                var lotId = Guid.NewGuid();
+                db.Parkinglots.Add(new M_Parkinglots
+                {
+                    id = lotId,
+                    name = "Exit Lot",
+                    location = "Test",
+                    address = "Test",
+                    capacity = 100,
+                    reserved = 0,
+                    daytarriff = 10.0f,
+                    created_at = DateTime.UtcNow,
+                    coordinates = new Coordinates { lat = 52.0f, lng = 5.0f }
+                });
+                db.Sessions.Add(new M_Session
+                {
+                    id = Guid.NewGuid(),
+                    user = user.id.ToString(),
+                    vehicle_id = vehicleId,
+                    parking_lot_id = lotId,
+                    license_plate = "EXIT-OK",
+                    started = DateTime.UtcNow.AddMinutes(-45),
+                    status = M_Session.PaymentStatus.Unpaid
+                });
+                await db.SaveChangesAsync();
+
+                var request = new
+                {
+                    UserId = user.id,
+                    LicensePlate = "EXIT-OK",
+                    ConfirmPayment = true
+                };
+                var response = await client.PostAsJsonAsync("/api/v2/nfc/exit", request);
+                response.StatusCode.Should().BeOneOf(HttpStatusCode.OK, HttpStatusCode.BadRequest);
+            }
+        }
     }
 }

@@ -537,12 +537,29 @@ namespace CSharpAPI.Tests.APITests
         }
 
         [Fact]
+        public async Task GetSessionsById_With_Admin_Viewing_Other_User_Should_Return_200()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "lotadmin", "lotpass");
+            var response = await client.GetAsync("/api/v2/sessions/user");
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
         public async Task GetMyParkingHistory_Should_Return_200()
         {
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "user", "userpass");
             var response = await client.GetAsync("/api/v2/sessions/me/history");
             response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public async Task GetMyParkingHistory_Without_Token_Should_Return_401()
+        {
+            var client = _factory.CreateClient();
+            var response = await client.GetAsync("/api/v2/sessions/me/history");
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
 
         [Fact]
@@ -608,11 +625,50 @@ namespace CSharpAPI.Tests.APITests
         }
 
         [Fact]
+        public async Task AutoStartSession_With_Missing_ParkingLot_Should_Return_400()
+        {
+            var client = _factory.CreateClient();
+            using var scope = _factory.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<SQLite_Database>();
+            var user = db.Users.FirstOrDefault(u => u.username == "user");
+
+            if (user != null)
+            {
+                var vehicleId = Guid.NewGuid();
+                db.Vehicles.Add(new M_Vehicles
+                {
+                    id = vehicleId,
+                    user_id = user.id,
+                    license_plate = "AUTO-NO-LOT",
+                    make = "Make",
+                    model = "Model",
+                    color = "Gray",
+                    year = new DateTime(2020, 1, 1),
+                    created_at = DateTime.UtcNow
+                });
+                await db.SaveChangesAsync();
+            }
+
+            var request = new { LicensePlate = "AUTO-NO-LOT", ParkingLotId = Guid.NewGuid() };
+            var response = await client.PostAsJsonAsync("/api/v2/sessions/auto-start", request);
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
         public async Task AutoStartSession_With_Null_Body_Should_Return_400()
         {
             var client = _factory.CreateClient();
             var response = await client.PostAsJsonAsync<object>("/api/v2/sessions/auto-start", null!);
             response.StatusCode.Should().BeOneOf(HttpStatusCode.BadRequest, HttpStatusCode.InternalServerError);
+        }
+
+        [Fact]
+        public async Task StopSession_With_Admin_Token_And_NonExistent_Id_Should_Return_404()
+        {
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client, "lotadmin", "lotpass");
+            var response = await client.PostAsync($"/api/v2/sessions/{Guid.NewGuid()}/stop", null);
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         private M_Session CreateSampleSession()

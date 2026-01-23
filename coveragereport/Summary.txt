@@ -1,0 +1,51 @@
+Summary
+  Generated on: 1/22/2026 - 12:54:55 AM
+  Coverage date: 1/22/2026 - 12:54:25 AM
+  Parser: Cobertura
+  Assemblies: 1
+  Classes: 29
+  Files: 29
+  Line coverage: 95.2%
+  Covered lines: 223
+  Uncovered lines: 11
+  Coverable lines: 234
+  Total lines: 4142
+  Branch coverage: 90.6% (58 of 64)
+  Covered branches: 58
+  Total branches: 64
+  Method coverage: 100% (53 of 53)
+  Full method coverage: 92.4% (49 of 53)
+  Covered methods: 53
+  Fully covered methods: 49
+  Total methods: 53
+
+CSharp Parking API                            95.2%
+  CSharpAPI.Controllers.C_Auth                 100%
+  CSharpAPI.Controllers.C_Balance              100%
+  CSharpAPI.Controllers.C_Billing              100%
+  CSharpAPI.Controllers.C_Company              100%
+  CSharpAPI.Controllers.C_Gate                76.3%
+  CSharpAPI.Controllers.C_Hotel                100%
+  CSharpAPI.Controllers.C_NFC                  100%
+  CSharpAPI.Controllers.C_Parkinglots          100%
+  CSharpAPI.Controllers.C_Payments             100%
+  CSharpAPI.Controllers.C_Profile              100%
+  CSharpAPI.Controllers.C_Reservations         100%
+  CSharpAPI.Controllers.C_Sessions             100%
+  CSharpAPI.Controllers.C_Users                100%
+  CSharpAPI.Controllers.C_Vehicles             100%
+  CSharpAPI.Controllers.Utils.C_Utils         90.4%
+  CSharpAPI.Database.SQLite_Database           100%
+  CSharpAPI.Services.S_Billing                 100%
+  CSharpAPI.Services.S_Company                 100%
+  CSharpAPI.Services.S_Hotel                   100%
+  CSharpAPI.Services.S_Parkinglots             100%
+  CSharpAPI.Services.S_Payments                100%
+  CSharpAPI.Services.S_Reservations            100%
+  CSharpAPI.Services.S_Sessions                100%
+  CSharpAPI.Services.S_UserBalance             100%
+  CSharpAPI.Services.S_Users                   100%
+  CSharpAPI.Services.S_Vehicles                100%
+  CSharpAPI.Services.Service_Profile           100%
+  CSharpAPI.Services.TokenRevocationService    100%
+  CSharpAPI.Services.TokenService              100%

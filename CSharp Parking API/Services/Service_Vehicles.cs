@@ -11,7 +11,7 @@ namespace CSharpAPI.Services
         Task<List<M_Vehicles>> GetVehiclesByUserId(Guid userId);
         Task<M_Vehicles> GetByID(Guid id);
         Task CreateVehicle(M_Vehicles newVehicle);
-        Task UpdateVehicle(Guid id, M_Vehicles updatedVehicle);
+        Task<M_Vehicles> UpdateVehicle(Guid id, M_Vehicles updatedVehicle);
         Task DeleteVehicle(Guid id);
     }
 
@@ -63,7 +63,7 @@ namespace CSharpAPI.Services
             await DbContext.Vehicles.AddAsync(model);
             await DbContext.SaveChangesAsync();
         }
-        public async Task UpdateVehicle(Guid id, M_Vehicles updatedVehicle)
+        public async Task<M_Vehicles> UpdateVehicle(Guid id, M_Vehicles updatedVehicle)
         {
             var _vehicle = await GetByID(id);
 
@@ -92,6 +92,7 @@ namespace CSharpAPI.Services
             
             DbContext.Vehicles.Update(_vehicle);
             await DbContext.SaveChangesAsync();
+            return _vehicle;
         }
         public async Task DeleteVehicle(Guid id)
         {

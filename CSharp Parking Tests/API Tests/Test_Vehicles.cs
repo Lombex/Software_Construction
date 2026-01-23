@@ -75,31 +75,13 @@ namespace CSharp_Parking_Tests.API_Tests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
-            Guid userGuid = Guid.NewGuid();
-
-            var newVehicle = new M_Vehicles
+            var newVehicle = new CreateVehicleDto
             {
-                user_id = userGuid,
                 license_plate = "TEST123",
                 make = "TestMake",
                 model = "TestModel",
                 color = "Red",
-                year = new DateTime(1990, 1, 1),
-                created_at = DateTime.UtcNow,
-                M_Users = new M_Users
-                {
-                    id = userGuid,
-                    username = "testuser",
-                    password = "testpass",
-                    name = "Test User",
-                    email = "john@doe.com",
-                    phone = "1234567890",
-                    role = M_Users.UserRole.ParkingUser,
-                    parking_lot_id = null,
-                    created_at = DateTime.UtcNow,
-                    birth_year = new DateTime(1990, 1, 1),
-                    active = true
-                }
+                year = new DateTime(1990, 1, 1)
             };
 
             var response = await client.PostAsJsonAsync("/api/v2/vehicles/create", newVehicle);
@@ -112,31 +94,13 @@ namespace CSharp_Parking_Tests.API_Tests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
-            Guid userGuid = Guid.NewGuid();
-
             var newVehicle = new
             {
-                user_id = userGuid,
                 license_plate = "TEST123",
                 make = "TestMake",
                 model = "TestModel",
                 color = "Red",
                 year = 1234, // Invalid year format
-                created_at = DateTime.UtcNow,
-                M_Users = new M_Users
-                {
-                    id = userGuid,
-                    username = "testuser",
-                    password = "testpass",
-                    name = "Test User",
-                    email = "john@doe.com",
-                    phone = "1234567890",
-                    role = M_Users.UserRole.ParkingUser,
-                    parking_lot_id = null,
-                    created_at = DateTime.UtcNow,
-                    birth_year = new DateTime(1990, 1, 1),
-                    active = true
-                }
             };
 
             var response = await client.PostAsJsonAsync("/api/v2/vehicles/create", newVehicle);
@@ -149,31 +113,13 @@ namespace CSharp_Parking_Tests.API_Tests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
-            Guid userGuid = Guid.NewGuid();
-
-            var newVehicle = new M_Vehicles
+            var newVehicle = new CreateVehicleDto
             {
-                user_id = userGuid,
                 license_plate = "",
                 make = "",
                 model = "",
                 color = "Red",
-                year = new DateTime(1990, 1, 1),
-                created_at = DateTime.UtcNow,
-                M_Users = new M_Users
-                {
-                    id = userGuid,
-                    username = "testuser",
-                    password = "testpass",
-                    name = "Test User",
-                    email = "john@doe.com",
-                    phone = "1234567890",
-                    role = M_Users.UserRole.ParkingUser,
-                    parking_lot_id = null,
-                    created_at = DateTime.UtcNow,
-                    birth_year = new DateTime(1990, 1, 1),
-                    active = true
-                }
+                year = new DateTime(1990, 1, 1)
             };
 
             var response = await client.PostAsJsonAsync("/api/v2/vehicles/create", newVehicle);
@@ -186,31 +132,13 @@ namespace CSharp_Parking_Tests.API_Tests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
-            Guid userGuid = Guid.NewGuid();
-
-            var newVehicle = new M_Vehicles
+            var newVehicle = new CreateVehicleDto
             {
-                user_id = userGuid,
                 license_plate = "TEST123",
                 make = "TestMake",
                 model = "TestModel",
                 color = "Red",
-                year = new DateTime(DateTime.Now.Year + 1, 1, 1),
-                created_at = DateTime.UtcNow,
-                M_Users = new M_Users
-                {
-                    id = userGuid,
-                    username = "testuser",
-                    password = "testpass",
-                    name = "Test User",
-                    email = "john@doe.com",
-                    phone = "1234567890",
-                    role = M_Users.UserRole.ParkingUser,
-                    parking_lot_id = null,
-                    created_at = DateTime.UtcNow,
-                    birth_year = new DateTime(1990, 1, 1),
-                    active = true
-                }
+                year = new DateTime(DateTime.Now.Year + 1, 1, 1)
             };
 
             var response = await client.PostAsJsonAsync("/api/v2/vehicles/create", newVehicle);
@@ -223,31 +151,13 @@ namespace CSharp_Parking_Tests.API_Tests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
-            Guid userGuid = Guid.NewGuid();
-
-            var newVehicle = new M_Vehicles
+            var newVehicle = new CreateVehicleDto
             {
-                user_id = userGuid,
                 license_plate = "TEST12332323223",
                 make = "TestMake",
                 model = "TestModel",
                 color = "Red",
-                year = new DateTime(1990, 1, 1),
-                created_at = DateTime.UtcNow,
-                M_Users = new M_Users
-                {
-                    id = userGuid,
-                    username = "testuser",
-                    password = "testpass",
-                    name = "Test User",
-                    email = "john@doe.com",
-                    phone = "1234567890",
-                    role = M_Users.UserRole.ParkingUser,
-                    parking_lot_id = null,
-                    created_at = DateTime.UtcNow,
-                    birth_year = new DateTime(1990, 1, 1),
-                    active = true
-                }
+                year = new DateTime(1990, 1, 1)
             };
 
             var response = await client.PostAsJsonAsync("/api/v2/vehicles/create", newVehicle);
@@ -281,31 +191,13 @@ namespace CSharp_Parking_Tests.API_Tests
             var client = _factory.CreateClient();
             client.DefaultRequestHeaders.Authorization = await Utils.AuthenticateAsync(client);
 
-            Guid userGuid = Guid.NewGuid();
-
-            var newVehicle = new M_Vehicles
+            var newVehicle = new CreateVehicleDto
             {
-                user_id = userGuid,
                 license_plate = "TEST123",
                 make = "TestMake",
                 model = "TestModel",
                 color = "Red",
-                year = new DateTime(1990, 1, 1),
-                created_at = DateTime.UtcNow,
-                M_Users = new M_Users
-                {
-                    id = userGuid,
-                    username = "testuser",
-                    password = "testpass",
-                    name = "Test User",
-                    email = "john@doe.com",
-                    phone = "1234567890",
-                    role = M_Users.UserRole.ParkingUser,
-                    parking_lot_id = null,
-                    created_at = DateTime.UtcNow,
-                    birth_year = new DateTime(1990, 1, 1),
-                    active = true
-                }
+                year = new DateTime(1990, 1, 1)
             };
 
             // CREATE

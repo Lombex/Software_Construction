@@ -231,8 +231,7 @@ namespace CSharpAPI.Tests.Services
                 user_id = vehicle.user_id
             };
 
-            await service.UpdateVehicle(vehicleId, updatedVehicle);
-            var result = await db.Vehicles.FirstOrDefaultAsync(v => v.id == vehicleId);
+            var result = await service.UpdateVehicle(vehicleId, updatedVehicle);
             result.Should().NotBeNull();
             result!.license_plate.Should().Be("NEW-456");
             result.make.Should().Be("NewMake");
@@ -341,8 +340,7 @@ namespace CSharpAPI.Tests.Services
                 user_id = userId
             };
 
-            await service.UpdateVehicle(vehicle.id, updatedVehicle);
-            var result = await db.Vehicles.FirstOrDefaultAsync(v => v.id == vehicle.id);
+            var result = await service.UpdateVehicle(vehicle.id, updatedVehicle);
             result.Should().NotBeNull();
             result!.license_plate.Should().BeNull();
         }
@@ -378,8 +376,7 @@ namespace CSharpAPI.Tests.Services
                 user_id = userId
             };
 
-            await service.UpdateVehicle(vehicle.id, updatedVehicle);
-            var result = await db.Vehicles.FirstOrDefaultAsync(v => v.id == vehicle.id);
+            var result = await service.UpdateVehicle(vehicle.id, updatedVehicle);
             result.Should().NotBeNull();
         }
 
@@ -414,8 +411,7 @@ namespace CSharpAPI.Tests.Services
             };
 
             // Should not throw because it's the same vehicle
-            await service.UpdateVehicle(vehicle.id, updatedVehicle);
-            var result = await db.Vehicles.FirstOrDefaultAsync(v => v.id == vehicle.id);
+            var result = await service.UpdateVehicle(vehicle.id, updatedVehicle);
             result.Should().NotBeNull();
         }
     }

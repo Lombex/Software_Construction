@@ -41,6 +41,7 @@ namespace CSharpAPI.Services
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userId), // Subject (user ID)
                 new Claim(JwtRegisteredClaimNames.UniqueName, username), // Unique name
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // Unique token ID
                 new Claim(ClaimTypes.NameIdentifier, userId), // ASP.NET Core user ID claim
                 new Claim(ClaimTypes.Name, username), // ASP.NET Core username claim
                 new Claim(ClaimTypes.Role, role) // User role for RBAC (Admin/User)
