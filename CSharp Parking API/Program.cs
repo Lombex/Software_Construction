@@ -34,8 +34,12 @@ string DatabasePath = Path.Combine(projectFolder, "Database", "parking.db");
 var dbDirectory = Path.GetDirectoryName(DatabasePath);
 if (!string.IsNullOrEmpty(dbDirectory) && !Directory.Exists(dbDirectory)) Directory.CreateDirectory(dbDirectory);
 
-// Load configuration (appsettings.json)
+// Load configuration (appsettings.json + environment-specific overrides)
 builder.Configuration.AddJsonFile(Path.Combine(projectFolder, "appsettings.json"), optional: true, reloadOnChange: true);
+builder.Configuration.AddJsonFile(
+    Path.Combine(projectFolder, $"appsettings.{builder.Environment.EnvironmentName}.json"),
+    optional: true,
+    reloadOnChange: true);
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -161,6 +165,22 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 
+// ============================================================
+// PORT CONFIGURATION FOR DOCKER & DEPLOYMENT
+// ============================================================
+// In Docker: listen on port 80 (matches Dockerfile EXPOSE)
+// Local dev: listen on port 5001
+if (builder.Environment.IsEnvironment("Docker"))
+{
+    builder.WebHost.ConfigureKestrel(o => o.ListenAnyIP(80));
+    Log.Information("Running in Docker environment - listening on port 80");
+}
+else
+{
+    builder.WebHost.ConfigureKestrel(o => o.ListenAnyIP(5001));
+    Log.Information("Running locally - listening on port 5001");
+}
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -213,10 +233,6 @@ if (!app.Environment.IsEnvironment("Testing"))
     }
     app.Urls.Add($"http://145.24.223.213:{port}");
 }*/
-builder.WebHost.ConfigureKestrel(o =>
-{
-    o.ListenAnyIP(5001);
-});
 
 if (!app.Environment.IsEnvironment("Testing"))
 {
