@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CSharp_Parking_Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f88e4f2190edd6c89d7b551198d104419904bb68")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7780c5a19751821327c75ac65811e674e0ce1060")]
 [assembly: System.Reflection.AssemblyProductAttribute("CSharp_Parking_Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CSharp_Parking_Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
