@@ -201,9 +201,9 @@ jobs:
       - name: Stop old staging container (if any)
         run: |
           docker rm -f parking-api-staging || true
-      - name: Run staging container (port 8401)
+      - name: Run staging container (port 8402)
         run: |
-          docker run -d --restart unless-stopped             --name parking-api-staging             -p 8401:80             -e ASPNETCORE_ENVIRONMENT=Docker             parking-api-staging:${{ github.run_id }}
+          docker run -d --restart unless-stopped             --name parking-api-staging             -p 8402:80             -e ASPNETCORE_ENVIRONMENT=Docker             parking-api-staging:${{ github.run_id }}
       - name: Verify staging deployment
         run: |
           echo "== docker ps =="
@@ -214,42 +214,6 @@ jobs:
           echo
           echo "== last logs =="
           docker logs --tail 50 parking-api-staging || true
-# ============================================================
-# JOB 4 — PRODUCTION DEPLOY
-# ============================================================
-  deploy-production:
-    runs-on: self-hosted
-    needs: deploy-staging
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-    environment: production
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Debug runner & docker access
-        run: |
-          whoami
-          hostname
-          docker --version
-          docker ps
-      - name: Build Docker image (production)
-        run: |
-          docker build             -t parking-api-prod:${{ github.run_id }}             -f "CSharp Parking API/Dockerfile"             .
-      - name: Tag image as latest (production)
-        run: |
-          docker tag parking-api-prod:${{ github.run_id }} parking-api-prod:latest
-      - name: Stop old production container (if any)
-        run: |
-          docker rm -f parking-api-prod || true
-      - name: Run production container (port 8402)
-        run: |
-          docker run -d --restart unless-stopped             --name parking-api-prod             -p 8402:80             -e ASPNETCORE_ENVIRONMENT=Docker             parking-api-prod:${{ github.run_id }}
-      - name: Verify production deployment
-        run: |
-          docker ps --filter "name=parking-api-prod"
-          docker port parking-api-prod || true
-          docker logs --tail 50 parking-api-prod || true
   # Job 5: Notifications
   notifications:
     runs-on: ubuntu-latest
@@ -263,8 +227,7 @@ jobs:
           echo "Tests: PASSED"
           echo "Security: PASSED"
           echo "Deployment: Ready"
-          echo "Staging: http://your-host:8401/swagger"
-          echo "Production: http://your-host:8402/swagger"
+          echo "Deployment: http://your-host:8402/swagger"
       - name: Pipeline failure notification
         if: failure()
         run: |
