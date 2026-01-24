@@ -26,18 +26,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Use Serilog for logging
 builder.Host.UseSerilog();
 
-string projectRoot = AppContext.BaseDirectory;
-string projectFolder = Path.GetFullPath(Path.Combine(projectRoot, "..", "..", ".."));
-string DatabasePath = Path.Combine(projectFolder, "Database", "parking.db");
+var contentRoot = builder.Environment.ContentRootPath;
+string DatabasePath = Path.Combine(contentRoot, "Database", "parking.db");
 
 // Ensure the Database directory exists
 var dbDirectory = Path.GetDirectoryName(DatabasePath);
 if (!string.IsNullOrEmpty(dbDirectory) && !Directory.Exists(dbDirectory)) Directory.CreateDirectory(dbDirectory);
 
 // Load configuration (appsettings.json + environment-specific overrides)
-builder.Configuration.AddJsonFile(Path.Combine(projectFolder, "appsettings.json"), optional: true, reloadOnChange: true);
+builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 builder.Configuration.AddJsonFile(
-    Path.Combine(projectFolder, $"appsettings.{builder.Environment.EnvironmentName}.json"),
+    $"appsettings.{builder.Environment.EnvironmentName}.json",
     optional: true,
     reloadOnChange: true);
 
