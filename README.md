@@ -1,4 +1,4 @@
-# 🅿️ Parking Management System
+#  Parking Management System
  
 A comprehensive parking management solution built with ASP.NET Core, featuring NFC payments, role-based access control, and automated CI/CD pipelines.
  
