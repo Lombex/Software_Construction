@@ -1,3 +1,4 @@
+import getpass
 import json
 import sqlite3
 from datetime import datetime
@@ -127,6 +128,11 @@ def insert_payments(cursor, payments):
         cursor.execute(sql, tuple(db_payment.values()))
 
 def main():
+    # Require admin token before running
+    admin_token = getpass.getpass('Voer admin token in (verplicht): ')
+    if not admin_token or not admin_token.strip():
+        print('Geen admin token opgegeven. Import wordt afgebroken.')
+        return
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     # Load and insert users
