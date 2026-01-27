@@ -64,7 +64,15 @@ namespace CSharpAPI.Controllers
             {
                 user.password = C_Utils.HashPassword(request.Password);
                 _db.Users.Update(user);
-                await _db.SaveChangesAsync();
+                try
+                {
+                    await _db.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    // Do not block login if the upgrade failed due to concurrency.
+                    Log.Warning(ex, "Password upgrade skipped due to concurrency for user {Username}", request.Username);
+                }
             }
 
             // Generate JWT token with user id, username, and role claims
