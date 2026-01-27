@@ -43,4 +43,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="Database\parking.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
