@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using CSharpAPI.Models;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Globalization;
 using System.IO;
 
 namespace CSharpAPI.Database
@@ -34,6 +36,14 @@ namespace CSharpAPI.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            var birthYearConverter = new ValueConverter<DateTime, string>(
+                v => v.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                v => ParseDateValue(v));
+
+            modelBuilder.Entity<M_Users>()
+                .Property(u => u.birth_year)
+                .HasConversion(birthYearConverter);
+
             modelBuilder.Entity<M_Payments>().HasKey(p => p.id);
             modelBuilder.Entity<M_Payments>().OwnsOne(t => t.t_data);
             modelBuilder.Entity<M_Parkinglots>().OwnsOne(c => c.coordinates);
@@ -48,6 +58,46 @@ namespace CSharpAPI.Database
             modelBuilder.Entity<M_HotelGuest>().HasKey(hg => hg.id);
 
             base.OnModelCreating(modelBuilder);
+        }
+
+        private static DateTime ParseDateValue(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return DateTime.MinValue;
+            }
+
+            var formats = new[]
+            {
+                "yyyy",
+                "yyyy-MM",
+                "yyyy-MM-dd",
+                "yyyy-MM-dd HH:mm:ss",
+                "yyyy-MM-ddTHH:mm:ss",
+                "yyyy-MM-ddTHH:mm:ss.fffffff",
+                "yyyy-MM-ddTHH:mm:ss.fffffffZ"
+            };
+
+            if (DateTime.TryParseExact(
+                    value,
+                    formats,
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
+                    out var parsed))
+            {
+                return parsed;
+            }
+
+            if (DateTime.TryParse(
+                    value,
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
+                    out parsed))
+            {
+                return parsed;
+            }
+
+            return DateTime.MinValue;
         }
     }
 }
